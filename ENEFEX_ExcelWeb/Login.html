@@ -1,0 +1,77 @@
+﻿<!--<!DOCTYPE html>-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>ENEFEX Excel - Bejelentkezés</title>
+
+    <script src="Scripts/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="Scripts/FabricUI/MessageBanner.js" type="text/javascript"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+
+    <link href="Login.css?v=1" rel="stylesheet" type="text/css" />
+    <script src="Common.js" type="text/javascript"></script>
+    <script src="Request.js" type="text/javascript"></script>
+    <script src="Login.js" type="text/javascript"></script>
+    <script src="supportFunctions.js" type="text/javascript"></script>
+    <script src="Scripts/async.js" type="text/javascript"></script>
+
+    <!--<link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">-->
+    <!--<link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">-->
+    <link rel="stylesheet" href="Content/fabric.min.css">
+    <link rel="stylesheet" href="Content/fabric.components.min.css">
+
+</head>
+<!--<body onload="loadAtTop(); wasUserLoggedInTest();">-->
+ <body onload="loadAtTop();">
+
+        <!-- Tooltip -->
+        <!--<div id="hideTheBody">
+            <div id="fisrtInstruction">
+                <p class="fisrtInstructionText" id="fisrtInstructionText">
+                    Az Enefex-adatlekérő® bővítmény segítségével az ön számára releváns fogyasztási adatokat kérhet le a saját cégével kapcsolatosan, amely megkönnyíti az ön cégének az energetiai kimutatások hatékony elkészítését.
+                    <br /> Bővebb információkért keresse fel honlapunkat! (enefex.eu)
+                </p>
+                <img class="fisrtInstructionImage" id="fisrtInstructionImage" src="Images/login_2.png" />
+                <button class="ms-Button ms-Button--primary menuOpenButton" onclick="changeInstruction();">
+                    <span class="ms-Button-label" id="button-text">Megértettem</span>
+                </button>
+            </div>
+        </div>-->
+
+
+        <div id="content-main">
+            <div class="padding">
+                <div class="nfx-logo"><img src="Images/enefex_logo_web.png" /></div>
+                <div class="ms-font-xxl ms-fontColor-neutralSecondary ms-fontWeight-semilight">Bejelentkezés</div>
+
+                <p>Az Enefex-adatlekérő® bővítményhez felhasználói segédlet ezen a <a href="support_and_privacy/Documentation.html" target="_blank">linken</a> érhető el.</p>
+
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb2">Host</p>
+                <input type="text" id="host" value="https://ddkk.enefex.info" onfocus="setErrorMessageDefault('errorMessage');" />
+
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb2">Felhasználónév</p>
+                <input type="text" id="username" value="Kokai" onfocus="setErrorMessageDefault('errorMessage');"/>
+
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb2">Jelszó</p>
+                <input type="password" id="password" value="Kokai1234x" onkeyup="pressEnterLogin(event);" onfocus="setErrorMessageDefault('errorMessage');"/>
+            </div>
+            <div class="padding">
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary" style="color: red;" id="errorMessage"></p>
+            </div>
+            <!--<div class="ms-Button-container">
+                <button class="ms-Button ms-Button--primary left" id="loginButton" onclick="onClick_loginButton();">
+                    <span class="ms-Button-label" id="button-text">Bejelentkezés</span>
+                </button>
+            </div>-->
+            <button class="newLoginButton" id="loginButton" onclick="onClick_loginButton();">Bejelentkezés</button>
+            <br /><br />
+            <div class="padding">
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary">Problems with logging in? Help is <a href="support_and_privacy/Account.html" target="_blank">here</a>.</p>
+            </div>
+
+        </div>
+    </body>
+
+</html>

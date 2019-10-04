@@ -1,0 +1,138 @@
+﻿/* Page-specific styling */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    height: 500px;
+    width: 100%;
+    margin: 0 0 40px; /* bottom = footer height */
+    overflow-y: scroll;
+    display: none;
+}
+
+.padding {
+    padding: 0 10px 10px 10px;
+}
+
+#notification-popup.ms-MessageBanner {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    text-align: left;
+    height: inherit;
+    min-width: inherit;
+}
+
+#notification-popup .ms-MessageBanner-text {
+    margin: 0;
+    padding: 18px 15px;
+    min-width: inherit;
+}
+
+.hiddenMenu {
+    display: none;
+    padding: 10px 5px 0px 15px;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    width: 200px !important;
+    min-height: 50px;
+    border: 1px solid #5e5e5e;
+}
+
+.vegleges-futtato-gomb {
+    background-color: #ff6352;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 15px;
+    height: 40px;
+    width: 130px;
+    cursor: pointer;
+}
+
+.vegleges-futtato-gomb:hover {
+    background-color: red;
+}
+
+.mainTitle {
+    text-align: center;
+}
+
+.startButton { color: cornsilk; }
+
+.myErrorMessage {
+    display: none;
+    color: red;
+}
+
+.nfx-logo { 
+    margin-top: 15px;
+    height: 100px;
+    width: 96px;
+}
+
+.meter_group_list {
+    width: 180px;
+}
+
+.green-text {
+    color: green;
+}
+
+.red-text {
+    color: red;
+}
+
+.ownDatePicker {
+    margin-top: 5px;
+    width: 100px;
+}
+
+#template-description {margin-right: 5px;}
+
+.menuOpenButton {
+    margin-top: 10px !important;
+    width: 220px;
+    height:30px;
+    border: none;
+    background-color: #669a2f;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    /*margin-left: 5px;*/
+    cursor: pointer;
+}
+
+.menuOpenButton:hover {
+    background-color: #78B62E;
+}
+
+.menuDropDownImage {
+    margin-top: 2px;
+    height: 16px;
+}
+
+.logoutButton{
+    width:100px !important;
+}
+
+.align-center{
+    margin: auto;
+    text-align: center;
+    align-content: center;
+}
+
+.requestErrorText {
+    font-weight: 600;
+    font-size: 16px;
+    color: #4f4f4f;
+    margin-bottom: 10px;
+}
+
+

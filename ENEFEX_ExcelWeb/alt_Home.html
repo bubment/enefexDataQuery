@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>ENEFEX Excel - Bejelentkezés</title>
+
+
+
+    <!--<link rel="stylesheet" href="Login.css?v=1" type="text/css" />-->
+    <link rel="stylesheet" href="alt_Home.css?v=1" type="text/css" />
+    <!--<link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">
+    <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">-->
+    <link rel="stylesheet" href="Content/fabric.min.css">
+    <link rel="stylesheet" href="Content/fabric.components.min.css">
+
+    <script src="Scripts/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="Scripts/FabricUI/MessageBanner.js" type="text/javascript"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+    <script src="Common.js" crossorigin type="text/javascript"></script>
+    <script src="Request.js" crossorigin type="text/javascript"></script>
+    <script src="alt_Home.js" crossorigin type="text/javascript"></script>
+
+</head>
+<body>
+    <!--<div id="hideTheBody">
+        <div id="fisrtInstruction">
+            <p class="fisrtInstructionText">
+                Kattintson a <span class="green-text">ZÖLD</span> lenyíló menükre, majd állítsa be az önnek szükséges időtartományt, majd kattintson a <span class="red-text">PIROS</span> Lekérdezés gombra.
+            </p>
+            <img class="fisrtInstructionImage" src="Images/dropDownMenu.png" />
+            <button class="ms-Button ms-Button--primary menuOpenButton" onclick="hideTheInstruction();">
+                <span class="ms-Button-label" id="button-text">Megértettem</span>
+            </button>
+        </div>
+    </div>-->
+    <div id="content-main">
+        <!-- -------------Felső design rész---------- -->
+        <div class="padding">
+            <div class="nfx-logo"><img src="Images/enefex_logo_web.png" /></div>
+
+            <div class="ms-font-xl ms-fontColor-neutralTertiary mainTitle">Üdvözöljük az Enefex adatlekérőjében</div>
+            <p class="ms-font-m-plus ms-fontColor-neutralTertiary" id="template-description">
+                A lenyíló menükben lekérheti az összes olyan szükséges havi és éves fogyasztási adatot, amihez önnek jogosultsága van.
+                <br /><br />Az Enefex-adatlekérő® bővítményhez felhasználói segédlet ezen a <a href="support_and_privacy/Documentation.html" target="_blank">linken</a> érhető el.
+            </p>
+            <br /><br />
+            <!--Fogyasztás összesítő panelt lenyitó gomb-->
+
+            <button class="ms-Button ms-Button--primary menuOpenButton" id="fogyasztasOsszesitoPanelOpen" onclick="changeDivDisplay('fogyasztas_osszesito', 'menu1DropDownArrowImage');">
+                <img id="menu1DropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                <span class="ms-Button-label" id="button-text">Fogyasztás összesítő</span>
+            </button>
+
+            <!-- Fogyasztás össesítő panel -->
+            <div id="fogyasztas_osszesito" class="hiddenMenu">
+                <label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2018-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                <br /><br />
+                <label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value="2018-02-01" onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                <br />
+                <br />
+                <button class="vegleges-futtato-gomb" id="fogyasztasOsszesitoButton" onmouseup="onClick_fogyasztasOsszesitoButton();" onmousedown="serverIsRunningMessage('fogyasztasOsszesitoError');">
+                    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                    <span class="startButton" id="button-text">Lekérdezés</span>
+                    <span class="ms-Button-description" id="button-desc"></span>
+                </button>
+                <p class="myErrorMessage" id="fogyasztasOsszesitoError"></p>
+                <br />
+                <!-- Teszt gomb-->
+                <!--<button class="ms-Button ms-Button--primary" id="fogyasztasOsszesitoPanelOpen" onclick="myTest();">
+                    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                    <span class="ms-Button-label" id="button-text">Test</span>
+                    <span class="ms-Button-description" id="button-desc"></span>
+                </button>
+                <br /><br />-->
+            </div>
+            <!-- Feldolgozott mérések panlt lenyitó gomb -->
+            <button class="ms-Button ms-Button--primary menuOpenButton" id="feldolgozottMeresekPanelOpen" onclick="changeDivDisplay('feldolgozott_meresek', 'menu2DropDownArrowImage');">
+                <img id="menu2DropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                <span class="ms-Button-label" id="button-text">Feldolgozott mérések</span>
+
+            </button>
+            <!-- Feldolgozott mérések panel -->
+            <div id="feldolgozott_meresek" class="hiddenMenu">
+                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="onlyYearFilter" class="ownDatePicker" min="2015" value="2018" onfocus="setErrorMessageDefault('feldolgozottMeresekError');">
+                <br />
+                <br />
+                <button class="vegleges-futtato-gomb" id="feldolgozottMeresekButton" onmouseup="onClick_feldolgozottMeresekPanelOpen();" onmousedown="serverIsRunningMessage('feldolgozottMeresekError');">
+                    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                    <span class="startButton" id="button-text">Lekérdezés</span>
+                    <span class="ms-Button-description" id="button-desc"></span>
+                </button>
+                <p class="myErrorMessage" id="feldolgozottMeresekError"></p>
+                <br />
+            </div>
+            <br /><br />
+            <!-- Kilépés gomb-->
+            <button class="ms-Button ms-Button--primary" id="logoutButton" onclick="onClick_logoutButton();">
+                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                <span class="ms-Button-label" id="button-text">Kilépés</span>
+                <span class="ms-Button-description" id="button-desc"></span>
+            </button>
+        </div>
+    </div>
+</body>
+</html>

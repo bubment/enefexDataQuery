@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>ENEFEX Excel - Bejelentkezés</title>
+
+
+
+    <!--<link rel="stylesheet" href="Login.css?v=1" type="text/css" />-->
+    <link rel="stylesheet" href="Home.css?v=1" type="text/css" />
+    <!--<link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">
+    <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">-->
+    <link rel="stylesheet" href="Content/fabric.min.css">
+    <link rel="stylesheet" href="Content/fabric.components.min.css">
+
+    <script src="Scripts/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="Scripts/FabricUI/MessageBanner.js" type="text/javascript"></script>
+    <script src="Scripts/async.js" type="text/javascript"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+    <script src="Common.js" type="text/javascript"></script>
+    <script src="Request.js" type="text/javascript"></script>
+    <script src="Home.js" type="text/javascript"></script>
+    <script src="supportFunctions.js" type="text/javascript"></script>
+
+
+
+</head>
+<body onload="fillDropDownList(); officeOnReady();">
+    
+    <div id="content-main">
+        <!-- -------------Felső design rész---------- -->
+        <div class="padding">
+            <div class="nfx-logo"><img src="Images/enefex_logo_web.png" /></div>
+
+            <div class="ms-font-xl ms-fontColor-neutralTertiary mainTitle">Üdvözöljük az Enefex adatlekérőjében</div>
+            <p class="ms-font-m-plus ms-fontColor-neutralTertiary" id="template-description">
+                A lenyíló menükben lekérheti az összes olyan szükséges havi és éves fogyasztási adatot, amihez önnek jogosultsága van.
+                <!--<br /><br />Az Enefex-adatlekérő® bővítményhez felhasználói segédlet ezen a <a href="support_and_privacy/Documentation.html" target="_blank">linken</a> érhető el.-->
+            </p>
+
+            <!--Fogyasztás összesítő panelt lenyitó gomb-->
+            <button class="menuOpenButton" id="fogyasztasOsszesitoPanelOpen" onclick="changeDivDisplay('fogyasztas_osszesito', 'menu1DropDownArrowImage', 'fogyasztasOsszesitoPanelOpen');">
+                <img id="menu1DropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                Fogyasztás összesítő
+            </button>
+
+            <!-- Fogyasztás össesítő panel -->
+            <div id="fogyasztas_osszesito" class="hiddenMenu">
+                <!--<label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2015-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');" onfocusout="fogyasztasOsszessitoDate();">-->
+                <label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                <br /><br />
+                <!--<label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2015-02-01 disabled>-->
+                <label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                <br /><br />
+                <label for="fogyasztas_osszesito_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="fogyasztas_osszesito_meter_groups"></select>
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="fogyasztasOsszesitoButton" onclick="fogyasztasOsszesitoContainer();">Lekérdezés</button>
+                <div class="myErrorMessage" id="fogyasztasOsszesitoError"></div>
+                <br />
+
+                <!-- Teszt gomb-->
+                <!--<button class="ms-Button ms-Button--primary" id="myTestButton" onclick="myTest();">
+            <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+            <span class="ms-Button-label" id="button-text">Test</span>
+            <span class="ms-Button-description" id="button-desc"></span>
+        </button>
+        <br /><br />-->
+            </div>
+
+            <!-- Feldolgozott mérések panelt lenyitó gomb -->
+            <button class="menuOpenButton" id="feldolgozottMeresekPanelOpen" onclick="changeDivDisplay('feldolgozott_meresek', 'menu2DropDownArrowImage', 'feldolgozottMeresekPanelOpen');">
+                <img id="menu2DropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                Feldolgozott mérések
+            </button>
+            <!-- Feldolgozott mérések panel -->
+            <div id="feldolgozott_meresek" class="hiddenMenu">
+                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="onlyYearFilter" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('feldolgozottMeresekError');">
+                <br />
+                <br />
+                <label for="feldolgozott_meresek_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="feldolgozott_meresek_meter_groups"></select>
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="feldolgozottMeresekButton" onclick="feldolgozottMeresekContainer();">Lekérdezés</button>
+                <p class="myErrorMessage" id="feldolgozottMeresekError"></p>
+                <br />
+            </div>
+            <br />
+
+            <!-- Heti jelentés panelt lenyitó gomb -->
+            <button class="menuOpenButton" id="hetiJelentesPanelOpen" onclick="changeDivDisplay('hetiJelentes', 'hetiJelentesMenuDropDownArrowImage', 'hetiJelentesPanelOpen');">
+                <img id="hetiJelentesMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                Heti Jelentés készítő
+            </button>
+            <!-- Heti jelentés panel -->
+            <div id="hetiJelentes" class="hiddenMenu">
+                <label for="heti_jelentes_kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="heti_jelentes_kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
+                <select id="heti_jelentes_kezdo_ora"></select>
+                <label for="heti_jelentes_kezdo_ora">-tól</label>
+                <br /><br />
+                <label for="heti_jelentes_veg_datum">Befejező dátum:</label><br /><input type="text" id="heti_jelentes_veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
+                <select id="heti_jelentes_befejezo_ora"></select>
+                <label for="heti_jelentes_befejezo_ora">-ig</label>
+                <br /><br />
+                <label for="heti_jelentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="heti_jelentes_meter_groups"></select>
+                <br /><br />
+                <label for="mentett_bealitasok">Mentett beállítások:</label><br /><select class="meter_group_list" id="heti_jelentes_mentett_bealitasok"></select>
+                <br /><br />
+                <label for="csakNemMegFeleloSorok">Csak a nem megfelelő sorok megjelenítése: </label><input type="checkbox" id="csakNemMegFeleloSorok">
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="hetiJelentesButton" onclick="hetiJelentesKeszitoContainer();">Lekérdezés</button>
+                <p class="myErrorMessage" id="hetiJelentesError"></p>
+                <br />
+            </div>
+            <br />
+
+            <!--------------------------LENYÍLÓ PANEL MINTA-------------------------->
+            <!-- MINTA panelt lenyitó gomb -->
+            <!--<button class="menuOpenButton" id="mintaPanelOpen" onclick="changeDivDisplay('minta_panel', 'mintaMenuDropDownArrowImage', 'mintaPanelOpen');">
+                <img id="mintaMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                Minta panel név
+            </button>-->
+            <!-- Feldolgozott mérések panel -->
+            <!--<div id="minta_panel" class="hiddenMenu">
+                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
+                <p class="myErrorMessage" id="mintaError"></p>
+                <br />
+            </div>
+            <br />-->
+            <br />
+            <!-- Kilépés gomb-->
+            <button class="menuOpenButton logoutButton" id="logoutButton" onclick="onClick_logoutButton();">Kilépés</button>
+
+            <div class="padding">
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary" style="color: red;" id="logoutErrorMessage"></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

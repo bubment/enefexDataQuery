@@ -1,0 +1,70 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19142593-D432-4687-AD36-4F16D1FE7A29}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ENEFEX_Excel</RootNamespace>
+    <AssemblyName>ENEFEX_Excel</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetOfficeVersion>15.0</TargetOfficeVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{C1CDDADD-2546-481F-9697-4EA41081F2FC};{14822709-B5A1-4724-98CA-57A101D1B079};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <IncludeAssemblyInPackage>False</IncludeAssemblyInPackage>
+    <AppFeaturePartId>{df3dd335-024a-40d8-96c4-68fc1ce4d0a5}</AppFeaturePartId>
+    <WspPartId>{584db52e-113b-4353-ad11-24428a005d5f}</WspPartId>
+    <WorkflowPartId>{eb4a7c31-c7d1-4b9e-a2d2-a9ed18361e98}</WorkflowPartId>
+    <CspkgPartId>{cf431d61-d2b1-4ac6-88ea-394e99951c83}</CspkgPartId>
+    <SqlPackagePartId>{8f979264-2dce-4b66-bd79-2ecd443117f6}</SqlPackagePartId>
+    <ProjectMode>OfficeApp</ProjectMode>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumOfficeToolsVersion>14.0</MinimumOfficeToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="ENEFEX_ExcelManifest\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{3e06518b-c2a0-4533-ae11-a2552f327ff4}</SharePointProjectItemId>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="ENEFEX_ExcelManifest\EnefexDataQuery.xml">
+      <OpcRelationship>manifest-oemanifest</OpcRelationship>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ENEFEX_ExcelWeb\ENEFEX_ExcelWeb.csproj">
+      <Project>{46A5D0B1-CDFE-4462-9F28-EC37E244D2D6}</Project>
+      <Name>ENEFEX_ExcelWeb</Name>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <OutputItemType>SharePointWebProjectOutput</OutputItemType>
+      <RoleName>ENEFEX_ExcelWeb</RoleName>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\SharePointTools\Microsoft.VisualStudio.SharePoint.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>
