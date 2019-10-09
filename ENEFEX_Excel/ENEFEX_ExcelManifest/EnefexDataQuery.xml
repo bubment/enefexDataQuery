@@ -13,7 +13,7 @@
   <Id>bc345edc-2487-47ad-91a8-ccf9bbf35d0e</Id>
 
   <!--Version. Updates from the store only get triggered if there is a version change. -->
-  <Version>1.0.0.3</Version>
+  <Version>1.0.0.4</Version>
   <ProviderName>ENEFEX</ProviderName>
   <DefaultLocale>hu-HU</DefaultLocale>
 

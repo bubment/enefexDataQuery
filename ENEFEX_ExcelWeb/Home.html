@@ -60,12 +60,12 @@
                 <br />
 
                 <!-- Teszt gomb-->
-                <!--<button class="ms-Button ms-Button--primary" id="myTestButton" onclick="myTest();">
+                <button class="ms-Button ms-Button--primary" id="myTestButton" onclick="myTest();">
             <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
             <span class="ms-Button-label" id="button-text">Test</span>
             <span class="ms-Button-description" id="button-desc"></span>
         </button>
-        <br /><br />-->
+        <br /><br />
             </div>
 
             <!-- Feldolgozott mérések panelt lenyitó gomb -->
@@ -113,21 +113,36 @@
             </div>
             <br />
 
+            <!-- newTry panelt lenyitó gomb -->
+            <button class="menuOpenButton" id="newTryPanelOpen" onclick="changeDivDisplay('newtry_panel', 'newTryMenuDropDownArrowImage', 'newTryPanelOpen');">
+                <img id="newTryMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+                New try lekérdezés
+            </button>
+            <!-- newTry panel -->
+            <div id="newtry_panel" class="hiddenMenu">
+                <!--<label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('newTryError');">-->
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="newTryButton" onclick="newTryContainer();">Lekérdezés</button>
+                <p class="myErrorMessage" id="newTryError"></p>
+                <br />
+            </div>
+    <br />
+
             <!--------------------------LENYÍLÓ PANEL MINTA-------------------------->
             <!-- MINTA panelt lenyitó gomb -->
             <!--<button class="menuOpenButton" id="mintaPanelOpen" onclick="changeDivDisplay('minta_panel', 'mintaMenuDropDownArrowImage', 'mintaPanelOpen');">
-                <img id="mintaMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
-                Minta panel név
-            </button>-->
-            <!-- Feldolgozott mérések panel -->
+        <img id="mintaMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
+        Minta panel név
+    </button>-->
+            <!-- Minta panel -->
             <!--<div id="minta_panel" class="hiddenMenu">
-                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
-                <p class="myErrorMessage" id="mintaError"></p>
-                <br />
-            </div>
-            <br />-->
+        <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
+        <br /><br />
+        <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
+        <p class="myErrorMessage" id="mintaError"></p>
+        <br />
+    </div>
+    <br />-->
             <br />
             <!-- Kilépés gomb-->
             <button class="menuOpenButton logoutButton" id="logoutButton" onclick="onClick_logoutButton();">Kilépés</button>

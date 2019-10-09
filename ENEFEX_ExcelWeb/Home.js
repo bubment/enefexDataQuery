@@ -728,7 +728,12 @@ function hetiJelentesKeszitoContainer() {
     
 
     if (!savedOptionsListSelectedText) {
-        requiredSheets.splice(2, 1);
+        for (var i = 0; i < requiredSheets.length; i++) {
+            if (requiredSheets[i] == "IN_FG") {
+                requiredSheets.splice(i, 1);
+                break;
+            }
+        }
     }
 
     var csakNemMegFeleloSorokCheckBox = document.getElementById("csakNemMegFeleloSorok");
@@ -1318,7 +1323,12 @@ function hetiJelentesKeszitoContainer() {
     var asyncSeriesFunctionsArray = [workSheetHandler, meterGroup, getMeterTree, getSavedGraphs, getHetiAlapvonalSzamertekek, getMentettBeallitasokGrafikonAdatok, getHetiFogyasztasOsszesito];
 
     if (!savedOptionsListSelectedText) {
-        asyncSeriesFunctionsArray.splice(5, 1);
+        for (var i = 0; i < asyncSeriesFunctionsArray.length; i++) {
+            if (asyncSeriesFunctionsArray[i] == getMentettBeallitasokGrafikonAdatok) {
+                asyncSeriesFunctionsArray.splice(i, 1);
+                break;
+            }
+        }
     }
 
     async.series(
@@ -1492,6 +1502,404 @@ function mintaAsync() {
         [
             workSheetHandler,
             // többi async függvény
+        ],
+        function (err) {
+            console.log('allfinished', err);
+        }
+    )
+
+}
+
+function newTryContainer() {
+
+    var errorLabel = document.getElementById('newTryError');
+    errorLabel.style.display = "block";
+    errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+
+    // A függvényekben levő összes szükséges munkalapot itt kell definiálni
+    var requiredSheets = ["KER_SZER", "HHHCS"];
+    //Az excelbe bemásolandó range sorainak számát meghatározó változó
+    var dataLength;
+    //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+    var dataInnerLength;
+    // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+    // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+    var jsonDataArray = [];
+    // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+    var jsonDataInnerArray = [];
+    // Lekérdezésekhez szükséges URL
+    var host = readCookie("enefexHost");
+
+    //!!!!!!!!!!!!!!!!!!!!!!
+    // Egyéb szükséges paraméterek definiálása (input typeok tartalmai...)
+    var csatlakozasiPontResult;
+    //!!!!!!!!!!!!!!!!!!!!!!
+
+    //Dátumok RegEx validációi
+    //if (dateRegExTest('kezdo_datum_input', 'veg_datum_input', 'AKARMIERROR') == "RegExTestProblem") {
+    //    return;
+    //}
+
+    //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+    var newDisableElements = ["newTryButton"];
+    var actualDisableElements = newDisableElements.concat(importantDisableElements);
+    changElementsAvailability(actualDisableElements, true);
+
+    var workSheetHandler = function (callback) {
+
+        var clearableSheet = [];
+        var addableSheet = [];
+
+        var separateWorksheets = function (callback) {
+            // Ez a függvény a lekérdezéshez szükséges munkalapokat két külön tömbe teszi.
+            // A clearableSheet tömbbe teszi a már létező munkalapok nevét
+            // Az addableSheet tömbbe teszi a létrehozandó munkalapok nevét
+            Excel.run(function (context) {
+                var worksheets = context.workbook.worksheets;
+                worksheets.load('name');
+                return context.sync()
+                    .then(function () {
+                        var sheetFound;
+                        for (var i = 0; i < requiredSheets.length; i++) {
+                            sheetFound = false;
+                            for (var j = 0; j < worksheets.items.length; j++) {
+                                if (requiredSheets[i] == worksheets.items[j].name) {
+                                    sheetFound = true;
+                                    clearableSheet.push(worksheets.items[j].name);
+                                    break;
+                                }
+                            }
+                            if (sheetFound) {
+                                continue;
+                            }
+                            else {
+                                addableSheet.push(requiredSheets[i]);
+                            }
+                        }
+                        callback();
+                    });
+            })
+
+        }
+
+        var clearSheets = function (callback) {
+            // A clearSheets függvény tisztítja meg a megadott munkalapok tartalmát
+            if (clearableSheet) {
+                Excel.run(function (context) {
+                    var sheetsNames = clearableSheet;
+                    var sheets = context.workbook.worksheets;
+                    var sheetsNamesArrayLength = sheetsNames.length;
+                    var sheetName;
+                    var range;
+
+                    for (var i = 0; i < sheetsNamesArrayLength; i++) {
+                        sheetName = sheetsNames[i];
+                        range = sheets.getItem(sheetName).getRange();
+                        range.load("address");
+                        range.clear();
+
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback();
+                        });
+                });
+            }
+        }
+
+        var addSheets = function (callback) {
+            // Az addSheets függvény adj hozzá a munkafüzethez a szükséges munkalapokat
+            if (addableSheet) {
+                Excel.run(function (context) {
+                    var newSheets = addableSheet;
+                    var sheet = context.workbook.worksheets;
+                    var newSheetsArrayLength = newSheets.length;
+                    var sheetName;
+
+                    for (var i = 0; i < newSheetsArrayLength; i++) {
+                        sheetName = newSheets[i];
+                        newSheet = sheet.add(sheetName);
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback();
+                        });
+                });
+            }
+        }
+
+        async.series(
+            [
+                separateWorksheets,
+                clearSheets,
+                addSheets
+            ],
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+        callback();
+    }
+
+    var getCsatlakozasiPont = function (callback) {
+
+        var getCsatlakozasiPontCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (result) {
+                    csatlakozasiPontResult = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+        params = {};
+
+        params["all"] = "1";
+        params["isMasodlagos"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        postAsyncGetData(host + "/ebill/contract/getHCSSzerzodes", params, getCsatlakozasiPontCallback);
+
+    }
+
+    var getKereskedelmiSzerzodes = function (callback) {
+
+        var kereskedekmiSzerzodesCallback = function (err, kereskedekmiSzerzodesCallbackResult) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (kereskedekmiSzerzodesCallbackResult) {
+                    var requiredServerDataArray = [
+                        { dataTag: "id", columnName: "A", headerText: "ID" },
+                        { dataTag: "elnevezes", columnName: "B", headerText: "Elnevezés" },
+                        { dataTag: "ervenyesseg_kezdete", columnName: "C", headerText: "Szerz. kezdete" },
+                        { dataTag: "ervenyesseg_vege", columnName: "D", headerText: "Szerz. vége" },
+                        { dataTag: "villamosenergia_kereskedo_hosszu_nev", columnName: "E", headerText: "Kereskedelmi  engedélyes" },
+                        { dataTag: "meter_identifier_watt", columnName: "F", headerText: "Mérő azonosító" },
+                        { dataTag: "POD", columnName: "G", headerText: "POD" },
+                        { dataTag: "villamos_energia_ar_kwh", columnName: "H", headerText: "Áramdíj" },
+                        { dataTag: "csoportos_dij_tipus_id", columnName: "I", headerText: "Díjmódosító csoport" },
+                    ];
+
+                    //Fejlécek betöltése a jsonDataArray-ba
+                    jsonDataInnerArray = [];
+                    jsonDataArray = [];
+                    requiredServerDataArray.forEach(function (element) {
+                        jsonDataInnerArray.push(element.headerText);
+                    });
+                    jsonDataArray.push(jsonDataInnerArray);
+                    jsonDataInnerArray = [];
+
+                    dataLength = Object.keys(kereskedekmiSzerzodesCallbackResult.data).length;
+                    dataInnerLength = requiredServerDataArray.length;
+
+                    // Adattábla betöltése a jsonDataArray-ba
+                    for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
+                        jsonDataInnerArray = [];
+                        for (var i = 0; i < dataInnerLength; i++) {
+                            if (requiredServerDataArray[i].dataTag == "villamos_energia_ar_kwh") {
+                                aramDij = kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
+                                jsonDataInnerArray.push(aramDij.slice(0, -9));
+                            }
+                            else {
+                                jsonDataInnerArray.push(kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);    
+                            }
+                            
+                        }
+                        jsonDataArray.push(jsonDataInnerArray);
+                    }
+
+                    // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                    Excel.run(function (context) {
+
+                        var sheet = context.workbook.worksheets.getItem("KER_SZER");
+
+                        var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //Excel feltöltése adatokkal
+                        var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        range.values = jsonDataArray;
+                        range.untrack();
+
+                        // Csak a return után lesznek láthatóak az adatok az excelben
+                        boldRange.format.font.bold = true;
+                        return context.sync();
+                    })
+
+                    // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+                    errorLabel.innerHTML = "";
+                    errorLabel.style.display = 'none';
+
+                    //Menü elérhetővé tétele
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+
+        var params = {};
+        params["all"] = "1";
+        params["isMasodlagos"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+ 
+
+
+        postAsyncGetData(host + "/ebill/contract/getKereskedelmiSzerzodes", params, kereskedekmiSzerzodesCallback);
+        //Caolan async miatt
+        callback();
+    }
+
+    var getHHSzerzodes = function (callback) {
+
+        var HHSzerzodesCallback = function (err, HHSzerzodesCallbackResult) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (HHSzerzodesCallbackResult) {
+                    var requiredServerDataArray = [
+                        { dataTag: "id", columnName: "A", headerText: "ID" },
+                        { dataTag: "elnevezes", columnName: "B", headerText: "Elnevezés" },
+                        { dataTag: "ervenyesseg_kezdete", columnName: "C", headerText: "Szerz. kezdete" },
+                        { dataTag: "ervenyesseg_vege", columnName: "D", headerText: "Szerz. vége" },
+                        { dataTag: "halozati_engedelyes", columnName: "E", headerText: "Hálózati engedélyes" },
+                        { dataTag: "meter_identifier_watt", columnName: "F", headerText: "Mérő azonosító" },
+                        { dataTag: "POD", columnName: "G", headerText: "POD" },
+                        { dataTag: "consumer_tariff_type", columnName: "H", headerText: "Tarifa" },
+                        { dataTag: "lekotott_teljesitmeny", columnName: "I", headerText: "Lekötött teljesítmény" },
+                        { dataTag: "csatlakozasi_pontok_szama", columnName: "J", headerText: "Csatlakozási Pontok száma" },
+                    ];
+
+                    //Fejlécek betöltése a jsonDataArray-ba
+                    jsonDataInnerArray = [];
+                    jsonDataArray = [];
+                    requiredServerDataArray.forEach(function (element) {
+                        jsonDataInnerArray.push(element.headerText);
+                    });
+                    jsonDataArray.push(jsonDataInnerArray);
+                    jsonDataInnerArray = [];
+
+                    dataLength = Object.keys(HHSzerzodesCallbackResult.data).length;
+                    dataInnerLength = requiredServerDataArray.length;
+
+                    // Adattábla betöltése a jsonDataArray-ba
+                    for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
+                        jsonDataInnerArray = [];
+                        for (var i = 0; i < dataInnerLength; i++) {
+
+                            switch (requiredServerDataArray[i].dataTag) {
+                                case "csatlakozasi_pontok_szama":
+
+        
+                                    for (var j = 0; j < csatlakozasiPontResult.data.length; j++) {
+                                        if (HHSzerzodesCallbackResult.data[tmpRow].id == csatlakozasiPontResult.data[j].id) {
+                                            jsonDataInnerArray.push(csatlakozasiPontResult.data[j].csatlakozasi_pontok_szama);
+                                            break;
+                                        }
+                                    }
+                                    break;
+
+                                case "lekotott_teljesitmeny":
+                                    lekotottTeljesitmeny = HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
+                                    jsonDataInnerArray.push(lekotottTeljesitmeny.slice(0, -3));
+                                    break;
+
+                                default:
+                                    jsonDataInnerArray.push(HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                            }
+                        }
+                        jsonDataArray.push(jsonDataInnerArray);
+                    }
+
+                    // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                    Excel.run(function (context) {
+
+                        var sheet = context.workbook.worksheets.getItem("HHHCS");
+
+                        var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //Excel feltöltése adatokkal
+                        var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        range.values = jsonDataArray;
+                        range.untrack();
+
+                        // Csak a return után lesznek láthatóak az adatok az excelben
+                        boldRange.format.font.bold = true;
+                        return context.sync();
+                    })
+
+                    // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+                    //errorLabel.innerHTML = "";
+                    //errorLabel.style.display = 'none';
+
+                    ////Menü elérhetővé tétele
+                    //changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+
+        var params = {};
+        params["all"] = "1";
+        params["isMasodlagos"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+
+
+
+        postAsyncGetData(host + "/ebill/contract/getHHSzerzodes", params, HHSzerzodesCallback);
+        //Caolan async miatt
+        callback();
+    }
+    // Többi Async függvény definiálása
+
+    //Először azokat a függvényeket kell megírni amikből a főbb függvények lekérdezéséhez szükséges paramértert lehet kinyerni
+
+    // A megírt lekérdezések közül csak az UTOLSÓBAN az EXCELBEÍRÁS UTÁN (és minden errorágon belül) kell aktiválni a kezelőfelületi elmeket.
+    // Kezelőfelületeket aktiváló kód: changElementsAvailability(actualDisableElements, false);
+
+
+
+    async.series(
+        [
+            workSheetHandler,
+            getCsatlakozasiPont,
+            // többi async függvény
+            getHHSzerzodes,
+            getKereskedelmiSzerzodes
         ],
         function (err) {
             console.log('allfinished', err);

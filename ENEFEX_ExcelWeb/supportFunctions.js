@@ -560,5 +560,20 @@ function asyncSeriesTest() {
 
 function myTest() {
 
+
+    var arr = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 8],
+    ];
+
+    var newArr = [10, 11, 12];
+
+    for (var i = 0; i < arr.length; i++) {
+        arr[i].push(newArr[i]);
+    }
+
+    var asd = 3;
+
 }
 
