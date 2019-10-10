@@ -1690,8 +1690,9 @@ function newTryContainer() {
         var requiredServerDataArray = [
             { dataTag: "id", columnName: "A", headerText: "ID" }, // nem ennek a lekérdezésnek az ID-ja, hanem a hozzátartozó szerződésé
             { dataTag: "value", columnName: "B", headerText: "Érték" },
-            { dataTag: "ervenyesseg_kezdete", columnName: "C", headerText: "Érvényesség kezdete" },
-            { dataTag: "ervenyesseg_vege", columnName: "D", headerText: "Érvényesség vége" },
+            { dataTag: "value_mertekegyseg", columnName: "C", headerText: "Mértékegység" },
+            { dataTag: "ervenyesseg_kezdete", columnName: "D", headerText: "Érvényesség kezdete" },
+            { dataTag: "ervenyesseg_vege", columnName: "E", headerText: "Érvényesség vége" },
         ];
 
         //Fejlécek betöltése a jsonDataArray-ba
@@ -1725,15 +1726,24 @@ function newTryContainer() {
                                         break;
                                     case "value":
                                         ertek = operativTeljesitmenyekCallbackResult[i][requiredServerDataArray[j].dataTag];
-                                        jsonDataInnerArray.push(ertek.slice(0, -3));
+                                        indexOfSpace = ertek.indexOf(" ");
+                                        if (indexOfSpace != -1) {
+                                            jsonDataInnerArray.push(ertek.substr(0, indexOfSpace))
+                                            unitColumnValue = ertek.substr(indexOfSpace + 1, ertek.length)
+                                        }
+                                        else {
+                                            jsonDataInnerArray.push("Adattípus hiba");
+                                            unitColumnValue = "Adattípus hiba";
+                                        }
                                         break;
+                                    case "value_mertekegyseg":
+                                        jsonDataInnerArray.push(unitColumnValue)
+                                        unitColumnValue = "";
+                                        break;
+
                                     default:
                                         jsonDataInnerArray.push(operativTeljesitmenyekCallbackResult[i][requiredServerDataArray[j].dataTag]);
                                 }
-
-
-
-
                             }
                             jsonDataArray.push(jsonDataInnerArray);
                         }
@@ -1836,14 +1846,25 @@ function newTryContainer() {
                     for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
                         jsonDataInnerArray = [];
                         for (var i = 0; i < dataInnerLength; i++) {
-                            if (requiredServerDataArray[i].dataTag == "villamos_energia_ar_kwh") {
-                                aramDij = kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
-                                jsonDataInnerArray.push(aramDij.slice(0, -9));
-                            }
-                            else {
-                                jsonDataInnerArray.push(kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
-                            }
+                            switch (requiredServerDataArray[i].dataTag) {
 
+                                case "villamos_energia_ar_kwh":
+                                    villamosEnergiaAr = kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
+                                    indexOfSpace = villamosEnergiaAr.indexOf(" ");
+                                    if (indexOfSpace != -1) {
+                                        jsonDataInnerArray.push(villamosEnergiaAr.substr(0, indexOfSpace))
+                                        //unitColumnValue = villamosEnergiaAr.substr(indexOfSpace + 1, villamosEnergiaAr.length)
+                                    }
+                                    else {
+                                        jsonDataInnerArray.push("Adattípus hiba");
+                                        //unitColumnValue = "Adattípus hiba";
+                                    }
+                                    break;
+
+                                default:
+                                    jsonDataInnerArray.push(kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+
+                            }
                         }
                         jsonDataArray.push(jsonDataInnerArray);
                     }
