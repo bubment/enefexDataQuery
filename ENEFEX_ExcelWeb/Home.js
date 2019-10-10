@@ -1383,12 +1383,14 @@ function newTryContainer() {
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
 
     // A függvényekben levő összes szükséges munkalapot itt kell definiálni
-    var requiredSheets = ["KER_SZER", "HHHCS", "Operativ"];
+    var requiredSheets = ["KER_SZER", "HHHCS", "Operativ", "Csoportos_Armod", "KAT_PENZ"];
     // Lekérdezésekhez szükséges URL
     var host = readCookie("enefexHost");
 
 
     var csatlakozasiPontResult;
+    var villanyCsoportosDijTipus;
+    var katPenzeszkozok;
     var HHHCSIds = [];
     var threadLimit;
 
@@ -1502,6 +1504,7 @@ function newTryContainer() {
         callback();
     }
 
+    // Segéd függvények
     var getCsatlakozasiPont = function (callback) {
 
         var getCsatlakozasiPontCallback = function (err, result) {
@@ -1533,6 +1536,63 @@ function newTryContainer() {
 
     }
 
+    var getVillanyCsoportosDijTipus = function (callback) {
+
+        var getVillanyCsoportosDijTipusCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (result) {
+                    villanyCsoportosDijTipus = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+        params = {};
+
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        postAsyncGetData(host + "/ebill/contract/getVillanyCsoportosDijTipus", params, getVillanyCsoportosDijTipusCallback);
+    }
+
+    var getKatPenzeszkozValidFrom = function (callback) {
+
+        var getKatPenzeszkozValidFromCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (result) {
+                    katPenzeszkozok = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+        params = {};
+
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        postAsyncGetData(host + "/ebill/admin/getKatPenzeszkozValidFrom", params, getKatPenzeszkozValidFromCallback);
+    }
+
+    // Fő függvények
     var getHHSzerzodes = function (callback) {
         //Az excelbe bemásolandó range sorainak számát meghatározó változó
         var dataLength;
@@ -1604,7 +1664,7 @@ function newTryContainer() {
                                 case "lekotott_teljesitmeny":
                                     lekotottTeljesitmeny = HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
                                     indexOfSpace = lekotottTeljesitmeny.indexOf(" ");
-                                    if (indexOfSpace!=-1) {
+                                    if (indexOfSpace != -1) {
                                         jsonDataInnerArray.push(lekotottTeljesitmeny.substr(0, indexOfSpace))
                                         unitColumnValue = lekotottTeljesitmeny.substr(indexOfSpace + 1, lekotottTeljesitmeny.length)
                                     }
@@ -1800,6 +1860,250 @@ function newTryContainer() {
 
     }
 
+    var getVillanyCsoportosDij = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        threadLimit = 10;
+
+        var innerCallbackDone = false;
+
+        var villanyCsoportosDijArray = [];
+        for (var i = 0; i < villanyCsoportosDijTipus.data.length; i++) {
+            villanyCsoportosDijArray.push(villanyCsoportosDijTipus.data[i].id);
+        }
+
+        var params = {};
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        var requiredServerDataArray = [
+            { dataTag: "id", columnName: "A", headerText: "ID" },
+            { dataTag: "tipus", columnName: "B", headerText: "Csoport" },
+            { dataTag: "ervenyesseg_kezdete", columnName: "C", headerText: "Érvényesség kezdete" },
+            { dataTag: "ervenyesseg_vege", columnName: "D", headerText: "Érvényesség vége" },
+            { dataTag: "energia_ar_mod_kwh", columnName: "E", headerText: "Érték" },
+        ];
+
+        //Fejlécek betöltése a jsonDataArray-ba
+        jsonDataInnerArray = [];
+        jsonDataArray = [];
+        requiredServerDataArray.forEach(function (element) {
+            jsonDataInnerArray.push(element.headerText);
+        });
+        jsonDataArray.push(jsonDataInnerArray);
+        jsonDataInnerArray = [];
+
+        var villanyCsoportosDij = function (item, innerCallback) {
+
+            var villanyCsoportosDijCallback = function (err, villanyCsoportosDijCallbackResult) {
+
+                if (err) {
+                    errorLabel.innerHTML = err.error.message;
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    //Normálisan legenrálni a JSONArray változókat
+                    dataLength = villanyCsoportosDijCallbackResult.data.length;
+                    dataInnerLength = requiredServerDataArray.length;
+                    if (dataLength > 0) {
+                        for (var i = 0; i < dataLength; i++) {
+                            jsonDataInnerArray = [];
+                            for (var j = 0; j < dataInnerLength; j++) {
+                                        jsonDataInnerArray.push(villanyCsoportosDijCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+                    }
+
+                    if (item == villanyCsoportosDijArray[villanyCsoportosDijArray.length - 1]) {
+                        dataLength = jsonDataArray.length - 1;
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        Excel.run(function (context) {
+
+                            var sheet = context.workbook.worksheets.getItem("Csoportos_Armod");
+
+                            var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                            //Excel feltöltése adatokkal
+                            var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                            range.values = jsonDataArray;
+                            range.untrack();
+
+                            // Csak a return után lesznek láthatóak az adatok az excelben
+                            boldRange.format.font.bold = true;
+                            return context.sync();
+                        })
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+
+                        innerCallback();
+                        innerCallbackDone = true;
+                        callback();
+
+                    }
+                    if (innerCallbackDone == false) {
+                        innerCallback();
+                    }
+
+                }
+            }
+
+            params["tipus"] = item;
+            postAsyncGetData(host + "/ebill/contract/getVillanyCsoportosDij", params, villanyCsoportosDijCallback);
+        };
+
+        async.eachLimit(
+            villanyCsoportosDijArray,
+            threadLimit,
+            villanyCsoportosDij,
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+    }
+
+    var getKatPenzeszkozValues = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        threadLimit = 10;
+
+        var innerCallbackDone = false;
+
+        var katPenzeszkozokArray = [];
+        for (var i = 0; i < katPenzeszkozok.length; i++) {
+            katPenzeszkozokArray.push(katPenzeszkozok[i].ervenyesseg_kezdete);
+        }
+
+        var params = {};
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        var requiredServerDataArray = [
+            { dataTag: "ervenyesseg_kezdete", columnName: "A", headerText: "Érvényesség kezdete" },
+            { dataTag: "ervenyesseg_vege", columnName: "B", headerText: "Érvényesség vége" },
+            { dataTag: "kat_penzeszkoz_egysegar", columnName: "C", headerText: "KÁT pénzeszköz egységár (Ft/kWh)" },
+        ];
+
+        //Fejlécek betöltése a jsonDataArray-ba
+        jsonDataInnerArray = [];
+        jsonDataArray = [];
+        requiredServerDataArray.forEach(function (element) {
+            jsonDataInnerArray.push(element.headerText);
+        });
+        jsonDataArray.push(jsonDataInnerArray);
+        jsonDataInnerArray = [];
+
+        var katPenzeszkozValues = function (item, innerCallback) {
+
+            var katPenzeszkozValuesCallback = function (err, katPenzeszkozValuesCallbackResult) {
+
+                if (err) {
+                    errorLabel.innerHTML = err.error.message;
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    //Normálisan legenrálni a JSONArray változókat
+                    dataLength = katPenzeszkozValuesCallbackResult.length;
+                    dataInnerLength = requiredServerDataArray.length;
+                    if (dataLength > 0) {
+                        for (var i = 0; i < dataLength; i++) {
+                            jsonDataInnerArray = [];
+                            for (var j = 0; j < dataInnerLength; j++) {
+
+                                switch (requiredServerDataArray[j].dataTag) {
+                                    case "kat_penzeszkoz_egysegar":
+                                        penzeszkozEgysegar = katPenzeszkozValuesCallbackResult[i][requiredServerDataArray[j].dataTag];
+                                        indexOfSpace = penzeszkozEgysegar.indexOf(" ");
+                                        if (indexOfSpace != -1) {
+                                            jsonDataInnerArray.push(penzeszkozEgysegar.substr(0, indexOfSpace))
+                                            //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                        }
+                                        else {
+                                            jsonDataInnerArray.push("Adattípus hiba");
+                                            //unitColumnValue = "Adattípus hiba";
+                                        }
+                                        break;
+                                    default:
+                                        jsonDataInnerArray.push(katPenzeszkozValuesCallbackResult[i][requiredServerDataArray[j].dataTag]);
+                                }
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+                    }
+
+                    if (item == katPenzeszkozokArray[katPenzeszkozokArray.length - 1]) {
+                        dataLength = jsonDataArray.length - 1;
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        Excel.run(function (context) {
+
+                            var sheet = context.workbook.worksheets.getItem("KAT_PENZ");
+
+                            var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                            //Excel feltöltése adatokkal
+                            var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                            range.values = jsonDataArray;
+                            range.untrack();
+
+                            // Csak a return után lesznek láthatóak az adatok az excelben
+                            boldRange.format.font.bold = true;
+                            return context.sync();
+                        })
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+
+                        innerCallback();
+                        innerCallbackDone = true;
+                        callback();
+
+                    }
+                    if (innerCallbackDone == false) {
+                        innerCallback();
+                    }
+
+                }
+            }
+
+            params["date_from"] = item;
+            postAsyncGetData(host + "/ebill/admin/getKatPenzeszkozMertekegyseggelValues", params, katPenzeszkozValuesCallback);
+        };
+
+        async.eachLimit(
+            katPenzeszkozokArray,
+            threadLimit,
+            katPenzeszkozValues,
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+    }
+
     var getKereskedelmiSzerzodes = function (callback) {
         //Az excelbe bemásolandó range sorainak számát meghatározó változó
         var dataLength;
@@ -1923,8 +2227,13 @@ function newTryContainer() {
         [
             workSheetHandler,
             getCsatlakozasiPont,
+            getVillanyCsoportosDijTipus,
+            getKatPenzeszkozValidFrom,
             getHHSzerzodes,
             getOperativTeljesitmeny,
+            getVillanyCsoportosDij,
+            getKatPenzeszkozValues,
+            //Az utolso maradjon utolso
             getKereskedelmiSzerzodes,
         ],
         function (err) {
