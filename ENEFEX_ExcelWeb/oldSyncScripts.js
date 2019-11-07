@@ -1743,3 +1743,2093 @@ function fillDropDownList() {
 
 }
 //supportfunctions.js-ben található feleslegessé vált kódrészletek vége
+
+
+
+// Függvény szerkezet újrakonstruálások. Még nincsenek befejezve. One Noteban van némi segtség hozá
+function avgContainer() {
+    var mainItemInfo =
+        [
+            {
+                "mainRequestId": { "name": "getAllandoRendszerhasznalatiDijak", "id": "1" },
+                "serverDataInfo":
+                    [
+                        { "dataKey": "ervenyesseg_kezdete", "columnName": "A", "headerText": "Érvényesség kezdete" },
+                        { "dataKey": "ervenyesseg_vege", "columnName": "B", "headerText": "Érvényesség vége" },
+                        { "dataKey": "atviteli_rendszeriranyitasi_dij", "columnName": "C", "headerText": "Átviteli rendszerirányítási díj (Ft/kWh)" },
+                        { "dataKey": "rendszerszintu_szolgaltatasi_dij", "columnName": "D", "headerText": "Rendszerszintű szolgáltatási díj (Ft/kWh)" },
+                        { "dataKey": "kozvilagitasi_elosztasi_dij", "columnName": "E", "headerText": "Közvilágítási elosztási díj (Ft/kWh)" },
+                    ],
+                "exceptionDataKeys":
+                    [
+                        { "exceptionKey": "atviteli_rendszeriranyitasi_dij", "exceptionType": "mertekegyseg_levagas" },
+                        { "exceptionKey": "rendszerszintu_szolgaltatasi_dij", "exceptionType": "mertekegyseg_levagas" },
+                        { "exceptionKey": "kozvilagitasi_elosztasi_dij", "exceptionType": "mertekegyseg_levagas" },
+                    ],
+                "constParams": { "page": "1", "start": "0", "limit": "99999" },
+                "actURL": "/ebill/admin/getRHDAllandoValues_mertekegyseggel",
+                "sheetName": "RHD tarifafüggő",
+            },
+            {
+                "mainRequestId": { "name": "getHHSzerzodes", "id": "3" },
+                "serverDataInfo":
+                    [
+                        { "dataKey": "id", "columnName": "A", "headerText": "ID" },
+                        { "dataKey": "elnevezes", "columnName": "B", "headerText": "Elnevezés" },
+                        { "dataKey": "ervenyesseg_kezdete", "columnName": "C", "headerText": "Szerz. kezdete" },
+                        { "dataKey": "ervenyesseg_vege", "columnName": "D", "headerText": "Szerz. vége" },
+                        { "dataKey": "halozati_engedelyes", "columnName": "E", "headerText": "Hálózati engedélyes" },
+                        { "dataKey": "meter_identifier_watt", "columnName": "F", "headerText": "Mérő azonosító" },
+                        { "dataKey": "POD", "columnName": "G", "headerText": "POD" },
+                        { "dataKey": "consumer_tariff_type", "columnName": "H", "headerText": "Tarifa" },
+                        { "dataKey": "lekotott_teljesitmeny", "columnName": "I", "headerText": "Lekötött teljesítmény" },
+                        { "dataKey": "lekotott_teljesitmeny_mertekegyseg", "columnName": "J", "headerText": "Mértékegység" },
+                        { "dataKey": "csatlakozasi_pontok_szama", "columnName": "K", "headerText": "Csatlakozási Pontok száma" },
+                    ],
+                "exceptionDataKeys":
+                    [
+                        //lekezelni a specialis 1-et (kell hozzá a getCsatlakozasiPont support functionjakor létrehozni a csatlakozasiPontResult tömböt)
+                        { "exceptionKey": "csatlakozasi_pontok_szama", "exceptionType": "specialis_0001" },
+                        { "exceptionKey": "lekotott_teljesitmeny", "exceptionType": "mertekegyseg_levagas" },
+                        { "exceptionKey": "lekotott_teljesitmeny_mertekegyseg", "exceptionType": "mertekegyseg_oszlop" },
+                    ],
+                "constParams": { "all": "1", "isMasodlagos": "0", "page": "1", "start": "0", "limit": "99999" },
+                "actURL": "/ebill/contract/getHHSzerzodes",
+                "sheetName": "HHHCS szerződések",
+
+            }
+        ];
+    var supportItem =
+        [
+            {
+                "requestName": "getCsatlakozasiPont",
+                "requestParams": { "all": "1", "isMasodlagos": "0", "page": "1", "start": "0", "limit": "99999" },
+                "actURL": "/ebill/contract/getHCSSzerzodes",
+                "mainRequestInfo":
+                    [
+                        {
+                            "name": "????",
+                            "id": "4201337",
+                            "dataInfo":
+                                [
+                                    { "requiredMainParamName": "?????", "requiredSupportRequestKey": "??????????" },
+                                ]
+                        },
+                    ],
+            },
+            {
+                "requestName": "getRHDValidFrom",
+                "requestParams": { "page": "1", "start": "0", "limit": "99999" },
+                "actURL": "/ebill/admin/getRHDValidFrom",
+                "mainRequestInfo":
+                    [
+                        {
+                            "name": "getAllandoRendszerhasznalatiDijak",
+                            "id": "1",
+                            "dataInfo":
+                                [
+                                    { "requiredMainParamName": "date_from", "requiredSupportRequestKey": "ervenyesseg_kezdete" },
+                                ]
+                        },
+                        {
+                            "name": "getRendszerhasznalatiDijak",
+                            "id": "2",
+                            "dataInfo":
+                                [
+                                    { "requiredMainParamName": "date_from", "requiredSupportRequestKey": "ervenyesseg_kezdete" },
+                                ]
+                        },
+                    ],
+            },
+            {
+                "requestName": "getKatPenzeszkozValidFrom",
+                "requestParams": { "page": "1", "start": "0", "limit": "99999" },
+                "actURL": "/ebill/admin/getKatPenzeszkozValidFrom",
+                "mainRequestInfo":
+                    [
+                        {
+                            "name": "getKatPenzeszkozValues",
+                            "id": "4201337",
+                            "dataInfo":
+                                [
+                                    { "requiredMainParamName": "date_from", "requiredSupportRequestKey": "ervenyesseg-kezdete" },
+                                ]
+                        }
+                    ]
+            }
+        ];
+
+    var mainItem = [
+        {
+            "name": "getHHSzerzodes",
+            "id": "3",
+            "paramDatas":
+                [],
+        }
+    ]
+
+    var newDisableElements = [];// Ebbe kell tenni a container gombját
+
+    mainRequestContainer('fogyasztasOsszesitoError', mainItemInfo, supportItem, mainItem, newDisableElements, false);
+}
+
+function mintaAsync() {
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    // HA LÉTREHOZUNK EGY ÚJ LEKÉRDEZÉST AKKOR A Home.js-ben lévő importantDisableElements TÖMBBE BELE KELL TENNI A LEKÉRDEZÉST ELINDÍTÓ PANEL TÖMBJÉNEK LENYITÓ GOMBJÁT (Pl.: fogyasztasOsszesitoPanelOpen), mert akkor egyszerre nem lehet több lekérdezést elindítani
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    var errorLabel = document.getElementById('AKARMIERROR');
+    errorLabel.style.display = "block";
+    errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+
+    // A függvényekben levő összes szükséges munkalapot itt kell definiálni
+    var requiredSheets = ["TEST2", "TEST1"];
+    // Lekérdezésekhez szükséges URL
+    var host = readCookie("enefexHost");
+    //!!!!!!!!!!!!!!!!!!!!!!
+    // Egyéb szükséges paraméterek definiálása (input typeok tartalmai...)
+    //-------------------------------------------------------------------------
+    // getDataToVar függvényből kijövő adat globális változója
+    var neededDataArray = [];
+    //!!!!!!!!!!!!!!!!!!!!!!
+
+    //Dátumok RegEx validációi
+    if (dateRegExTest('kezdo_datum_input', 'veg_datum_input', 'AKARMIERROR') == "RegExTestProblem") {
+        return;
+    }
+
+    //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+    var newDisableElements = ["disablable_input", "disablable_Button"];
+    var actualDisableElements = newDisableElements.concat(importantDisableElements);
+    changElementsAvailability(actualDisableElements, true);
+
+    var workSheetHandler = function (callback) {
+
+        var clearableSheet = [];
+        var addableSheet = [];
+
+        var separateWorksheets = function (callback) {
+            // Ez a függvény a lekérdezéshez szükséges munkalapokat két külön tömbe teszi.
+            // A clearableSheet tömbbe teszi a már létező munkalapok nevét
+            // Az addableSheet tömbbe teszi a létrehozandó munkalapok nevét
+            Excel.run(function (context) {
+                var worksheets = context.workbook.worksheets;
+                worksheets.load('name');
+                return context.sync()
+                    .then(function () {
+                        var sheetFound;
+                        for (var i = 0; i < requiredSheets.length; i++) {
+                            sheetFound = false;
+                            for (var j = 0; j < worksheets.items.length; j++) {
+                                if (requiredSheets[i] == worksheets.items[j].name) {
+                                    sheetFound = true;
+                                    clearableSheet.push(worksheets.items[j].name);
+                                    break;
+                                }
+                            }
+                            if (sheetFound) {
+                                continue;
+                            }
+                            else {
+                                addableSheet.push(requiredSheets[i]);
+                            }
+                        }
+                        callback();
+                    });
+            })
+
+        }
+
+        var clearSheets = function (callback) {
+            // A clearSheets függvény tisztítja meg a megadott munkalapok tartalmát
+            if (clearableSheet) {
+                Excel.run(function (context) {
+                    var sheetsNames = clearableSheet;
+                    var sheets = context.workbook.worksheets;
+                    var sheetsNamesArrayLength = sheetsNames.length;
+                    var sheetName;
+                    var range;
+
+                    for (var i = 0; i < sheetsNamesArrayLength; i++) {
+                        sheetName = sheetsNames[i];
+                        range = sheets.getItem(sheetName).getRange();
+                        range.load("address");
+                        range.clear();
+
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback();
+                        });
+                });
+            }
+        }
+
+        var addSheets = function (callback) {
+            // Az addSheets függvény adj hozzá a munkafüzethez a szükséges munkalapokat
+            if (addableSheet) {
+                Excel.run(function (context) {
+                    var newSheets = addableSheet;
+                    var sheet = context.workbook.worksheets;
+                    var newSheetsArrayLength = newSheets.length;
+                    var sheetName;
+
+                    for (var i = 0; i < newSheetsArrayLength; i++) {
+                        sheetName = newSheets[i];
+                        newSheet = sheet.add(sheetName);
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback();
+                        });
+                });
+            }
+        }
+
+        async.series(
+            [
+                separateWorksheets,
+                clearSheets,
+                addSheets
+            ],
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+        callback();
+    }
+
+    var getDataToVar = function (callback) {
+
+        var getDataToVarCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (result) {
+                    neededDataArray = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+        params = {};
+
+        params["param1"] = "1";
+        params["param2"] = "0";
+        params["page"] = "1";
+
+
+        postAsyncGetData(host + "/ebill/contract/getAktualisLekerdezes", params, getDataToVarCallback);
+
+    }
+
+    var getSimpleDataToExcel = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        var getSimpleDataToExcelCallback = function (err, getSimpleDataToExcelCallbackResult) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (kereskedekmiSzerzodesCallbackResult) {
+                    var requiredServerDataArray = [
+                        { dataTag: "szerver_adat_tag_neve", columnName: "A", headerText: "Excelben fejléc neve" },
+                        { dataTag: "szerver_adat_tag_neve", columnName: "B", headerText: "Excelben fejléc neve" },
+
+                    ];
+
+                    //Fejlécek betöltése a jsonDataArray-ba
+                    jsonDataInnerArray = [];
+                    jsonDataArray = [];
+                    requiredServerDataArray.forEach(function (element) {
+                        jsonDataInnerArray.push(element.headerText);
+                    });
+                    jsonDataArray.push(jsonDataInnerArray);
+                    jsonDataInnerArray = [];
+
+                    dataLength = Object.keys(getSimpleDataToExcelCallbackResult.data).length;
+                    dataInnerLength = requiredServerDataArray.length;
+
+                    // Adattábla betöltése a jsonDataArray-ba
+                    for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
+                        jsonDataInnerArray = [];
+                        for (var i = 0; i < dataInnerLength; i++) {
+                            jsonDataInnerArray.push(kereskedekmiSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                        }
+                        jsonDataArray.push(jsonDataInnerArray);
+                    }
+
+                    // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                    Excel.run(function (context) {
+
+                        var sheet = context.workbook.worksheets.getItem("NEEDED_WORKSHEET");
+
+                        var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //Excel feltöltése adatokkal
+                        var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        range.values = jsonDataArray;
+                        range.untrack();
+
+                        // Csak a return után lesznek láthatóak az adatok az excelben
+                        boldRange.format.font.bold = true;
+                        return context.sync();
+                    })
+
+                    // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+                    errorLabel.innerHTML = "";
+                    errorLabel.style.display = 'none';
+
+                    //Menü elérhetővé tétele HA utolsó a lekérdezés
+                    changElementsAvailability(actualDisableElements, false);
+
+                    //Caolan aasync könyvtár miatt
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+
+        var params = {};
+        params["param1"] = "1";
+        params["param2"] = "1";
+
+        postAsyncGetData(host + "/ebill/contract/getActualRequest", params, getSimpleDataToExcelCallback);
+
+    }
+
+    // Többi Async függvény definiálása
+
+    //Először azokat a függvényeket kell megírni amikből a főbb függvények lekérdezéséhez szükséges paramértert lehet kinyerni
+
+    // A megírt lekérdezések közül csak az UTOLSÓBAN az EXCELBEÍRÁS UTÁN (és minden errorágon belül) kell aktiválni a kezelőfelületi elmeket.
+    // Kezelőfelületeket aktiváló kód: changElementsAvailability(actualDisableElements, false);
+
+
+
+    async.series(
+        [
+            workSheetHandler,
+            getDataToVar,
+            getSimpleDataToExcel
+            // többi async függvény
+        ],
+        function (err) {
+            console.log('allfinished', err);
+        }
+    )
+
+}
+
+function mainRequestContainer(errorLabelId, mainItemInfo, supportItem, mainItem, newDisableElements, regexNeeded, kezdoDatumId, vegDatumID) {
+    //--------------------------------------------------------------------------
+    //1. SZERVERLEKÉRDEZÉSEK ELŐKÉSZÍTÉSE
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    //1.1 GLOBÁLIS VÁLTOZÓK DEKLAÁRÁLÁSA
+    //--------------------------------------------------------------------------
+
+    var errorLabel = document.getElementById(errorLabelId);
+    errorLabel.style.display = "block";
+    errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+
+    var threadLimit = 10;
+
+    var dataLength;
+    var dataInnerLength;
+    var jsonDataInnerArray = [];
+
+    //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+
+    var actualDisableElements = newDisableElements.concat(importantDisableElements);
+    changElementsAvailability(actualDisableElements, true);
+
+
+    var excelDataArray = excelDataArrayPrepare(mainItemInfo);//Ebbe mennek majd a lekérdezések eredményei
+
+    //--------------------------------------------------------------------------
+    //1.2 SZÜKSÉGES ELLENŐRZÉSEK ELVÉGZÉSE
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
+    //Dátumok RegEx validációi
+
+    if (regexNeeded) {
+        if (dateRegExTest(kezdoDatumId, vegDatumID, errorLabelId) == "RegExTestProblem") {
+            return;
+        }
+    }
+
+    //Ellenőrzi, hogy a mainItemInfoArrayban nincs-e duplikált ID.
+    if (mainItemInfoPrepareFunction(mainItemInfo) == "duplicateProblem") {
+        errorLabel.innerHTML = "Szerverlekérdezés hibás";
+        changElementsAvailability(actualDisableElements, false);
+        return;
+    }
+
+    // Tömbök ellenőrzése (léteznek-e és nem 0 hosszúságuak-e)
+    if (objectTest(mainItem, mainItemInfo, supportItem) == "Object test problem") {
+        errorLabel.innerHTML = "Szerverlekérdezés hibás";
+        changElementsAvailability(actualDisableElements, false);
+        return;
+    }
+
+
+    //--------------------------------------------------------------------------
+    //2. SZERVERLEKÉRDEZÉSEK
+    //--------------------------------------------------------------------------
+
+    //Azokat a szerverlekérdezések, melyekből a mainRequestek paraméteréül szolgálnak
+    var requestSupportFunctions = function (callback_lvl1) {
+        //Szinten szükséges globális változók definiálása
+
+        var object_lvl2 = {};
+
+        var requestSupport = function (actItem, callback_lvl2) {
+            var requestSupportCallback = function (err, result) {
+                if (err) {
+                    errorLabel.innerHTML = "Szerverlekérdezés hibás";
+                    console.log("Probléma a " + actItem.requestName + "lekérdezéssel.");
+                    console.log("Hibás lekérdezés URL-je: " + host + actItem.actURL);
+                    console.log("Hibaüzenet: " + err.error.message);
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    if (result) {
+
+
+                        object_lvl2 = {};
+                        if (actItem.mainRequestInfo.length > 0) {
+                            for (var i = 0; i < actItem.mainRequestInfo.length; i++) {
+                                for (var j = 0; j < result.length; j++) {
+
+                                    object_lvl2 = {
+                                        "name": actItem.mainRequestInfo[i].name,
+                                        "id": actItem.mainRequestInfo[i].id,
+                                        "paramDatas": [],
+                                    };
+
+                                    if (actItem.mainRequestInfo[i].dataInfo.length > 0) {
+                                        for (var k = 0; k < actItem.mainRequestInfo[i].dataInfo.length; k++) {
+                                            object_lvl2.paramDatas.push(
+                                                {
+                                                    "requiredParamName": actItem.mainRequestInfo[i].dataInfo[k].requiredMainParamName,
+                                                    "paramValue": result[j][actItem.mainRequestInfo[i].dataInfo[k].requiredSupportRequestKey],
+                                                }
+                                            );
+                                        }
+                                    }
+                                    else {
+                                        console.log(actItem.requestName + " essetén a mainRequestInfo tömb " + i + ". eleménél a dataInfo tömb üres");
+                                    }
+
+                                    // Különbőző speciális függvények hibakezelési részének eleje
+
+                                    // Különbőző speciális függvények hibakezelési részének vége
+
+                                    mainItem.push(object_lvl2);
+                                }
+                            }
+                        }
+                        else {
+                            console.log(actItem.requestName + " esetén mainRequestInfo tömb üres");
+                        }
+
+                        callback_lvl2();
+                    }
+                    else {
+                        console.log("Probléma a " + actItem.requestName + "lekérdezéssel.");
+                        console.log("Üres/Hibás lekérdezés URL-je: " + host + actItem.actURL);
+                        errorLabel.innerHTML = "Szerverlekérdezés hibás";
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                }
+            }
+
+            params = {};
+            params = actItem.requestParams;
+
+            actURL = actItem.actURL;
+            postAsyncGetData(host + actURL, params, requestSupportCallback);
+        }
+
+        async.eachLimit(
+            supportItem,
+            threadLimit,
+            requestSupport,
+            function (err) {
+                console.log('allfinished', err);
+                callback_lvl1();
+            }
+        );
+
+    }
+
+    //Fő lekérdezések, melyekből a nagy adathalmazok jönnek
+    var mainRequestFunctions = function (callback_lvl1) {
+
+        var mainRequest = function (actItem, callback_lvl2) {
+            var actItemInfo;
+            var actItemInfoEnabled = false;
+            for (var i = 0; i < mainItemInfo.length; i++) {
+                if (actItem.id == mainItemInfo[i].mainRequestId.id) {
+                    actItemInfo = mainItemInfo[i];
+                    actItemInfoEnabled = true;
+                    break;
+                }
+            }
+
+            if (actItemInfoEnabled == false) {
+                console.log("Nem található a " + actItem.name + " nevű " + actItem.id + " id-jú lekérdezéshez elem a mainItemInfo tömbben.")
+                callback_lvl2();
+                return;
+            }
+
+            var mainRequestCallback = function (err, result) {
+                if (err) {
+                    console.log("Probléma a " + actItem.name + "lekérdezéssel.");
+                    console.log("Hibás lekérdezés URL-je: " + host + actURL);
+                    errorLabel.innerHTML = "Szerverlekérdezés hibás";
+                    changElementsAvailability(actualDisableElements, false);
+                    callback_lvl2();
+
+                }
+                else {
+
+                    var actExcelDataArrayItem;
+
+                    for (var k = 0; k < excelDataArray.length; k++) {
+                        if (excelDataArray[k].requestId == actItemInfo.mainRequestId.id) {
+                            actExcelDataArrayItem = excelDataArray[k];
+                            break;
+                        }
+                    }
+
+
+                    jsonDataInnerArray = [];
+                    //Fejlécek betöltése a jsonDataArray-ba
+                    if (actExcelDataArrayItem.implementableData.length == 0) {
+                        actItemInfo.serverDataInfo.forEach(function (element) {
+                            jsonDataInnerArray.push(element.headerText);
+                        });
+                        actExcelDataArrayItem.implementableData.push(jsonDataInnerArray);
+                        jsonDataInnerArray = [];
+                    }
+
+                    var exceptionFound = false;
+                    dataLength = result.length;
+                    dataInnerLength = actItemInfo.serverDataInfo.length;
+                    if (dataLength > 0) {
+                        for (var i = 0; i < dataLength; i++) {
+                            jsonDataInnerArray = [];
+                            for (var j = 0; j < dataInnerLength; j++) {
+                                for (var l = 0; l < actItemInfo.exceptionDataKeys.length; l++) {
+                                    exceptionFound = false
+                                    if (actItemInfo.exceptionDataKeys[l].exceptionKey == actItemInfo.serverDataInfo[j].dataKey) {
+
+                                        repairedValue = exceptionHandler(result[i][actItemInfo.serverDataInfo[j].dataKey], actItemInfo.exceptionDataKeys[l].exceptionType);
+                                        jsonDataInnerArray.push(repairedValue);
+                                        exceptionFound = true;
+                                        break;
+                                    }
+                                }
+                                if (exceptionFound) {
+                                    continue;
+                                }
+                                jsonDataInnerArray.push(result[i][actItemInfo.serverDataInfo[j].dataKey]);
+                            }
+                            actExcelDataArrayItem.implementableData.push(jsonDataInnerArray);
+                        }
+                    }
+
+                    callback_lvl2();
+
+                }
+            }
+
+            var params = {};
+            params = actItemInfo.constParams
+            for (var m = 0; m < actItem.paramDatas.length; m++) {
+                params[actItem.paramDatas[m].requiredParamName] = actItem.paramDatas[m].paramValue
+            }
+
+            var actURL = actItemInfo.actURL;
+
+            postAsyncGetData(host + actURL, params, mainRequestCallback);
+        }
+
+
+
+        async.eachLimit(
+            mainItem,
+            threadLimit,
+            mainRequest,
+            function (err) {
+                console.log('allfinished', err);
+                callback_lvl1();
+            }
+        );
+    }
+
+    // Excel és JS közötti kommunikáció
+    var workSheetHandler = function (callback_lvl1) {
+
+        var clearableSheet = [];
+        var addableSheet = [];
+
+        var separateWorksheets = function (callback_lvl2) {
+            // Ez a függvény a lekérdezéshez szükséges munkalapokat két külön tömbe teszi.
+            // A clearableSheet tömbbe teszi a már létező munkalapok nevét
+            // Az addableSheet tömbbe teszi a létrehozandó munkalapok nevét
+            Excel.run(function (context) {
+                var worksheets = context.workbook.worksheets;
+                worksheets.load('name');
+                return context.sync()
+                    .then(function () {
+                        var sheetFound;
+                        for (var i = 0; i < excelDataArray.length; i++) {
+                            sheetFound = false;
+                            for (var j = 0; j < worksheets.items.length; j++) {
+                                if (excelDataArray[i].sheetName == worksheets.items[j].name) {
+                                    sheetFound = true;
+                                    clearableSheet.push(worksheets.items[j].name);
+                                    break;
+                                }
+                            }
+                            if (sheetFound) {
+                                continue;
+                            }
+                            else {
+                                addableSheet.push(excelDataArray[i].sheetName);
+                            }
+
+                        }
+                        callback_lvl2();
+                    });
+            })
+
+        }
+
+        var clearSheets = function (callback_lvl2) {
+            // A clearSheets függvény tisztítja meg a megadott munkalapok tartalmát
+            if (clearableSheet) {
+                Excel.run(function (context) {
+                    var sheetsNames = clearableSheet;
+                    var sheets = context.workbook.worksheets;
+                    var sheetsNamesArrayLength = sheetsNames.length;
+                    var sheetName;
+                    var range;
+
+                    for (var i = 0; i < sheetsNamesArrayLength; i++) {
+                        sheetName = sheetsNames[i];
+                        range = sheets.getItem(sheetName).getRange();
+                        range.load("address");
+                        range.clear();
+
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback_lvl2();
+                        });
+                });
+            }
+        }
+
+        var addSheets = function (callback_lvl2) {
+            // Az addSheets függvény adj hozzá a munkafüzethez a szükséges munkalapokat
+            if (addableSheet) {
+                Excel.run(function (context) {
+                    var newSheets = addableSheet;
+                    var sheet = context.workbook.worksheets;
+                    var newSheetsArrayLength = newSheets.length;
+                    var sheetName;
+
+                    for (var i = 0; i < newSheetsArrayLength; i++) {
+                        sheetName = newSheets[i];
+                        newSheet = sheet.add(sheetName);
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback_lvl2();
+                        });
+                });
+            }
+        }
+
+        var loadDataToSheets = function (callback_lvl2) {
+            if (excelDataArray) {
+                Excel.run(function (context) {
+                    var sheet;
+                    var range;
+                    var columnName;
+                    var rowValue;
+
+                    ////Munkalap nevének meghatározása
+                    //sheet = context.workbook.worksheets.getItem("HHHCS szerződések");
+                    ////Adatokkal feltöltendő tartomány meghatározésa
+                    //range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                    ////Adatok feltöltése
+                    //range.values = jsonDataArray;
+                    //range.untrack();
+
+                    for (var i = 0; i < excelDataArray.length; i++) {
+                        sheet = context.workbook.worksheets.getItem(excelDataArray[i].sheetName);
+                        columnName = excelColumNames[excelDataArray[i].implementableData[0].length - 1];
+                        rowValue = excelDataArray[i].implementableData.length;
+
+                        range = sheet.getRange("A1:" + columnName + rowValue);
+                        range.values = excelDataArray[i].implementableData;
+                        range.untrack();
+
+                    }
+
+
+                    return context.sync()
+                        .then(function () {
+                            errorLabel.style.display = "none";
+                            changElementsAvailability(actualDisableElements, false);
+                            callback_lvl2();
+                            callback_lvl1();
+                        });
+                });
+            }
+        }
+
+        async.series(
+            [
+                separateWorksheets,
+                clearSheets,
+                addSheets,
+                loadDataToSheets
+            ],
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+    }
+
+    async.series(
+        [
+            requestSupportFunctions,
+            mainRequestFunctions,
+            workSheetHandler
+        ],
+
+        function (err) {
+            console.log('allfinished', err);
+        }
+    )
+}
+
+
+function mainRequestContainer_v2(supportItem, mainDatas, specialArrays) {
+
+    var requestSupportFunctions = function (callback_lvl1) {
+        //Szinten szükséges globális változók definiálása
+
+
+        var requestSupport = function (actItem, callback_lvl2) {
+            var requestSupportCallback = function (err, result) {
+                if (err) {
+                    errorLabel.innerHTML = "Szerverlekérdezés hibás";
+                    console.log("Probléma a " + actItem.requestName + "lekérdezéssel.");
+                    console.log("Hibás lekérdezés URL-je: " + host + actItem.actURL);
+                    console.log("Hibaüzenet: " + err.error.message);
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    if (result) {
+
+                        actItem.result.push(result);
+                        asd = supportItem;
+                        callback_lvl2();
+                    }
+                    else {
+                        console.log("Probléma a " + actItem.requestName + "lekérdezéssel.");
+                        console.log("Üres/Hibás lekérdezés URL-je: " + host + actItem.actURL);
+                        errorLabel.innerHTML = "Szerverlekérdezés hibás";
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                }
+            }
+
+            params = {};
+            params = actItem.requestParams;
+
+            actURL = actItem.actURL;
+            postAsyncGetData(host + actURL, params, requestSupportCallback);
+        }
+
+        async.eachLimit(
+            supportItem,
+            threadLimit,
+            requestSupport,
+            function (err) {
+                console.log('allfinished', err);
+                callback_lvl1();
+            }
+        );
+    }
+
+    var mainRequestStandardFunctions = function (callback_lvl1) {
+
+
+        var getHHSzerzodes = function (callback_lvl2) {
+            //Az excelbe bemásolandó range sorainak számát meghatározó változó
+            var dataLength;
+            //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+            var dataInnerLength;
+            // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+            // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+            var jsonDataArray = [];
+            // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+            var jsonDataInnerArray = [];
+            // Ebben az értékben tároljuk a mértékegységet tartalmazó oszlopok értékeit
+            var unitColumnValue;
+            //Ebben a változóban tároljuk az aktuális lekérdezéshezésben szükséges supportItem többől érkező altömböt
+            var supportItemRequiredData;
+
+            var HHSzerzodesCallback = function (err, HHSzerzodesCallbackResult) {
+                if (err) {
+                    errorLabel.innerHTML = err.error.message;
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    if (HHSzerzodesCallbackResult) {
+                        var requiredServerDataArray = [
+                            { dataTag: "id", columnName: "A", headerText: "ID" },
+                            { dataTag: "elnevezes", columnName: "B", headerText: "Elnevezés" },
+                            { dataTag: "ervenyesseg_kezdete", columnName: "C", headerText: "Szerz. kezdete" },
+                            { dataTag: "ervenyesseg_vege", columnName: "D", headerText: "Szerz. vége" },
+                            { dataTag: "halozati_engedelyes", columnName: "E", headerText: "Hálózati engedélyes" },
+                            { dataTag: "meter_identifier_watt", columnName: "F", headerText: "Mérő azonosító" },
+                            { dataTag: "POD", columnName: "G", headerText: "POD" },
+                            { dataTag: "consumer_tariff_type", columnName: "H", headerText: "Tarifa" },
+                            { dataTag: "lekotott_teljesitmeny", columnName: "I", headerText: "Lekötött teljesítmény" },
+                            { dataTag: "lekotott_teljesitmeny_mertekegyseg", columnName: "J", headerText: "Mértékegység" },
+                            { dataTag: "csatlakozasi_pontok_szama", columnName: "K", headerText: "Csatlakozási Pontok száma" },
+                        ];
+
+                        //Fejlécek betöltése a jsonDataArray-ba
+                        jsonDataInnerArray = [];
+                        jsonDataArray = [];
+                        requiredServerDataArray.forEach(function (element) {
+                            jsonDataInnerArray.push(element.headerText);
+                        });
+                        jsonDataArray.push(jsonDataInnerArray);
+                        jsonDataInnerArray = [];
+
+                        dataLength = Object.keys(HHSzerzodesCallbackResult.data).length;
+                        dataInnerLength = requiredServerDataArray.length;
+
+                        reqiuredDataFound = false;
+                        supportItemRequiredData = undefined;
+                        for (var k = 0; k < supportItem.length; k++) {
+
+                            if (supportItem[k].requestName == "getCsatlakozasiPont") {
+                                supportItemRequiredData = supportItem[k].result[0].data;
+                                reqiuredDataFound = true;
+                                break;
+                            }
+
+                        }
+
+                        if (!reqiuredDataFound) {
+                            console.log("A getCsatlakozasiPont nevű segédtömb értékei nem találhatóak");
+                            return;
+                        }
+
+
+                        // Adattábla betöltése a jsonDataArray-ba
+                        for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
+                            jsonDataInnerArray = [];
+                            for (var i = 0; i < dataInnerLength; i++) {
+
+                                switch (requiredServerDataArray[i].dataTag) {
+                                    //case "id":
+                                    //    HHHCSIds.push(HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                                    //    jsonDataInnerArray.push(HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                                    //    break;
+
+                                    case "csatlakozasi_pontok_szama":
+                                        for (var j = 0; j < supportItemRequiredData.length; j++) {
+                                            if (HHSzerzodesCallbackResult.data[tmpRow].id == supportItemRequiredData[j].id) {
+                                                jsonDataInnerArray.push(supportItemRequiredData[j].csatlakozasi_pontok_szama);
+                                                break;
+                                            }
+                                        }
+                                        break;
+
+                                    case "lekotott_teljesitmeny":
+                                        lekotottTeljesitmeny = HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
+                                        if (lekotottTeljesitmeny == null) {
+                                            indexOfSpace = -1;
+                                        }
+                                        else {
+                                            indexOfSpace = lekotottTeljesitmeny.indexOf(" ");
+                                        }
+                                        if (indexOfSpace != -1) {
+                                            jsonDataInnerArray.push(lekotottTeljesitmeny.substr(0, indexOfSpace))
+                                            unitColumnValue = lekotottTeljesitmeny.substr(indexOfSpace + 1, lekotottTeljesitmeny.length)
+                                        }
+                                        else {
+                                            jsonDataInnerArray.push("undefined");
+                                            unitColumnValue = "undefined";
+                                        }
+                                        break;
+
+                                    case "lekotott_teljesitmeny_mertekegyseg":
+                                        jsonDataInnerArray.push(unitColumnValue)
+                                        unitColumnValue = "";
+                                        break;
+
+                                    default:
+                                        jsonDataInnerArray.push(HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                                }
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+
+
+                        mainDatas.push(
+                            {
+                                "workSheetName": "HHHCS szerződések",
+                                "data": jsonDataArray,
+                            }
+                        )
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        //Excel.run(function (context) {
+
+                        //    var sheet = context.workbook.worksheets.getItem("HHHCS szerződések");
+
+                        //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //    //Excel feltöltése adatokkal
+                        //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        //    range.values = jsonDataArray;
+                        //    range.untrack();
+
+                        //    // Csak a return után lesznek láthatóak az adatok az excelben
+                        //    boldRange.format.font.bold = true;
+                        //    return context.sync();
+                        //})
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+                        callback_lvl2();
+
+                    }
+                    else {
+                        errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                }
+            }
+
+            var params = {};
+            params["all"] = "1";
+            params["isMasodlagos"] = "0";
+            params["page"] = "1";
+            params["start"] = "0";
+            params["limit"] = "99999";
+
+            postAsyncGetData(host + "/ebill/contract/getHHSzerzodes", params, HHSzerzodesCallback);
+
+        }
+
+        var getOperativTeljesitmeny = function (callback_lvl2) {
+            //Az excelbe bemásolandó range sorainak számát meghatározó változó
+            var dataLength;
+            //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+            var dataInnerLength;
+            // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+            // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+            var jsonDataArray = [];
+            // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+            var jsonDataInnerArray = [];
+
+            threadLimit = 10;
+
+            var params = {};
+            params["isMasodlagos"] = "0";
+            params["page"] = "1";
+            params["start"] = "0";
+            params["limit"] = "99999";
+
+            var requiredServerDataArray = [
+                { dataTag: "id", columnName: "A", headerText: "ID" }, // nem ennek a lekérdezésnek az ID-ja, hanem a hozzátartozó szerződésé
+                { dataTag: "value", columnName: "B", headerText: "Érték" },
+                { dataTag: "value_mertekegyseg", columnName: "C", headerText: "Mértékegység" },
+                { dataTag: "ervenyesseg_kezdete", columnName: "D", headerText: "Érvényesség kezdete" },
+                { dataTag: "ervenyesseg_vege", columnName: "E", headerText: "Érvényesség vége" },
+            ];
+
+            reqiuredDataFound = false;
+            supportItemRequiredData = undefined;
+            for (var k = 0; k < supportItem.length; k++) {
+
+                if (supportItem[k].requestName == "getHHSzerzodes") {
+                    supportItemRequiredData = supportItem[k].result[0].data;
+                    reqiuredDataFound = true;
+                    break;
+                }
+
+            }
+
+            if (!reqiuredDataFound) {
+                console.log("A getHHSzerzodes nevű segédtömb értékei nem találhatóak");
+                return;
+            }
+
+            mainDatas.push(
+                {
+                    "workSheetName": "Operatív teljesítmény",
+                    "data": [],
+                }
+            )
+
+            //Fejlécek betöltése a jsonDataArray-ba
+            jsonDataInnerArray = [];
+            jsonDataArray = [];
+            requiredServerDataArray.forEach(function (element) {
+                jsonDataInnerArray.push(element.headerText);
+            });
+            //jsonDataArray.push(jsonDataInnerArray);
+
+            for (var k = 0; k < mainDatas.length; k++) {
+                if (mainDatas[k].workSheetName == "Operatív teljesítmény") {
+                    mainDatas[k].data.push(jsonDataInnerArray);
+                    break;
+                }
+            }
+
+            jsonDataInnerArray = [];
+
+            var operativTeljesitmenyek = function (item, callback_lvl3) {
+
+                var operativTeljesitmenyekCallback = function (err, operativTeljesitmenyekCallbackResult) {
+
+                    if (err) {
+                        errorLabel.innerHTML = err.error.message;
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                    else {
+                        //Normálisan legenrálni a JSONArray változókat
+                        dataLength = operativTeljesitmenyekCallbackResult.length;
+                        dataInnerLength = requiredServerDataArray.length;
+                        if (dataLength > 0) {
+                            for (var i = 0; i < dataLength; i++) {
+                                jsonDataInnerArray = [];
+                                for (var j = 0; j < dataInnerLength; j++) {
+                                    switch (requiredServerDataArray[j].dataTag) {
+                                        case "id":
+                                            jsonDataInnerArray.push(item.id);
+                                            break;
+                                        case "value":
+                                            ertek = operativTeljesitmenyekCallbackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (ertek == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = ertek.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(ertek.substr(0, indexOfSpace))
+                                                unitColumnValue = ertek.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "value_mertekegyseg":
+                                            jsonDataInnerArray.push(unitColumnValue)
+                                            unitColumnValue = "";
+                                            break;
+
+                                        default:
+                                            jsonDataInnerArray.push(operativTeljesitmenyekCallbackResult[i][requiredServerDataArray[j].dataTag]);
+                                    }
+                                }
+                                //jsonDataArray.push(jsonDataInnerArray);
+                                for (var k = 0; k < mainDatas.length; k++) {
+                                    if (mainDatas[k].workSheetName == "Operatív teljesítmény") {
+                                        mainDatas[k].data.push(jsonDataInnerArray);
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+
+
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        //Excel.run(function (context) {
+
+                        //    var sheet = context.workbook.worksheets.getItem("Operatív teljesítmény");
+
+                        //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //    //Excel feltöltése adatokkal
+                        //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        //    range.values = jsonDataArray;
+                        //    range.untrack();
+
+                        //    // Csak a return után lesznek láthatóak az adatok az excelben
+                        //    boldRange.format.font.bold = true;
+                        //    return context.sync();
+                        //})
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+                        callback_lvl3();
+                    }
+                }
+
+                params["operativ_szerzodes_id"] = item.id;
+                postAsyncGetData(host + "/ebill/contract/Get_ebill_operativ_szerzodes", params, operativTeljesitmenyekCallback);
+            };
+
+            async.eachLimit(
+                supportItemRequiredData,
+                threadLimit,
+                operativTeljesitmenyek,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            );
+
+        }
+
+        var getVillanyCsoportosDij = function (callback_lvl2) {
+            //Az excelbe bemásolandó range sorainak számát meghatározó változó
+            var dataLength;
+            //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+            var dataInnerLength;
+            // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+            // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+            var jsonDataArray = [];
+            // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+            var jsonDataInnerArray = [];
+
+            threadLimit = 10;
+
+            //var villanyCsoportosDijArray = [];
+            //for (var i = 0; i < villanyCsoportosDijTipus.data.length; i++) {
+            //    villanyCsoportosDijArray.push(villanyCsoportosDijTipus.data[i].id);
+            //}
+
+            var params = {};
+            params["page"] = "1";
+            params["start"] = "0";
+            params["limit"] = "99999";
+
+            var requiredServerDataArray = [
+                { dataTag: "id", columnName: "A", headerText: "ID" },
+                { dataTag: "tipus", columnName: "B", headerText: "Csoport" },
+                { dataTag: "ervenyesseg_kezdete", columnName: "C", headerText: "Érvényesség kezdete" },
+                { dataTag: "ervenyesseg_vege", columnName: "D", headerText: "Érvényesség vége" },
+                { dataTag: "energia_ar_mod_kwh", columnName: "E", headerText: "Érték" },
+            ];
+
+            reqiuredDataFound = false;
+            supportItemRequiredData = undefined;
+            for (var k = 0; k < supportItem.length; k++) {
+
+                if (supportItem[k].requestName == "getVillanyCsoportosDijTipus") {
+                    supportItemRequiredData = supportItem[k].result[0].data;
+                    reqiuredDataFound = true;
+                    break;
+                }
+
+            }
+
+            if (!reqiuredDataFound) {
+                console.log("A getVillanyCsoportosDijTipus nevű segédtömb értékei nem találhatóak");
+                return;
+            }
+
+            mainDatas.push(
+                {
+                    "workSheetName": "Csoportos díj módosító",
+                    "data": [],
+                }
+            )
+
+            //Fejlécek betöltése a jsonDataArray-ba
+            jsonDataInnerArray = [];
+            jsonDataArray = [];
+            requiredServerDataArray.forEach(function (element) {
+                jsonDataInnerArray.push(element.headerText);
+            });
+
+            for (var k = 0; k < mainDatas.length; k++) {
+                if (mainDatas[k].workSheetName == "Csoportos díj módosító") {
+                    mainDatas[k].data.push(jsonDataInnerArray);
+                    break;
+                }
+            }
+
+            jsonDataInnerArray = [];
+
+            var villanyCsoportosDij = function (item, callback_lvl3) {
+
+                var villanyCsoportosDijCallback = function (err, villanyCsoportosDijCallbackResult) {
+
+                    if (err) {
+                        errorLabel.innerHTML = err.error.message;
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                    else {
+                        //Normálisan legenrálni a JSONArray változókat
+                        dataLength = villanyCsoportosDijCallbackResult.data.length;
+                        dataInnerLength = requiredServerDataArray.length;
+                        if (dataLength > 0) {
+                            for (var i = 0; i < dataLength; i++) {
+                                jsonDataInnerArray = [];
+                                for (var j = 0; j < dataInnerLength; j++) {
+                                    jsonDataInnerArray.push(villanyCsoportosDijCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+                                }
+                                for (var k = 0; k < mainDatas.length; k++) {
+                                    if (mainDatas[k].workSheetName == "Csoportos díj módosító") {
+                                        mainDatas[k].data.push(jsonDataInnerArray);
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+
+
+
+
+
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        //Excel.run(function (context) {
+
+                        //    var sheet = context.workbook.worksheets.getItem("Csoportos díj módosító");
+
+                        //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //    //Excel feltöltése adatokkal
+                        //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        //    range.values = jsonDataArray;
+                        //    range.untrack();
+
+                        //    // Csak a return után lesznek láthatóak az adatok az excelben
+                        //    boldRange.format.font.bold = true;
+                        //    return context.sync();
+                        //})
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+
+                        callback_lvl3();
+
+
+
+
+
+                    }
+                }
+
+                params["tipus"] = item.id;
+                postAsyncGetData(host + "/ebill/contract/getVillanyCsoportosDij", params, villanyCsoportosDijCallback);
+            };
+
+            async.eachLimit(
+                supportItemRequiredData,
+                threadLimit,
+                villanyCsoportosDij,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            );
+
+        }
+
+        var getKatPenzeszkozValues = function (callback_lvl2) {
+            //Az excelbe bemásolandó range sorainak számát meghatározó változó
+            var dataLength;
+            //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+            var dataInnerLength;
+            // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+            // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+            var jsonDataArray = [];
+            // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+            var jsonDataInnerArray = [];
+
+            threadLimit = 10;
+
+            //var katPenzeszkozokArray = [];
+            //for (var i = 0; i < katPenzeszkozok.length; i++) {
+            //    katPenzeszkozokArray.push(katPenzeszkozok[i].ervenyesseg_kezdete);
+            //}
+
+            var params = {};
+            params["page"] = "1";
+            params["start"] = "0";
+            params["limit"] = "99999";
+
+            var requiredServerDataArray = [
+                { dataTag: "ervenyesseg_kezdete", columnName: "A", headerText: "Érvényesség kezdete" },
+                { dataTag: "ervenyesseg_vege", columnName: "B", headerText: "Érvényesség vége" },
+                { dataTag: "kat_penzeszkoz_egysegar", columnName: "C", headerText: "KÁT pénzeszköz egységár (Ft/kWh)" },
+            ];
+
+            reqiuredDataFound = false;
+            supportItemRequiredData = undefined;
+            for (var k = 0; k < supportItem.length; k++) {
+
+                if (supportItem[k].requestName == "getKatPenzeszkozValidFrom") {
+                    supportItemRequiredData = supportItem[k].result[0];
+                    reqiuredDataFound = true;
+                    break;
+                }
+
+            }
+
+            if (!reqiuredDataFound) {
+                console.log("A getKatPenzeszkozValidFrom nevű segédtömb értékei nem találhatóak");
+                return;
+            }
+
+            mainDatas.push(
+                {
+                    "workSheetName": "KÁT pénzeszköz",
+                    "data": [],
+                }
+            )
+
+            //Fejlécek betöltése a jsonDataArray-ba
+            jsonDataInnerArray = [];
+            jsonDataArray = [];
+            requiredServerDataArray.forEach(function (element) {
+                jsonDataInnerArray.push(element.headerText);
+            });
+            for (var k = 0; k < mainDatas.length; k++) {
+                if (mainDatas[k].workSheetName == "KÁT pénzeszköz") {
+                    mainDatas[k].data.push(jsonDataInnerArray);
+                    break;
+                }
+            }
+            jsonDataInnerArray = [];
+
+            var katPenzeszkozValues = function (item, callback_lvl3) {
+
+                var katPenzeszkozValuesCallback = function (err, katPenzeszkozValuesCallbackResult) {
+
+                    if (err) {
+                        errorLabel.innerHTML = err.error.message;
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                    else {
+                        //Normálisan legenrálni a JSONArray változókat
+                        dataLength = katPenzeszkozValuesCallbackResult.length;
+                        dataInnerLength = requiredServerDataArray.length;
+                        if (dataLength > 0) {
+                            for (var i = 0; i < dataLength; i++) {
+                                jsonDataInnerArray = [];
+                                for (var j = 0; j < dataInnerLength; j++) {
+
+                                    switch (requiredServerDataArray[j].dataTag) {
+                                        case "kat_penzeszkoz_egysegar":
+                                            penzeszkozEgysegar = katPenzeszkozValuesCallbackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (penzeszkozEgysegar == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = penzeszkozEgysegar.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(penzeszkozEgysegar.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        default:
+                                            jsonDataInnerArray.push(katPenzeszkozValuesCallbackResult[i][requiredServerDataArray[j].dataTag]);
+                                    }
+
+                                }
+                                for (var k = 0; k < mainDatas.length; k++) {
+                                    if (mainDatas[k].workSheetName == "KÁT pénzeszköz") {
+                                        mainDatas[k].data.push(jsonDataInnerArray);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        //Excel.run(function (context) {
+
+                        //    var sheet = context.workbook.worksheets.getItem("KÁT pénzeszköz");
+
+                        //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //    //Excel feltöltése adatokkal
+                        //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        //    range.values = jsonDataArray;
+                        //    range.untrack();
+
+                        //    // Csak a return után lesznek láthatóak az adatok az excelben
+                        //    boldRange.format.font.bold = true;
+                        //    return context.sync();
+                        //})
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+
+                        callback_lvl3();
+                    }
+                }
+
+                params["date_from"] = item.ervenyesseg_kezdete;
+                postAsyncGetData(host + "/ebill/admin/getKatPenzeszkozMertekegyseggelValues", params, katPenzeszkozValuesCallback);
+            };
+
+            async.eachLimit(
+                supportItemRequiredData,
+                threadLimit,
+                katPenzeszkozValues,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            );
+
+        }
+
+
+
+        async.parallel(
+            [
+                getHHSzerzodes,
+                getOperativTeljesitmeny,
+                getVillanyCsoportosDij,
+                getKatPenzeszkozValues,
+
+            ],
+            function (err) {
+                console.log('allfinished', err);
+                callback_lvl1();
+            }
+        );
+    }
+
+    var mainRequestSpecialFunctions = function (callback_lvl1) {
+
+        // NEM eachLimitezhető függvény
+        var getAllandoRendszerhasznalatiDijak = function (callback_lvl2) {
+            //Az excelbe bemásolandó range sorainak számát meghatározó változó
+            var dataLength;
+            //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+            var dataInnerLength;
+            // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+            // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+            var jsonDataArray = [];
+            // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+            var jsonDataInnerArray = [];
+
+            threadLimit = 10;
+
+            //var rhdDatumokArray = [];
+            //for (var i = 0; i < rhdDatumok.length; i++) {
+            //    rhdDatumokArray.push(rhdDatumok[i].ervenyesseg_kezdete);
+            //}
+
+            var params = {};
+            params["page"] = "1";
+            params["start"] = "0";
+            params["limit"] = "99999";
+
+            var requiredServerDataArray = [
+                { dataTag: "ervenyesseg_kezdete", columnName: "A", headerText: "Érvényesség kezdete" },
+                { dataTag: "ervenyesseg_vege", columnName: "B", headerText: "Érvényesség vége" },
+                { dataTag: "atviteli_rendszeriranyitasi_dij", columnName: "C", headerText: "Átviteli rendszerirányítási díj (Ft/kWh)" },
+                { dataTag: "rendszerszintu_szolgaltatasi_dij", columnName: "D", headerText: "Rendszerszintű szolgáltatási díj (Ft/kWh)" },
+                { dataTag: "kozvilagitasi_elosztasi_dij", columnName: "E", headerText: "Közvilágítási elosztási díj (Ft/kWh)" },
+            ];
+
+            reqiuredDataFound = false;
+            supportItemRequiredData = undefined;
+            for (var k = 0; k < supportItem.length; k++) {
+
+                if (supportItem[k].requestName == "getRHDValidFrom") {
+                    supportItemRequiredData = supportItem[k].result[0];
+                    reqiuredDataFound = true;
+                    break;
+                }
+
+            }
+
+            if (!reqiuredDataFound) {
+                console.log("A getRHDValidFrom nevű segédtömb értékei nem találhatóak");
+                return;
+            }
+
+            mainDatas.push(
+                {
+                    "workSheetName": "RHD azonos",
+                    "data": [],
+                }
+            )
+
+            //Fejlécek betöltése a jsonDataArray-ba
+            jsonDataInnerArray = [];
+            jsonDataArray = [];
+            requiredServerDataArray.forEach(function (element) {
+                jsonDataInnerArray.push(element.headerText);
+            });
+            for (var k = 0; k < mainDatas.length; k++) {
+                if (mainDatas[k].workSheetName == "RHD azonos") {
+                    mainDatas[k].data.push(jsonDataInnerArray);
+                    break;
+                }
+            }
+            jsonDataInnerArray = [];
+
+            var AllandoRendszerhasznalatiDijak = function (item, callback_lvl3) {
+
+                var AllandoRendszerhasznalatiDijakCallback = function (err, AllandoRendszerhasznalatiDijakCallbackResult) {
+
+                    if (err) {
+                        errorLabel.innerHTML = err.error.message;
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                    else {
+                        //RHD adatok kimetése, hogy a következő fő függvény is tudja használni
+                        // EZ IS FUNKCIONÁL MINT SEGÉDFÜGGVÉNY!!!!
+                        //rhdValues.push(AllandoRendszerhasznalatiDijakCallbackResult);
+                        specialArrays.rhdValues.push(AllandoRendszerhasznalatiDijakCallbackResult);
+
+                        dataLength = AllandoRendszerhasznalatiDijakCallbackResult.length;
+                        dataInnerLength = requiredServerDataArray.length;
+                        if (dataLength > 0) {
+                            for (var i = 0; i < dataLength; i++) {
+                                jsonDataInnerArray = [];
+                                for (var j = 0; j < dataInnerLength; j++) {
+
+                                    switch (requiredServerDataArray[j].dataTag) {
+                                        case "atviteli_rendszeriranyitasi_dij":
+                                            value = AllandoRendszerhasznalatiDijakCallbackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "kozvilagitasi_elosztasi_dij":
+                                            value = AllandoRendszerhasznalatiDijakCallbackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "rendszerszintu_szolgaltatasi_dij":
+                                            value = AllandoRendszerhasznalatiDijakCallbackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        default:
+                                            jsonDataInnerArray.push(AllandoRendszerhasznalatiDijakCallbackResult[i][requiredServerDataArray[j].dataTag]);
+                                    }
+                                }
+                                for (var k = 0; k < mainDatas.length; k++) {
+                                    if (mainDatas[k].workSheetName == "RHD azonos") {
+                                        mainDatas[k].data.push(jsonDataInnerArray);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+
+
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        //Excel.run(function (context) {
+
+                        //    var sheet = context.workbook.worksheets.getItem("RHD azonos");
+
+                        //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //    //Excel feltöltése adatokkal
+                        //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        //    range.values = jsonDataArray;
+                        //    range.untrack();
+
+                        //    // Csak a return után lesznek láthatóak az adatok az excelben
+                        //    boldRange.format.font.bold = true;
+                        //    return context.sync();
+                        //})
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+
+                        callback_lvl3();
+
+
+
+
+
+                    }
+                }
+
+                params["date_from"] = item.ervenyesseg_kezdete;
+                postAsyncGetData(host + "/ebill/admin/getRHDAllandoValues_mertekegyseggel", params, AllandoRendszerhasznalatiDijakCallback);
+            };
+
+            async.eachLimit(
+                supportItemRequiredData,
+                threadLimit,
+                AllandoRendszerhasznalatiDijak,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            );
+
+        }
+
+        var getRendszerhasznalatiDijak = function (callback_lvl2) {
+            //Az excelbe bemásolandó range sorainak számát meghatározó változó
+            var dataLength;
+            //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+            var dataInnerLength;
+            // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+            // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+            var jsonDataArray = [];
+            // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+            var jsonDataInnerArray = [];
+
+            threadLimit = 10;
+
+            //var rhdValuesArray = [];
+            //for (var i = 0; i < rhdValues.length; i++) {
+            //    rhdValuesArray.push({ "kedo_datum": rhdValues[i][0].ervenyesseg_kezdete, "befejezo_datum": rhdValues[i][0].ervenyesseg_vege });
+            //}
+
+
+            var params = {};
+            params["page"] = "1";
+            params["start"] = "0";
+            params["limit"] = "99999";
+
+            var requiredServerDataArray = [
+                { dataTag: "ervenyesseg_kezdete", columnName: "A", headerText: "Érvényesség kezdete" }, // Ennek az értéke nem a lekérdezésből jön
+                { dataTag: "ervenyesseg_vege", columnName: "B", headerText: "Érvényesség vége" }, // Ennek az értéke nem a lekérdezésből jön
+                { dataTag: "fogyaszto_tipus", columnName: "C", headerText: "Tarifa típus" },
+                { dataTag: "elosztoi_alapdij", columnName: "D", headerText: "Elosztói alapdíj (Ft/csatl.p/év)" },
+                { dataTag: "elosztoi_teljesitmeny_dij", columnName: "E", headerText: "Elosztói teljesítménydí (Ft/kW/év)" },
+                { dataTag: "elosztoi_forgalmi_dij", columnName: "F", headerText: "Elosztói forgalmi díj (Ft/kWh)" },
+                { dataTag: "elosztoi_meddo_energia_dij", columnName: "G", headerText: "Elosztói meddő energia díj (Ft/kVArh)" },
+                { dataTag: "elosztoi_veszteseg_dij", columnName: "H", headerText: "Elosztói veszteség díj (Ft/kWh)" },
+                { dataTag: "elosztoi_menetrend_kiegyensulyozasi_dij", columnName: "I", headerText: "Menetrend kiegyens. díj (Ft/kWh)" },
+            ];
+
+            supportItemRequiredData = specialArrays.rhdValues;
+
+            mainDatas.push(
+                {
+                    "workSheetName": "RHD tarifafüggő",
+                    "data": [],
+                }
+            )
+
+            //Fejlécek betöltése a jsonDataArray-ba
+            jsonDataInnerArray = [];
+            jsonDataArray = [];
+            requiredServerDataArray.forEach(function (element) {
+                jsonDataInnerArray.push(element.headerText);
+            });
+            for (var k = 0; k < mainDatas.length; k++) {
+                if (mainDatas[k].workSheetName == "RHD tarifafüggő") {
+                    mainDatas[k].data.push(jsonDataInnerArray);
+                    break;
+                }
+            }
+            jsonDataInnerArray = [];
+
+            var rendszerHasznalatiDijak = function (item, callback_lvl3) {
+
+                var rendszerHasznalatiDijakCallBack = function (err, rendszerHasznalatiDijakCallBackResult) {
+
+                    if (err) {
+                        errorLabel.innerHTML = err.error.message;
+                        changElementsAvailability(actualDisableElements, false);
+                    }
+                    else {
+                        //Normálisan legenrálni a JSONArray változókat
+                        dataLength = rendszerHasznalatiDijakCallBackResult.length;
+                        dataInnerLength = requiredServerDataArray.length;
+                        if (dataLength > 0) {
+                            for (var i = 0; i < dataLength; i++) {
+                                jsonDataInnerArray = [];
+                                for (var j = 0; j < dataInnerLength; j++) {
+
+                                    switch (requiredServerDataArray[j].dataTag) {
+                                        case "ervenyesseg_kezdete":
+                                            jsonDataInnerArray.push(item[0].ervenyesseg_kezdete);
+                                            break;
+                                        case "ervenyesseg_vege":
+                                            jsonDataInnerArray.push(item[0].ervenyesseg_vege);
+                                            break;
+                                        case "elosztoi_alapdij":
+                                            value = rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "elosztoi_forgalmi_dij":
+                                            value = rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "elosztoi_meddo_energia_dij":
+                                            value = rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "elosztoi_menetrend_kiegyensulyozasi_dij":
+                                            value = rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "elosztoi_teljesitmeny_dij":
+                                            value = rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+                                        case "elosztoi_veszteseg_dij":
+                                            value = rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag];
+                                            if (value == null) {
+                                                indexOfSpace = -1;
+                                            }
+                                            else {
+                                                indexOfSpace = value.indexOf(" ");
+                                            }
+                                            if (indexOfSpace != -1) {
+                                                jsonDataInnerArray.push(value.substr(0, indexOfSpace))
+                                                //unitColumnValue = penzeszkozEgysegar.substr(indexOfSpace + 1, ertek.length)
+                                            }
+                                            else {
+                                                jsonDataInnerArray.push("undefined");
+                                                //unitColumnValue = "undefined";
+                                            }
+                                            break;
+
+                                        default:
+                                            jsonDataInnerArray.push(rendszerHasznalatiDijakCallBackResult[i][requiredServerDataArray[j].dataTag]);
+                                    }
+                                }
+                                for (var k = 0; k < mainDatas.length; k++) {
+                                    if (mainDatas[k].workSheetName == "RHD tarifafüggő") {
+                                        mainDatas[k].data.push(jsonDataInnerArray);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                        //Excel.run(function (context) {
+
+                        //    var sheet = context.workbook.worksheets.getItem("RHD tarifafüggő");
+
+                        //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //    //Excel feltöltése adatokkal
+                        //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        //    range.values = jsonDataArray;
+                        //    range.untrack();
+
+                        //    // Csak a return után lesznek láthatóak az adatok az excelben
+                        //    boldRange.format.font.bold = true;
+                        //    return context.sync();
+                        //})
+
+                        // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+                        callback_lvl3();
+
+
+
+                    }
+                }
+
+                params["date_from"] = item[0].ervenyesseg_kezdete;
+                postAsyncGetData(host + "/ebill/admin/getRHDValues_mertekegyseggel", params, rendszerHasznalatiDijakCallBack);
+            };
+
+            async.eachLimit(
+                supportItemRequiredData,
+                threadLimit,
+                rendszerHasznalatiDijak,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            );
+
+        }
+
+        async.series(
+            [
+
+                getAllandoRendszerhasznalatiDijak,
+                getRendszerhasznalatiDijak,
+
+            ],
+            function (err) {
+                console.log('allfinished', err);
+                callback_lvl1();
+            }
+        );
+    }
+
+    var excelHandler = function (callback_lvl1) {
+
+    }
+
+    async.series(
+        [
+            requestSupportFunctions,
+            mainRequestStandardFunctions,
+            mainRequestSpecialFunctions,
+            //excelHandler
+        ],
+        function (err) {
+            console.log('allfinished', err);
+        }
+
+    )
+}
+
+function avgContainer_v2() {
+    // Itt kell definiálni a szerverlekérdezéshez szükséges globális változókat
+    // Kezelő felület elérhetetlenné tétele
+    //Errorlabel definiálása
+    //threadlimit definiálása
+    threadLimit = 10;
+    errorLabel = "fogyasztasOsszesitoError";
+    actualDisableElements = ["fogyasztasOsszesitoPanelOpen"];
+
+    var supportRequestInfo =
+        [
+            {
+                "requestName": "getCsatlakozasiPont",
+                "requestParams":
+                {
+                    "all": "1",
+                    "isMasodlagos": "0",
+                    "page": "1",
+                    "start": "0",
+                    "limit": "99999"
+                },
+                "actURL": "/ebill/contract/getHCSSzerzodes",
+                "result": [],
+
+            },
+            {
+                "requestName": "getVillanyCsoportosDijTipus",
+                "requestParams":
+                {
+                    "page": "1",
+                    "start": "0",
+                    "limit": "99999"
+                },
+                "actURL": "/ebill/contract/getVillanyCsoportosDijTipus",
+                "result": [],
+            },
+            {
+                "requestName": "getHHSzerzodes",
+                "requestParams":
+                {
+                    "all": "1",
+                    "isMasodlagos": "0",
+                    "page": "1",
+                    "start": "0",
+                    "limit": "99999"
+                },
+                "actURL": "/ebill/contract/getHHSzerzodes",
+                "result": [],
+            },
+            {
+                "requestName": "getVillanyCsoportosDijTipus",
+                "requestParams":
+                {
+
+                    "page": "1",
+                    "start": "0",
+                    "limit": "99999"
+                },
+                "actURL": "/ebill/contract/getVillanyCsoportosDijTipus",
+                "result": [],
+            },
+            {
+                "requestName": "getKatPenzeszkozValidFrom",
+                "requestParams":
+                {
+                    "page": "1",
+                    "start": "0",
+                    "limit": "99999"
+                },
+                "actURL": "/ebill/admin/getKatPenzeszkozValidFrom",
+                "result": [],
+            },
+            {
+                "requestName": "getRHDValidFrom",
+                "requestParams":
+                {
+                    "page": "1",
+                    "start": "0",
+                    "limit": "99999"
+                },
+                "actURL": "/ebill/admin/getRHDValidFrom",
+                "result": [],
+            },
+        ]
+
+    var mainDatas = [];
+
+    var specialArrays =
+    {
+        "rhdValues": [],
+    };
+
+    mainRequestContainer_v2(supportRequestInfo, mainDatas, specialArrays);
+
+}

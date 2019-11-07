@@ -48,17 +48,17 @@
 
                 <p>Az Enefex-adatlekérő® bővítményhez felhasználói segédlet ezen a <a href="support_and_privacy/Documentation.html" target="_blank">linken</a> érhető el.</p>
 
-                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb2">Host</p>
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb4">Host</p>
                 <input type="text" id="host" value="https://ddkk.enefex.info" onfocus="setErrorMessageDefault('errorMessage');" />
 
-                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb2">Felhasználónév</p>
-                <input type="text" id="username" value="Kokai" onfocus="setErrorMessageDefault('errorMessage');"/>
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb4">Felhasználónév</p>
+                <input type="text" id="username" value="" onfocus="setErrorMessageDefault('errorMessage');"/>
 
-                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb2">Jelszó</p>
-                <input type="password" id="password" value="Kokai1234x" onkeyup="pressEnterLogin(event);" onfocus="setErrorMessageDefault('errorMessage');"/>
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary mb4">Jelszó</p>
+                <input type="password" id="password" value="" onkeyup="pressEnterLogin(event);" onfocus="setErrorMessageDefault('errorMessage');"/>
             </div>
             <div class="padding">
-                <p class="ms-font-m-plus ms-fontColor-neutralTertiary" style="color: red;" id="errorMessage"></p>
+                <p class="ms-font-m-plus ms-fontColor-neutralTertiary d-none" style="color: red;" id="errorMessage"></p>
             </div>
             <!--<div class="ms-Button-container">
                 <button class="ms-Button ms-Button--primary left" id="loginButton" onclick="onClick_loginButton();">

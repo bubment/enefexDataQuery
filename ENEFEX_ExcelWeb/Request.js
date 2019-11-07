@@ -3,7 +3,9 @@ function loginAsync(host, username, password, callback) {
 
     var params = {};
 
-    postAsyncHandleData(host + "/mobileLogin/login/login", params, function (err, csrfToken) {
+    postAsyncHandleData(host + "/mobileLogin/login/login", params, function (err, csrfToken){ 
+
+
         if (err) {
             callback({success: false, error: err});
         }
@@ -18,6 +20,7 @@ function loginAsync(host, username, password, callback) {
                 params["Login[new_password_again]"] = "";
 
                 postAsyncHandleData(host + "/mobileLogin/login/login", params, function (err, jsonResult) {
+
                     if (err) {
                         callback({ success: false, error: err });
                     }

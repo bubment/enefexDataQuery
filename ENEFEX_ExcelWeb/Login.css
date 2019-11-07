@@ -62,7 +62,10 @@ input {
     width: 96px;
 }
 
-#loginButton {margin-left: 20px; }
+#loginButton {
+    margin-left: 12px; 
+    margin-top:16px;
+}
 
 /*Az instrukciós rész HTML kódjai*/
 #hideTheBody {
@@ -112,6 +115,11 @@ input {
     color: red;
 }
 
-.mb2{
+.mb4{
     margin-bottom: 4px !important;
 }
+.mb1x {
+    margin-bottom: 15px !important;
+}
+
+.d-none{display:none;}

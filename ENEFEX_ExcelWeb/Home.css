@@ -36,7 +36,7 @@ body {
     padding: 10px 5px 0px 15px;
     margin-bottom: 10px;
     background-color: #f0f0f0;
-    width: 200px !important;
+    width: 208px !important;
     min-height: 50px;
     border: 1px solid #5e5e5e;
 }
@@ -94,33 +94,6 @@ body {
 
 #template-description {margin-right: 5px;}
 
-.menuOpenButton {
-    margin-top: 10px !important;
-    width: 220px;
-    height:30px;
-    border: none;
-    background-color: #669a2f;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    display: inline-block;
-    /*margin-left: 5px;*/
-    cursor: pointer;
-}
-
-.menuOpenButton:hover {
-    background-color: #78B62E;
-}
-
-.menuDropDownImage {
-    margin-top: 2px;
-    height: 16px;
-}
-
-.logoutButton{
-    width:100px !important;
-}
 
 .align-center{
     margin: auto;
@@ -136,3 +109,67 @@ body {
 }
 
 
+.button-container {
+    height: auto;
+    width: 230px;
+    background-color: #669A2F;
+    margin-top:10px;
+}
+
+.button-container:hover {
+    background-color: #78B62E;
+    cursor: pointer;
+}
+
+.menuOpenImgContainer {
+    display: inline-block;
+    height: 36px;
+    width: 36px;
+    position: absolute;
+}
+
+.menuOpenTextContainer {
+    display: inline-block;
+    height: auto;
+    width: 180px;
+    min-height: 20px;
+    position: relative;
+    left: 30px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    font-family: arial;
+    font-size: 13.3px;
+    padding: 8px 5px 8px 5px;
+}
+
+.menuOpenImg {
+    height: 16px;
+    width: 16px;
+    margin-top:8px;
+    margin-left:15px;
+}
+
+.newLogOutButton {
+    border: none;
+    background-color: #669a2f;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    /*padding: 2px 5px 2px 5px;*/
+    /*margin-top: 5px;
+    margin-left: 10px;*/
+    height: 25px;
+    width: 120px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.newLogOutButton:hover {
+    background-color: #78B62E;
+}
+
+.mb15{margin-bottom:25px !important;}

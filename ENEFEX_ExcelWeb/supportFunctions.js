@@ -1,3 +1,8 @@
+//SZÜKSÉGES GLOBÁLIS VÁLTOZÓK DEFINIÁLÁSA
+
+//Ebbe a változóba menti ki az exceptionHandler függvény a mértékegység nevet ha szükséges
+var tmpUnitName;
+
 // ------------- SEGÉD FÜGGVÉNYEK ELEJE ---------------------------------
 
 // Meghívja az Office.onReady függvény, ami elvileg tesztel, hogy az Add In készen áll-e a futásra.
@@ -235,6 +240,116 @@ function placeRequestErrorDiv(replaceableDiv, replaceText) {
 
     document.getElementById(replaceableDiv).innerHTML = replacementDiv;
 }
+
+//Ellenőrzi, hogy a mainItemInfoArrayban nincs-e duplikált ID
+function mainItemInfoPrepareFunction(mainItemInfo) {
+    var duplicateTestArray = [];
+    var duplicateProblem = false;
+    for (var i = 0; i < mainItemInfo.length; i++) {
+        for (var j = 0; j < duplicateTestArray.length; j++) {
+            if (mainItemInfo[i].mainRequestId.id == duplicateTestArray[j]) {
+                console.log("A mainItemInfo tömbben a(z) " + duplicateTestArray[j] + " id többször is benne van");
+                duplicateProblem = true;
+                break;
+            }
+        }
+        if (duplicateProblem) {
+            return "duplicateProblem";
+        }
+
+        duplicateTestArray.push(mainItemInfo[i].mainRequestId.id);
+    }
+    return "TESTOK";
+}
+
+// Ez a függvény feltölti az excelDataArrayt a kezdetleges szerkezettel
+function excelDataArrayPrepare(mainItemInfo) {
+    var excelDataArray = [];
+    for (var i = 0; i < mainItemInfo.length; i++) {
+        excelDataArray.push(
+            {
+                "requestId": mainItemInfo[i].mainRequestId.id,
+                "sheetName": mainItemInfo[i].sheetName,
+                "implementableData": [],
+
+            }
+        )
+    }
+
+    return excelDataArray;
+}
+
+// Ez a függvény a szerverlekérdezésekből jövő adatokat módosítja úgy, ahogyan annak a végén az excelben látszania kell
+function exceptionHandler(data, dataProblem) {
+    var retval;
+    var value;
+
+    if (dataProblem == "mertekegyseg_levagas") {
+        value = data
+        if (typeof value != "string") {
+            console.log("A javítandó változó nem string formátumú!");
+            indexOfSpace = -1;
+        }
+        else {
+            indexOfSpace = value.indexOf(" ");
+        }
+        if (indexOfSpace != -1) {
+            retval = value.substr(0, indexOfSpace)
+            tmpUnitName = value.substr(indexOfSpace + 1, value.length)
+        }
+        else {
+            retval = "undefined";
+            //unitColumnValue = "undefined";
+        }
+
+        return retval;
+    }
+
+    if (dataProblem == "mertekegyseg_oszlop") {
+        if (typeof tmpUnitName != "string") {
+            console.log("A kapott mértékegység hibás (nem string)");
+            retval = "undefined"
+        }
+        if (tmpUnitName == "" || tmpUnitName == undefined || tmpUnitName == null) {
+            console.log("A kapott mértékegység üres");
+            retval = "undefined";
+        }
+        retval = tmpUnitName;
+
+        return retval;
+    }
+
+    if (dataProblem == "specialis_0001") {
+        // HHCSID-s csatalkozási pontos problémájának lekezelése
+        return "unrepared value";
+    }
+
+    return "unreparable value"
+}
+
+//Ellenőrzi a paramétermént megadott tömbök esetében, hogy léteznek-e és, hogy nem 0 hosszúságuak-e.
+function objectTest(mainItem, mainItemInfo, supportItem) {
+    if (
+        typeof mainItem == "object" &&
+        typeof mainItemInfo == "object" &&
+        typeof supportItem == "object" &&
+        supportItem.length > 0 &&
+        mainItemInfo.length > 0
+    ) {
+        console.log("Szükséges objectek ellenőrizve");
+        return "TESTOK";
+    }
+    else {
+        console.log("A mainItem típusa: " + typeof mainItem);
+        console.log("A supportItem típusa: " + typeof supportItem);
+        console.log("A result hossza: " + result.length);
+        console.log("A supportItem hossza: " + supportItem.length);
+        return "Object test problem";
+    }
+}
+
+
+
 
 
 // Ha volt már valaki bejelentkezve a programba akkor nem jeleníti meg a felhasznállói instrukciókat.
@@ -559,46 +674,37 @@ function asyncSeriesTest() {
 }
 
 function myTest() {
-    var HHHCSIds = ["66", "67", "23", "24"];
-    var myArray = [];
-    var limit = 15;
-    var host = readCookie("enefexHost");
-    var operativTeljesitmenyek = function (item, callback) {
 
-    var operativTeljesitmenyekCallback = function (err, operativTeljesitmenyekCallbackResult) {
+    //var asd = { "param1": "1", "param2": "2" };
+    //var kek = [
+    //    { "requiredParamName": "date_from", "paramValue": "2019-01-01" },
+    //    { "requiredParamName": "is_enabled", "paramValue": "0" },
+    //    { "requiredParamName": "is_masodlagos", "paramValue": "1" }
+    //];
 
-        if (err) {
-            //Esemény
-            asdwe = 3;
-        }
-        else {
-            //Normálisan legenrálni a JSONArray változókat
-            myArray.push(operativTeljesitmenyekCallbackResult);
+    //for (var i = 0; i < kek.length; i++) {
+    //    asd[kek[i].requiredParamName] = kek[i].paramValue;
+    //}
+    //console.log(asd);
 
-            if (item == HHHCSIds[HHHCSIds.length - 1]) {
-                // Excelbe beírás
-                asd2 = 3;
-                //callback2();
-            }
-            callback();
-        }
+    var asd = 3
+
+    switch (asd) {
+        case 3:
+            value = 12;
+            break;
+        case 4:
+            value = 13;
+            break;
+        default:
+            value = 15;
     }
 
-        postAsyncGetData(host + "/ebill/contract/Get_ebill_operativ_szerzodes", params, operativTeljesitmenyekCallback);
-    };
-
-    async.eachLimit(
-        HHHCSIds,
-        limit,
-        operativTeljesitmenyek,
-        function (err) {
-            console.log('all finished', err);
-        }
-    );
-
-    
+    kek = value;
+    bum = 5;
 
 }
+
 
 
 
