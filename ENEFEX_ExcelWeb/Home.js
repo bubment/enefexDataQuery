@@ -33,7 +33,7 @@ var excelColumNames = [
 ];
 
 // Azok az elementek (legfőképp a lenyíló menüket lenyitó gombok) amiket a lekérdezések alatt elérhetetlenné kell tenni, hogy a felhasználó ne tudja módosítani őket
-var importantDisableElements = ["fogyasztasOsszesitoPanelOpen", "feldolgozottMeresekPanelOpen", "hetiJelentesPanelOpen", "villamosAdminisztracioPanelOpen"];
+var importantDisableElements = ["fogyasztasOsszesitoButton", "feldolgozottMeresekButton", "hetiJelentesButton", "villamosAdminisztracioButton", 'szamlaOsszesitoButton'];
 
 // Ez a tömb tartalmaz adatokat a szerverről történő adatlekérdezésekhez
 var mainItemInfo = [];
@@ -113,7 +113,7 @@ function fogyasztasOsszesitoContainer() {
     }
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
-    var newDisableElements = ["fogyasztasOsszesitoButton", "kezdo_datum", "veg_datum", "fogyasztas_osszesito_meter_groups"];
+    var newDisableElements = ["kezdo_datum", "veg_datum", "fogyasztas_osszesito_meter_groups"];
 
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
 
@@ -425,7 +425,7 @@ function feldolgozottMeresekContainer() {
     }
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
-    var newDisableElements = ['onlyYearFilter', 'feldolgozott_meresek_meter_groups', 'feldolgozottMeresekButton'];
+    var newDisableElements = ['onlyYearFilter', 'feldolgozott_meresek_meter_groups'];
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
 
     changElementsAvailability(actualDisableElements, true);
@@ -766,7 +766,7 @@ function hetiJelentesKeszitoContainer() {
     }
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
-    var newDisableElements = ['heti_jelentes_kezdo_datum', 'heti_jelentes_kezdo_ora', 'heti_jelentes_veg_datum', 'heti_jelentes_befejezo_ora', 'heti_jelentes_meter_groups', 'heti_jelentes_mentett_bealitasok', 'csakNemMegFeleloSorok', 'hetiJelentesButton'];
+    var newDisableElements = ['heti_jelentes_kezdo_datum', 'heti_jelentes_kezdo_ora', 'heti_jelentes_veg_datum', 'heti_jelentes_befejezo_ora', 'heti_jelentes_meter_groups', 'heti_jelentes_mentett_bealitasok', 'csakNemMegFeleloSorok'];
 
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
 
@@ -1410,8 +1410,8 @@ function villamosAdminisztracioContainer() {
     //}
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
-    var newDisableElements = ["newTryButton"];
-    var actualDisableElements = newDisableElements.concat(importantDisableElements);
+
+    var actualDisableElements = importantDisableElements
     changElementsAvailability(actualDisableElements, true);
 
     var csatlakozasiPontResult;
@@ -3384,6 +3384,327 @@ function villamosAdminisztracioContainer() {
     )
 
 }
+
+function szamlaOsszesitoContainer() {
+
+    var errorLabel = document.getElementById('szamlaOsszesitoError');
+    var maxRequestbeginDate = new Date();
+    var currentYear = maxRequestbeginDate.getFullYear();
+
+    // onlyYearFilter helyett más id
+    if (isNaN(document.getElementById('szamlaOsszesitoYearFilter').value) == true) {
+        errorLabel.style.display = 'block';
+        errorLabel.innerHTML = "A megadott év nem megfelelő formátumú. Megfelelő formátum (YYYY)"
+        return;
+    }
+
+    if (document.getElementById('szamlaOsszesitoYearFilter').value > currentYear) {
+        errorLabel.style.display = 'block';
+        errorLabel.innerHTML = "A megadott év a jövőben van."
+        return;
+    }
+
+
+    errorLabel.style.display = "block";
+    errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+
+    // Lekérdezésekhez szükséges URL
+    var host = readCookie("enefexHost");
+    //Ebben a tömbbe fognak kerülni az excelbe feltöltendő adatok
+    var excelDataArray = []
+
+    //var threadLimit;
+
+    //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+    var newDisableElements = ["szamlaOsszesitoYearFilter"];
+    var actualDisableElements = newDisableElements.concat(importantDisableElements);
+    changElementsAvailability(actualDisableElements, true);
+
+
+    // Fő függvények
+
+    var getSzamlaOsszesito = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+
+        var SzamlaOsszesitoCallback = function (err, SzamlaOsszesitoCallbackResult) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+            }
+            else {
+                if (SzamlaOsszesitoCallbackResult) {
+                    var requiredServerDataArray = [
+                        { dataTag: "statusz", columnName: "A", headerText: "Státusz" },
+                        { dataTag: "egyeb_azonosito_1", columnName: "B", headerText: "Beérkezett" },
+                        { dataTag: "egyeb_azonosito_2", columnName: "C", headerText: "Belső azonosító" },
+                        { dataTag: "epulet_azonosito", columnName: "D", headerText: "Épület azonositó" },
+                        { dataTag: "meter_name", columnName: "E", headerText: "Mérés neve" },
+                        { dataTag: "meres_tipus", columnName: "F", headerText: "Mérés típus" },
+                        { dataTag: "szamlatipus_nev", columnName: "G", headerText: "Számla típus" },
+                        { dataTag: "szolgaltatoi_szamlaszam", columnName: "H", headerText: "Szolgáltatói számlaszám" },
+                        { dataTag: "idoszak_kezdete", columnName: "I", headerText: "Leolvasás kezdete" },
+                        { dataTag: "idoszak_vege", columnName: "J", headerText: "Leolvasás vége" },
+                        { dataTag: "hatasos_fogyasztas_fogyasztas", columnName: "K", headerText: "Fogyasztás" },
+                        { dataTag: "hatasos_fogyasztas_fogyasztas_mertekegyseg", columnName: "L", headerText: "[]" },
+                        { dataTag: "AHK", columnName: "M", headerText: "AHK" },
+                        { dataTag: "netto_osszeg_mertekegyseg", columnName: "N", headerText: "[]" },
+                        { dataTag: "szamla_netto_osszeg", columnName: "O", headerText: "Nettó számla" },
+                        { dataTag: "netto_osszeg_mertekegyseg", columnName: "P", headerText: "[]" },
+                        { dataTag: "szamla_afa", columnName: "Q", headerText: "ÁFA" },
+                        { dataTag: "netto_osszeg_mertekegyseg", columnName: "R", headerText: "[]" },
+                        { dataTag: "szamla_brutto_osszeg", columnName: "S", headerText: "Bruttó számla" },
+                        { dataTag: "netto_osszeg_mertekegyseg", columnName: "T", headerText: "[]" },
+                    ];
+
+                    //Fejlécek betöltése a jsonDataArray-ba
+                    jsonDataInnerArray = [];
+                    jsonDataArray = [];
+                    requiredServerDataArray.forEach(function (element) {
+                        jsonDataInnerArray.push(element.headerText);
+                    });
+                    jsonDataArray.push(jsonDataInnerArray);
+                    jsonDataInnerArray = [];
+
+                    dataLength = Object.keys(SzamlaOsszesitoCallbackResult.data).length;
+                    dataInnerLength = requiredServerDataArray.length;
+
+                    // Adattábla betöltése a jsonDataArray-ba
+                    var actDateStr;
+                    var actYearInt;
+                    var filterYear = document.getElementById('szamlaOsszesitoYearFilter').value;
+                    for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
+                        actDateStr = SzamlaOsszesitoCallbackResult.data[tmpRow].idoszak_kezdete;
+                        actYearInt = parseInt(actDateStr.substring(0, 4));
+                        //2018 és 2019 az aktuális panelról jöjjön
+                        if (actYearInt == filterYear || actYearInt == (filterYear-1)) {
+                            jsonDataInnerArray = [];
+                            for (var i = 0; i < dataInnerLength; i++) {
+                                jsonDataInnerArray.push(SzamlaOsszesitoCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+
+
+                    }
+
+
+                    excelDataArray.push(
+                        {
+                            "sheetName": "Számlaösszesítő",
+                            "data": jsonDataArray,
+                        }
+                    )
+                    // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                    //Excel.run(function (context) {
+
+                    //    var sheet = context.workbook.worksheets.getItem("HHHCS szerződések");
+
+                    //    var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                    //    //Excel feltöltése adatokkal
+                    //    var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                    //    range.values = jsonDataArray;
+                    //    range.untrack();
+
+                    //    // Csak a return után lesznek láthatóak az adatok az excelben
+                    //    boldRange.format.font.bold = true;
+                    //    return context.sync();
+                    //})
+
+                    // ---------------------EXCEL RÉSZ VÉGE --------------------
+                    callback();
+
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                }
+            }
+        }
+
+        var params = {};
+        params["table_name"] = "ebill_villany_KAT";
+        params["where_to_add"] = "where_to_add";
+        params["szamla_type"] = "ebill_foldgaz_szamla_kereskedelmi";
+        params["service_type_union"] = "true";
+        params["date_from"] = "date_from_KAT_FO";
+        //params["date_from"] = "2018-01-01";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+        //filter: [{ "property": "idoszak_kezdete", "value": "2018-01-01" }]
+        //params["filter"] = [{ "property": "idoszak_kezdete", "value": "2018-01-01" }];
+
+        postAsyncGetData(host + "/ebill/billing/getSzamlaOsszesitoSzamla", params, SzamlaOsszesitoCallback);
+
+    }
+
+    //Függvény ami kezeli az excelt
+
+    var workSheetHandler = function (callback_lvl1) {
+
+        var clearableSheet = [];
+        var addableSheet = [];
+
+        var separateWorksheets = function (callback_lvl2) {
+            // Ez a függvény a lekérdezéshez szükséges munkalapokat két külön tömbe teszi.
+            // A clearableSheet tömbbe teszi a már létező munkalapok nevét
+            // Az addableSheet tömbbe teszi a létrehozandó munkalapok nevét
+            Excel.run(function (context) {
+                var worksheets = context.workbook.worksheets;
+                worksheets.load('name');
+                return context.sync()
+                    .then(function () {
+                        var sheetFound;
+                        for (var i = 0; i < excelDataArray.length; i++) {
+                            sheetFound = false;
+                            for (var j = 0; j < worksheets.items.length; j++) {
+                                if (excelDataArray[i].sheetName == worksheets.items[j].name) {
+                                    sheetFound = true;
+                                    clearableSheet.push(worksheets.items[j].name);
+                                    break;
+                                }
+                            }
+                            if (sheetFound) {
+                                continue;
+                            }
+                            else {
+                                addableSheet.push(excelDataArray[i].sheetName);
+                            }
+
+                        }
+                        callback_lvl2();
+                    });
+            })
+
+        }
+
+        var clearSheets = function (callback_lvl2) {
+            // A clearSheets függvény tisztítja meg a megadott munkalapok tartalmát
+            if (clearableSheet) {
+                Excel.run(function (context) {
+                    var sheetsNames = clearableSheet;
+                    var sheets = context.workbook.worksheets;
+                    var sheetsNamesArrayLength = sheetsNames.length;
+                    var sheetName;
+                    var range;
+
+                    for (var i = 0; i < sheetsNamesArrayLength; i++) {
+                        sheetName = sheetsNames[i];
+                        range = sheets.getItem(sheetName).getRange();
+                        range.load("address");
+                        range.clear();
+
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback_lvl2();
+                        });
+                });
+            }
+        }
+
+        var addSheets = function (callback_lvl2) {
+            // Az addSheets függvény adj hozzá a munkafüzethez a szükséges munkalapokat
+            if (addableSheet) {
+                Excel.run(function (context) {
+                    var newSheets = addableSheet;
+                    var sheet = context.workbook.worksheets;
+                    var newSheetsArrayLength = newSheets.length;
+                    var sheetName;
+
+                    for (var i = 0; i < newSheetsArrayLength; i++) {
+                        sheetName = newSheets[i];
+                        newSheet = sheet.add(sheetName);
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback_lvl2();
+                        });
+                });
+            }
+        }
+
+        var loadDataToSheets = function (callback_lvl2) {
+            if (excelDataArray) {
+                Excel.run(function (context) {
+
+                    context.application.suspendApiCalculationUntilNextSync();
+
+                    var sheet;
+                    var range;
+                    var columnName;
+                    var rowValue;
+
+                    ////Munkalap nevének meghatározása
+                    //sheet = context.workbook.worksheets.getItem("HHHCS szerződések");
+                    ////Adatokkal feltöltendő tartomány meghatározésa
+                    //range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                    ////Adatok feltöltése
+                    //range.values = jsonDataArray;
+                    //range.untrack();
+
+                    for (var i = 0; i < excelDataArray.length; i++) {
+                        sheet = context.workbook.worksheets.getItem(excelDataArray[i].sheetName);
+                        columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
+                        rowValue = excelDataArray[i].data.length;
+
+                        range = sheet.getRange("A1:" + columnName + rowValue);
+                        range.values = excelDataArray[i].data;
+                        range.untrack();
+
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            errorLabel.innerHTML = "";
+                            errorLabel.style.display = "none";
+                            changElementsAvailability(actualDisableElements, false);
+                            callback_lvl2();
+                            callback_lvl1();
+                        });
+                });
+            }
+        }
+
+        async.series(
+            [
+                separateWorksheets,
+                clearSheets,
+                addSheets,
+                loadDataToSheets
+            ],
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+    }
+
+    async.series(
+        [
+            getSzamlaOsszesito,
+            workSheetHandler
+        ],
+        function (err) {
+            console.log('allfinished', err);
+        }
+    )
+
+}
+
+
 
 
 

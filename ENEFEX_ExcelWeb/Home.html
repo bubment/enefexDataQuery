@@ -61,12 +61,12 @@
                 <br />
 
                 <!-- Teszt gomb-->
-                <!--<button class="ms-Button ms-Button--primary" id="myTestButton" onclick="avgContainer_v2();">
-                    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-                    <span class="ms-Button-label" id="button-text">Test</span>
-                    <span class="ms-Button-description" id="button-desc"></span>
-                </button>
-                <br /><br />-->
+                <!--<button class="ms-Button ms-Button--primary" id="myTestButton" onclick="myTest();">
+            <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+            <span class="ms-Button-label" id="button-text">Test</span>
+            <span class="ms-Button-description" id="button-desc"></span>
+        </button>
+        <br /><br />-->
             </div>
 
             <!-- Feldolgozott mérések panelt lenyitó gomb -->
@@ -114,33 +114,46 @@
                 <br />
             </div>
 
-            <!-- newTry panelt lenyitó gomb -->
+            <!-- Villamos adminisztrációs panelt lenyitó gomb -->
             <div class="button-container" id="villamosAdminisztracioPanelOpen" onclick="changeDivDisplay('villamos_adminisztracio_panel', 'villamosAdminisztracioMenuDropDownArrowImage', 'villamosAdminisztracioPanelOpen');">
                 <div class="menuOpenImgContainer"><img id="villamosAdminisztracioMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
                 <div class="menuOpenTextContainer">Villamos szerződések és adminisztráció</div>
             </div>
 
-            <!--<button class="menuOpenButton" id="villamosAdminisztracioPanelOpen" onclick="changeDivDisplay('villamos_adminisztracio_panel', 'villamosAdminisztracioMenuDropDownArrowImage', 'villamosAdminisztracioPanelOpen');">
-                <img id="villamosAdminisztracioMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
-                Villamos szerződések és adminisztráció
-
-            </button>-->
-            <!-- newTry panel -->
+            <!-- Villamos adminisztrációs panel -->
             <div id="villamos_adminisztracio_panel" class="hiddenMenu">
                 <!--<label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('villamosAdminisztracioError');">-->
                 <br /><br />
-                <button class="vegleges-futtato-gomb" id="newTryButton" onclick="villamosAdminisztracioContainer();">Lekérdezés</button>
+                <button class="vegleges-futtato-gomb" id="villamosAdminisztracioButton" onclick="villamosAdminisztracioContainer();">Lekérdezés</button>
                 <p class="myErrorMessage" id="villamosAdminisztracioError"></p>
                 <br />
             </div>
-            <br />
 
+
+            <!-- Számlaösszestő panelt lenyitó gomb -->
+            <div class="button-container" id="szamlaOsszesitoPanelOpen" onclick="changeDivDisplay('szamla_osszesito_panel', 'szamlaOsszesitoDropDownArrowImage', 'szamlaOsszesitoPanelOpen');">
+                <div class="menuOpenImgContainer"><img id="szamlaOsszesitoDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
+                <div class="menuOpenTextContainer">Számla összesítő</div>
+            </div>
+
+
+            <!-- Számlaösszestő panel -->
+            <div id="szamla_osszesito_panel" class="hiddenMenu">
+                <div class="panel-explain-text">Ezen a panelen lekérdezheti az Enefex webes felületén található feldolgozott számlákat a beviteli mezőben megadott tárgyévre és azt azt megelőző évre vonatkozóan.</div>
+                <br />
+                <label for="szamlaOsszesitoYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szamlaOsszesitoYearFilter" class="ownDatePicker" value="2019" onfocus="setErrorMessageDefault('szamlaOsszesitoError');">
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="szamlaOsszesitoButton" onclick="szamlaOsszesitoContainer();">Lekérdezés</button>
+                <p class="myErrorMessage" id="szamlaOsszesitoError"></p>
+                <br />
+            </div>
+            <br />
             <!--------------------------LENYÍLÓ PANEL MINTA-------------------------->
             <!-- MINTA panelt lenyitó gomb -->
-            <!--<button class="menuOpenButton" id="mintaPanelOpen" onclick="changeDivDisplay('minta_panel', 'mintaMenuDropDownArrowImage', 'mintaPanelOpen');">
-        <img id="mintaMenuDropDownArrowImage" class="menuDropDownImage" src="Images/arrow-left.png" />
-        Minta panel név
-    </button>-->
+            <!--<div class="button-container" id="mintaPanelOpen" onclick="changeDivDisplay('minta_panel', 'mintaMenuDropDownArrowImage', 'mintaPanelOpen');">
+        <div class="menuOpenImgContainer"><img id="mintaMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
+        <div class="menuOpenTextContainer">Minta Panel</div>
+    </div>-->
             <!-- Minta panel -->
             <!--<div id="minta_panel" class="hiddenMenu">
         <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">

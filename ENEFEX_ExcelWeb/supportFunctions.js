@@ -3,6 +3,9 @@
 //Ebbe a változóba menti ki az exceptionHandler függvény a mértékegység nevet ha szükséges
 var tmpUnitName;
 
+// Panelek lenyithatóságának engedélyezéséhez szükséges változók
+var panelOpenAvailable = true;
+
 // ------------- SEGÉD FÜGGVÉNYEK ELEJE ---------------------------------
 
 // Meghívja az Office.onReady függvény, ami elvileg tesztel, hogy az Add In készen áll-e a futásra.
@@ -17,17 +20,23 @@ function loadAtTop() {
 
 //Lenyíló menüt lenyitó és bezáró függvény
 function changeDivDisplay(divId, arrowImageID, buttonId) {
-    var x = document.getElementById(divId);
-    var z = document.getElementById(arrowImageID);
-    if (x.style.display !== 'block') {
-        x.style.display = 'block';
-        z.src = "Images/arrow-down.png";
-        location.hash = "#" + buttonId;
-    } else {
-        x.style.display = 'none';
-        z.src = "Images/arrow-left.png";
-        loadAtTop();
+
+    if (panelOpenAvailable) {
+        var x = document.getElementById(divId);
+        var z = document.getElementById(arrowImageID);
+        if (x.style.display !== 'block') {
+            x.style.display = 'block';
+            z.src = "Images/arrow-down.png";
+            location.hash = "#" + buttonId;
+        } else {
+            x.style.display = 'none';
+            z.src = "Images/arrow-left.png";
+            loadAtTop();
+        }
     }
+
+
+
 
     
 }
@@ -228,6 +237,8 @@ function changElementsAvailability(disableElements, status) {
     disableElements.forEach(function (element) {
         document.getElementById(element).disabled = status;
     });
+
+    panelOpenAvailable = !status;
 }
 
 // Ez a függvény kicseréli a lenyíló menük tartalmát egy felmerülő hiba esetén
@@ -675,35 +686,9 @@ function asyncSeriesTest() {
 
 function myTest() {
 
-    //var asd = { "param1": "1", "param2": "2" };
-    //var kek = [
-    //    { "requiredParamName": "date_from", "paramValue": "2019-01-01" },
-    //    { "requiredParamName": "is_enabled", "paramValue": "0" },
-    //    { "requiredParamName": "is_masodlagos", "paramValue": "1" }
-    //];
-
-    //for (var i = 0; i < kek.length; i++) {
-    //    asd[kek[i].requiredParamName] = kek[i].paramValue;
-    //}
-    //console.log(asd);
-
-    var asd = 3
-
-    switch (asd) {
-        case 3:
-            value = 12;
-            break;
-        case 4:
-            value = 13;
-            break;
-        default:
-            value = 15;
-    }
-
-    kek = value;
-    bum = 5;
-
+    changElementsAvailability(importantDisableElements, true);
 }
+
 
 
 
