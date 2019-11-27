@@ -101,7 +101,7 @@ function fillDropDownList() {
         params["query"] = "all";
         params["page"] = "1";
         params["start"] = "0";
-        params["limit"] = "25";
+        params["limit"] = "9999";
 
         postAsyncGetData(host + "/ebill/billing/getMeterGroups", params, fillMeterGroupCallback);
     }
@@ -239,6 +239,18 @@ function changElementsAvailability(disableElements, status) {
     });
 
     panelOpenAvailable = !status;
+}
+
+function setDisableElement(){
+    // Azok az elementek (lekérdezés indító gombok) amiket a lekérdezések alatt elérhetetlenné kell tenni, hogy a felhasználó ne tudja módosítani őket
+    var importantDisableElements = [];
+
+    var getFuttatoGombok = document.getElementsByClassName("vegleges-futtato-gomb");
+    for (var i = 0; i < getFuttatoGombok.length; i++) {
+        importantDisableElements.push(getFuttatoGombok[i].id);
+    }
+
+    return importantDisableElements;
 }
 
 // Ez a függvény kicseréli a lenyíló menük tartalmát egy felmerülő hiba esetén
@@ -686,7 +698,20 @@ function asyncSeriesTest() {
 
 function myTest() {
 
-    changElementsAvailability(importantDisableElements, true);
+
+    Excel.run(function (context) {
+        var sheet = context.workbook.worksheets.getItem("Sheet1");
+
+        //var formats = [
+        //    ["yyyy/mm/dd h:mm"]
+        //];
+
+        var range = sheet.getRange("A1");
+        range.values = "2019-01-01 8:15:00";
+
+        return context.sync();
+    })
+    
 }
 
 

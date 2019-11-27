@@ -32,8 +32,9 @@ var excelColumNames = [
     "ZA", "ZB", "ZC", "ZD", "ZE", "ZF", "ZG", "ZH", "ZI", "ZJ", "ZK", "ZL", "ZM", "ZN", "ZO", "ZP", "ZQ", "ZR", "ZS", "ZT", "ZU", "ZV", "ZW", "ZX", "ZY", "ZZ",
 ];
 
-// Azok az elementek (legfőképp a lenyíló menüket lenyitó gombok) amiket a lekérdezések alatt elérhetetlenné kell tenni, hogy a felhasználó ne tudja módosítani őket
-var importantDisableElements = ["fogyasztasOsszesitoButton", "feldolgozottMeresekButton", "hetiJelentesButton", "villamosAdminisztracioButton", 'szamlaOsszesitoButton'];
+
+
+
 
 // Ez a tömb tartalmaz adatokat a szerverről történő adatlekérdezésekhez
 var mainItemInfo = [];
@@ -113,6 +114,8 @@ function fogyasztasOsszesitoContainer() {
     }
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+
+    importantDisableElements = setDisableElement();
     var newDisableElements = ["kezdo_datum", "veg_datum", "fogyasztas_osszesito_meter_groups"];
 
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
@@ -143,7 +146,7 @@ function fogyasztasOsszesitoContainer() {
         params["query"] = "all";
         params["page"] = "1";
         params["start"] = "0";
-        params["limit"] = "25";
+        params["limit"] = "9999";
 
         postAsyncGetData(host + "/ebill/billing/getMeterGroups", params, getMeterGroupCallback);
 
@@ -425,6 +428,7 @@ function feldolgozottMeresekContainer() {
     }
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+    importantDisableElements = setDisableElement();
     var newDisableElements = ['onlyYearFilter', 'feldolgozott_meresek_meter_groups'];
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
 
@@ -559,7 +563,7 @@ function feldolgozottMeresekContainer() {
         params["query"] = "all";
         params["page"] = "1";
         params["start"] = "0";
-        params["limit"] = "25";
+        params["limit"] = "99999";
 
         postAsyncGetData(host + "/ebill/billing/getMeterGroups", params, getMeterGroupCallback);
 
@@ -674,7 +678,7 @@ function feldolgozottMeresekContainer() {
         params["tankolas_is"] = "0";
         params["page"] = "1";
         params["start"] = "0";
-        params["limit"] = "1000";
+        params["limit"] = "99999";
 
         postAsyncGetData(host + "/ebill/summary/getFeldolgozottMeresek", params, getFeldolgozottMeresekCallback);
     }
@@ -768,6 +772,7 @@ function hetiJelentesKeszitoContainer() {
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
     var newDisableElements = ['heti_jelentes_kezdo_datum', 'heti_jelentes_kezdo_ora', 'heti_jelentes_veg_datum', 'heti_jelentes_befejezo_ora', 'heti_jelentes_meter_groups', 'heti_jelentes_mentett_bealitasok', 'csakNemMegFeleloSorok'];
 
+    importantDisableElements = setDisableElement();
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
 
     changElementsAvailability(actualDisableElements, true);
@@ -895,7 +900,7 @@ function hetiJelentesKeszitoContainer() {
         params["query"] = "all";
         params["page"] = "1";
         params["start"] = "0";
-        params["limit"] = "25";
+        params["limit"] = "99999";
 
         postAsyncGetData(host + "/ebill/billing/getMeterGroups", params, getMeterGroupCallback);
 
@@ -1177,7 +1182,7 @@ function hetiJelentesKeszitoContainer() {
         params["date_to"] = dateTo;
         params["page"] = "1";
         params["start"] = "0";
-        params["limit"] = "25";
+        params["limit"] = "99999";
         params["sort"] = '[{ "property": "T.id", "direction": "desc" }]';
 
         postAsyncGetData(host + "/vstat/baseline/getTableStat", params, hetiAlapvonalSzamertekekCallback);
@@ -1252,16 +1257,23 @@ function hetiJelentesKeszitoContainer() {
                         for (var i = 0; i < dataInnerLength; i++) {
                             if (requiredServerDataArray[i].dataTag == "tstamp") {
                                 var d = new Date(result.data[tmpRow][requiredServerDataArray[i].dataTag]);
-                                correctDateWithFormat = d.getFullYear().toString() + "." + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "." + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : "0" + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString()) + ":00";
+
+                                correctDateWithFormat = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : " " + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString()) + ":00";
 
                                 jsonDataInnerArray.push(correctDateWithFormat);
                             }
                             else {
                                 jsonDataInnerArray.push(result.data[tmpRow][requiredServerDataArray[i].dataTag]);
-                            }
+                            }  
                         }
                         jsonDataArray.push(jsonDataInnerArray);
                     }
+
+                    //asd = jsonDataArray[1][0];
+                    //console.log(asd);
+                    //console.log(typeof asd);
+                    //asd = 2;
+
 
                     // ---------------------EXCEL RÉSZ ELEJE --------------------
 
@@ -1410,7 +1422,7 @@ function villamosAdminisztracioContainer() {
     //}
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
-
+    importantDisableElements = setDisableElement();
     var actualDisableElements = importantDisableElements
     changElementsAvailability(actualDisableElements, true);
 
@@ -3416,6 +3428,7 @@ function szamlaOsszesitoContainer() {
     //var threadLimit;
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+    importantDisableElements = setDisableElement();
     var newDisableElements = ["szamlaOsszesitoYearFilter"];
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
     changElementsAvailability(actualDisableElements, true);
