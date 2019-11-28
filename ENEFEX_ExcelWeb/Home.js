@@ -1,7 +1,7 @@
 ﻿
 //GLOBÁLIS VÁLTOZÓK DEFINIÁLÁSÁNAK ELEJE
 //----------------------------------------------------------------------
-//Excel cellák nevei egy tömbben (A,B,C,...)
+//Excel cellák nevei egy tömbben (A,B,C,...,ZZ)
 var excelColumNames = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
     "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ",
@@ -97,7 +97,7 @@ function fogyasztasOsszesitoContainer() {
     var errorLabel = document.getElementById('fogyasztasOsszesitoError');
     errorLabel.style.display = "block";
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
-
+    setPanelLoader("fogyasztas-osszesito-panel-loader", "fogyasztas-osszesito-loader", "block");
 
     // A függvényekben levő összes szükséges munkalapot itt kell definiálni
     var requiredSheets = ["IN_F0"];
@@ -110,6 +110,7 @@ function fogyasztasOsszesitoContainer() {
 
     //Dátumok RegEx validációi
     if (dateRegExTest('kezdo_datum', 'veg_datum', 'fogyasztasOsszesitoError') == "RegExTestProblem") {
+        setPanelLoader("fogyasztas-osszesito-panel-loader", "fogyasztas-osszesito-loader", "none");
         return;
     }
 
@@ -267,6 +268,7 @@ function fogyasztasOsszesitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("fogyasztas-osszesito-panel-loader", "fogyasztas-osszesito-loader", "none");
             }
             else {
                 if (result) {
@@ -340,6 +342,7 @@ function fogyasztasOsszesitoContainer() {
 
                     errorLabel.innerHTML = "";
                     errorLabel.style.display = 'none';
+                    setPanelLoader("fogyasztas-osszesito-panel-loader", "fogyasztas-osszesito-loader", "none");
 
                     // Menü elérhetővé tétele a lekérdezés végén
                     changElementsAvailability(actualDisableElements, false);
@@ -349,6 +352,7 @@ function fogyasztasOsszesitoContainer() {
                 }
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    setPanelLoader("fogyasztas-osszesito-panel-loader", "fogyasztas-osszesito-loader", "none");
                     changElementsAvailability(actualDisableElements, false);
                 }
             }
@@ -398,6 +402,7 @@ function feldolgozottMeresekContainer() {
     var errorLabel = document.getElementById('feldolgozottMeresekError');
     errorLabel.style.display = "block";
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+    setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "block");
 
     // A függvényekben levő összes szükséges munkalapot itt kell definiálni
     var requiredSheets = ["IN_É0"];
@@ -411,19 +416,22 @@ function feldolgozottMeresekContainer() {
 
     if (isNaN(document.getElementById('onlyYearFilter').value) == true) {
         y.style.display = 'block';
-        y.innerHTML = "A megadott év nem megfelelő formátumú. Megfelelő formátum (YYYY)"
+        y.innerHTML = "A megadott év nem megfelelő formátumú. Megfelelő formátum (YYYY)";
+        setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
         return;
     }
 
     if (document.getElementById('onlyYearFilter').value < 2014) {
         y.style.display = 'block';
-        y.innerHTML = "A megadott év 2014 előtti."
+        y.innerHTML = "A megadott év 2014 előtti.";
+        setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
         return;
     }
 
     if (document.getElementById('onlyYearFilter').value > currentYear) {
         y.style.display = 'block';
-        y.innerHTML = "A megadott év a jövőben van."
+        y.innerHTML = "A megadott év a jövőben van.";
+        setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
         return;
     }
 
@@ -545,6 +553,7 @@ function feldolgozottMeresekContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
             }
             else {
                 if (result) {
@@ -554,6 +563,7 @@ function feldolgozottMeresekContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
                 }
             }
         }
@@ -584,6 +594,7 @@ function feldolgozottMeresekContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
             }
             else {
                 if (getFeldolgozottMeresekCallbackresult) {
@@ -645,6 +656,7 @@ function feldolgozottMeresekContainer() {
 
                     errorLabel.innerHTML = "";
                     errorLabel.style.display = 'none';
+                    setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
 
                     changElementsAvailability(actualDisableElements, false);
 
@@ -652,8 +664,9 @@ function feldolgozottMeresekContainer() {
                     callback();
                 }
                 else {
-                    errorLabel.innerHTML = "A getFeldolgozottMeresekCallback resultjában lévő JSON Object hibás vagy üres"
+                    errorLabel.innerHTML = "A getFeldolgozottMeresekCallback resultjában lévő JSON Object hibás vagy üres";
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("feldolgozott-meresek-panel-loader", "feldolgozott-meresek-loader", "none");
                 }
             }
         }
@@ -709,6 +722,7 @@ function hetiJelentesKeszitoContainer() {
     var errorLabel = document.getElementById('hetiJelentesError');
     errorLabel.style.display = "block";
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "block");
 
     // A függvényekben levő összes szükséges munkalapot itt kell definiálni
     var requiredSheets = ["IN_FÖ", "IN_SzA", "IN_FG"];
@@ -766,6 +780,7 @@ function hetiJelentesKeszitoContainer() {
 
     //Dátumok RegEx validációi
     if (dateRegExTest('heti_jelentes_kezdo_datum', 'heti_jelentes_veg_datum', 'hetiJelentesError') == "RegExTestProblem") {
+        setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
         return;
     }
 
@@ -882,6 +897,7 @@ function hetiJelentesKeszitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
             }
             else {
                 if (result) {
@@ -891,6 +907,7 @@ function hetiJelentesKeszitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
                 }
             }
         }
@@ -912,6 +929,7 @@ function hetiJelentesKeszitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
             }
             else {
                 if (result) {
@@ -921,6 +939,7 @@ function hetiJelentesKeszitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
                 }
             }
         }
@@ -939,6 +958,7 @@ function hetiJelentesKeszitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
             }
             else {
                 if (result) {
@@ -948,6 +968,7 @@ function hetiJelentesKeszitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás" 
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
                 }
             }
         }
@@ -978,6 +999,7 @@ function hetiJelentesKeszitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
             }
             else {
                 if (hetiFogyasztasOsszesitoCallbackResult) {
@@ -1052,6 +1074,7 @@ function hetiJelentesKeszitoContainer() {
 
                     errorLabel.innerHTML = "";
                     errorLabel.style.display = 'none';
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
 
                     //Menü elérhetővé tétele
                     changElementsAvailability(actualDisableElements, false);
@@ -1062,6 +1085,7 @@ function hetiJelentesKeszitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
                 }
             }
         }
@@ -1105,6 +1129,7 @@ function hetiJelentesKeszitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
             }
             else {
                 if (result) {
@@ -1170,6 +1195,7 @@ function hetiJelentesKeszitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
                 }
             }
         }
@@ -1203,6 +1229,7 @@ function hetiJelentesKeszitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
             }
             else {
                 if (result) {
@@ -1302,6 +1329,7 @@ function hetiJelentesKeszitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás";
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
                 }
             }
         }
@@ -1407,7 +1435,7 @@ function villamosAdminisztracioContainer() {
     var errorLabel = document.getElementById('villamosAdminisztracioError');
     errorLabel.style.display = "block";
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
-
+    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "block");
     // Lekérdezésekhez szükséges URL
     var host = readCookie("enefexHost");
     //Ebben a tömbbe fognak kerülni az excelbe feltöltendő adatok
@@ -1448,6 +1476,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1457,6 +1486,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1479,6 +1509,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1488,6 +1519,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1507,6 +1539,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1516,6 +1549,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1535,6 +1569,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1544,6 +1579,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1563,6 +1599,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1572,6 +1609,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1591,6 +1629,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1600,6 +1639,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1619,6 +1659,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1628,6 +1669,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1651,6 +1693,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (result) {
@@ -1660,6 +1703,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1696,6 +1740,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (HHSzerzodesCallbackResult) {
@@ -1807,6 +1852,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -1868,6 +1914,7 @@ function villamosAdminisztracioContainer() {
                 if (err) {
                     errorLabel.innerHTML = err.error.message;
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
                 else {
                     //Normálisan legenrálni a JSONArray változókat
@@ -2022,6 +2069,7 @@ function villamosAdminisztracioContainer() {
                 if (err) {
                     errorLabel.innerHTML = err.error.message;
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
                 else {
                     //Normálisan legenrálni a JSONArray változókat
@@ -2292,6 +2340,7 @@ function villamosAdminisztracioContainer() {
                 if (err) {
                     errorLabel.innerHTML = err.error.message;
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
                 else {
                     //RHD adatok kimetése, hogy a következő fő függvény is tudja használni
@@ -2480,6 +2529,7 @@ function villamosAdminisztracioContainer() {
                 if (err) {
                     errorLabel.innerHTML = err.error.message;
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
                 else {
                     //Normálisan legenrálni a JSONArray változókat
@@ -2718,6 +2768,7 @@ function villamosAdminisztracioContainer() {
                 if (err) {
                     errorLabel.innerHTML = err.error.message;
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
                 else {
                     //Normálisan legenrálni a JSONArray változókat
@@ -2843,6 +2894,7 @@ function villamosAdminisztracioContainer() {
                 if (err) {
                     errorLabel.innerHTML = err.error.message;
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
                 else {
                     //Normálisan legenrálni a JSONArray változókat
@@ -2934,6 +2986,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (kereskedekmiSzerzodesCallbackResult) {
@@ -3031,6 +3084,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -3067,6 +3121,7 @@ function villamosAdminisztracioContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
             }
             else {
                 if (villanySzerzodesVet147CallbackResult) {
@@ -3210,6 +3265,7 @@ function villamosAdminisztracioContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                 }
             }
         }
@@ -3344,6 +3400,7 @@ function villamosAdminisztracioContainer() {
                             errorLabel.innerHTML = "";
                             errorLabel.style.display = "none";
                             changElementsAvailability(actualDisableElements, false);
+                            setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "none");
                             callback_lvl2();
                             callback_lvl1();
                         });
@@ -3419,6 +3476,7 @@ function szamlaOsszesitoContainer() {
 
     errorLabel.style.display = "block";
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+    setPanelLoader("szamla-osszesito-panel-loader", "szamla-osszesito-loader", "block");
 
     // Lekérdezésekhez szükséges URL
     var host = readCookie("enefexHost");
@@ -3452,6 +3510,7 @@ function szamlaOsszesitoContainer() {
             if (err) {
                 errorLabel.innerHTML = err.error.message;
                 changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("szamla-osszesito-panel-loader", "szamla-osszesito-loader", "none");
             }
             else {
                 if (SzamlaOsszesitoCallbackResult) {
@@ -3541,6 +3600,7 @@ function szamlaOsszesitoContainer() {
                 else {
                     errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
                     changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("szamla-osszesito-panel-loader", "szamla-osszesito-loader", "none");
                 }
             }
         }
@@ -3685,6 +3745,7 @@ function szamlaOsszesitoContainer() {
                             errorLabel.innerHTML = "";
                             errorLabel.style.display = "none";
                             changElementsAvailability(actualDisableElements, false);
+                            setPanelLoader("szamla-osszesito-panel-loader", "szamla-osszesito-loader", "none");
                             callback_lvl2();
                             callback_lvl1();
                         });

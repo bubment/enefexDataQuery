@@ -27,7 +27,7 @@
 
 </head>
 <body onload="fillDropDownList(); officeOnReady();">
-    
+
     <div id="content-main">
         <!-- -------------Felső design rész---------- -->
         <div class="padding">
@@ -49,24 +49,31 @@
             <!-- Fogyasztás össesítő panel -->
             <div id="fogyasztas_osszesito" class="hiddenMenu">
                 <!--<label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2015-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');" onfocusout="fogyasztasOsszessitoDate();">-->
-                <label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
-                <br /><br />
-                <!--<label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2015-02-01 disabled>-->
-                <label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
-                <br /><br />
-                <label for="fogyasztas_osszesito_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="fogyasztas_osszesito_meter_groups"></select>
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="fogyasztasOsszesitoButton" onclick="fogyasztasOsszesitoContainer();">Lekérdezés</button>
-                <div class="myErrorMessage" id="fogyasztasOsszesitoError"></div>
-                <br />
+                <div class="panel-content">
+                    <label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                    <br /><br />
+                    <!--<label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2015-02-01 disabled>-->
+                    <label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                    <br /><br />
+                    <label for="fogyasztas_osszesito_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="fogyasztas_osszesito_meter_groups"></select>
+                    <br /><br />
+                    <button class="vegleges-futtato-gomb" id="fogyasztasOsszesitoButton" onclick="fogyasztasOsszesitoContainer();">Lekérdezés</button>
+                    <div class="myErrorMessage" id="fogyasztasOsszesitoError"></div>
+                    <br />
+                </div>
+                <div class="panel-loader" id="fogyasztas-osszesito-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="fogyasztas-osszesito-loader"></div>
+                    </div>
+                </div>
 
                 <!-- Teszt gomb-->
                 <!--<button class="ms-Button ms-Button--primary" id="myTestButton" onclick="myTest();">
-            <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-            <span class="ms-Button-label" id="button-text">Test</span>
-            <span class="ms-Button-description" id="button-desc"></span>
-        </button>
-        <br /><br />-->
+                    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                    <span class="ms-Button-label" id="button-text">Test</span>
+                    <span class="ms-Button-description" id="button-desc"></span>
+                </button>
+                <br /><br />-->
             </div>
 
             <!-- Feldolgozott mérések panelt lenyitó gomb -->
@@ -77,14 +84,22 @@
 
             <!-- Feldolgozott mérések panel -->
             <div id="feldolgozott_meresek" class="hiddenMenu">
-                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="onlyYearFilter" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('feldolgozottMeresekError');">
-                <br />
-                <br />
-                <label for="feldolgozott_meresek_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="feldolgozott_meresek_meter_groups"></select>
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="feldolgozottMeresekButton" onclick="feldolgozottMeresekContainer();">Lekérdezés</button>
-                <p class="myErrorMessage" id="feldolgozottMeresekError"></p>
-                <br />
+
+                <div class="panel-content">
+                    <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="onlyYearFilter" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('feldolgozottMeresekError');">
+                    <br />
+                    <br />
+                    <label for="feldolgozott_meresek_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="feldolgozott_meresek_meter_groups"></select>
+                    <br /><br />
+                    <button class="vegleges-futtato-gomb" id="feldolgozottMeresekButton" onclick="feldolgozottMeresekContainer();">Lekérdezés</button>
+                    <p class="myErrorMessage" id="feldolgozottMeresekError"></p>
+                    <br />
+                </div>
+                <div class="panel-loader" id="feldolgozott-meresek-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="feldolgozott-meresek-loader"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Heti jelentés panelt lenyitó gomb -->
@@ -95,23 +110,31 @@
 
             <!-- Heti jelentés panel -->
             <div id="hetiJelentes" class="hiddenMenu">
-                <label for="heti_jelentes_kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="heti_jelentes_kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
-                <select id="heti_jelentes_kezdo_ora"></select>
-                <label for="heti_jelentes_kezdo_ora">-tól</label>
-                <br /><br />
-                <label for="heti_jelentes_veg_datum">Befejező dátum:</label><br /><input type="text" id="heti_jelentes_veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
-                <select id="heti_jelentes_befejezo_ora"></select>
-                <label for="heti_jelentes_befejezo_ora">-ig</label>
-                <br /><br />
-                <label for="heti_jelentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="heti_jelentes_meter_groups"></select>
-                <br /><br />
-                <label for="mentett_bealitasok">Mentett beállítások:</label><br /><select class="meter_group_list" id="heti_jelentes_mentett_bealitasok"></select>
-                <br /><br />
-                <label for="csakNemMegFeleloSorok">Csak a nem megfelelő sorok megjelenítése: </label><input type="checkbox" id="csakNemMegFeleloSorok">
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="hetiJelentesButton" onclick="hetiJelentesKeszitoContainer();">Lekérdezés</button>
-                <p class="myErrorMessage" id="hetiJelentesError"></p>
-                <br />
+                <div class="panel-content">
+                    <label for="heti_jelentes_kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="heti_jelentes_kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
+                    <select id="heti_jelentes_kezdo_ora"></select>
+                    <label for="heti_jelentes_kezdo_ora">-tól</label>
+                    <br /><br />
+                    <label for="heti_jelentes_veg_datum">Befejező dátum:</label><br /><input type="text" id="heti_jelentes_veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
+                    <select id="heti_jelentes_befejezo_ora"></select>
+                    <label for="heti_jelentes_befejezo_ora">-ig</label>
+                    <br /><br />
+                    <label for="heti_jelentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="heti_jelentes_meter_groups"></select>
+                    <br /><br />
+                    <label for="mentett_bealitasok">Mentett beállítások:</label><br /><select class="meter_group_list" id="heti_jelentes_mentett_bealitasok"></select>
+                    <br /><br />
+                    <label for="csakNemMegFeleloSorok">Csak a nem megfelelő sorok megjelenítése: </label><input type="checkbox" id="csakNemMegFeleloSorok">
+                    <br /><br />
+                    <button class="vegleges-futtato-gomb" id="hetiJelentesButton" onclick="hetiJelentesKeszitoContainer();">Lekérdezés</button>
+                    <p class="myErrorMessage" id="hetiJelentesError"></p>
+                    <br />
+                </div>
+                <div class="panel-loader" id="heti-jelentes-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="heti-jelentes-loader"></div>
+                    </div>
+                </div>
+                
             </div>
 
             <!-- Villamos adminisztrációs panelt lenyitó gomb -->
@@ -123,10 +146,18 @@
             <!-- Villamos adminisztrációs panel -->
             <div id="villamos_adminisztracio_panel" class="hiddenMenu">
                 <!--<label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('villamosAdminisztracioError');">-->
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="villamosAdminisztracioButton" onclick="villamosAdminisztracioContainer();">Lekérdezés</button>
-                <p class="myErrorMessage" id="villamosAdminisztracioError"></p>
-                <br />
+                <div class="panel-content">
+                    <br /><br />
+                    <button class="vegleges-futtato-gomb" id="villamosAdminisztracioButton" onclick="villamosAdminisztracioContainer();">Lekérdezés</button>
+                    <p class="myErrorMessage" id="villamosAdminisztracioError"></p>
+                    <br />
+                </div>
+                <div class="panel-loader" id="villamos-adminisztracio-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="villamos-adminisztracio-loader"></div>
+                    </div>
+                </div>
+
             </div>
 
 
@@ -139,30 +170,38 @@
 
             <!-- Számlaösszestő panel -->
             <div id="szamla_osszesito_panel" class="hiddenMenu">
-                <div class="panel-explain-text">Ezen a panelen lekérdezheti az Enefex webes felületén található feldolgozott számlákat a beviteli mezőben megadott tárgyévre és azt azt megelőző évre vonatkozóan.</div>
-                <br />
-                <label for="szamlaOsszesitoYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szamlaOsszesitoYearFilter" class="ownDatePicker" value="2019" onfocus="setErrorMessageDefault('szamlaOsszesitoError');">
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="szamlaOsszesitoButton" onclick="szamlaOsszesitoContainer();">Lekérdezés</button>
-                <p class="myErrorMessage" id="szamlaOsszesitoError"></p>
-                <br />
+                <div class="panel-content">
+                    <div class="panel-explain-text">Ezen a panelen lekérdezheti az Enefex webes felületén található feldolgozott számlákat a beviteli mezőben megadott tárgyévre és azt azt megelőző évre vonatkozóan.</div>
+                    <br />
+                    <label for="szamlaOsszesitoYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szamlaOsszesitoYearFilter" class="ownDatePicker" value="2019" onfocus="setErrorMessageDefault('szamlaOsszesitoError');">
+                    <br /><br />
+                    <button class="vegleges-futtato-gomb" id="szamlaOsszesitoButton" onclick="szamlaOsszesitoContainer();">Lekérdezés</button>
+                    <p class="myErrorMessage" id="szamlaOsszesitoError"></p>
+                    <br />
+                </div>
+                <div class="panel-loader" id="szamla-osszesito-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="szamla-osszesito-loader"></div>
+                    </div>
+                </div>
+
             </div>
             <br />
             <!--------------------------LENYÍLÓ PANEL MINTA-------------------------->
             <!-- MINTA panelt lenyitó gomb -->
             <!--<div class="button-container" id="mintaPanelOpen" onclick="changeDivDisplay('minta_panel', 'mintaMenuDropDownArrowImage', 'mintaPanelOpen');">
-        <div class="menuOpenImgContainer"><img id="mintaMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
-        <div class="menuOpenTextContainer">Minta Panel</div>
-    </div>-->
+                <div class="menuOpenImgContainer"><img id="mintaMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
+                <div class="menuOpenTextContainer">Minta Panel</div>
+            </div>-->
             <!-- Minta panel -->
             <!--<div id="minta_panel" class="hiddenMenu">
-        <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
-        <br /><br />
-        <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
-        <p class="myErrorMessage" id="mintaError"></p>
-        <br />
-    </div>
-    <br />-->
+                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
+                <br /><br />
+                <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
+                <p class="myErrorMessage" id="mintaError"></p>
+                <br />
+            </div>
+            <br />-->
             <br />
             <!-- Kilépés gomb-->
             <button class="newLogOutButton" id="logoutButton" onclick="onClick_logoutButton();">Kilépés</button>
@@ -174,3 +213,7 @@
     </div>
 </body>
 </html>
+
+
+
+

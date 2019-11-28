@@ -371,6 +371,23 @@ function objectTest(mainItem, mainItemInfo, supportItem) {
     }
 }
 
+// Ezzel a függvénnyel lehet álltani a loader helyzetét. 
+// A loaderContainer annak a "panel-loader" osztályú divnek az id-ja, amely az adott panelben lévő loader div-et tartalmazza.
+// A loader annak a "loader" osztályú divnek az id-ja ami maga a loader
+// A status "block" ha azt akarjuk, hogy előjöjjön a loader, minden más esetbe "none"
+function setPanelLoader(loaderContainer, loader, status) {
+    if (status == "block") {
+        document.getElementById(loaderContainer).style.display = "block"
+    }
+    else {
+        document.getElementById(loaderContainer).style.display = "none"
+    }
+
+    var loaderContainerHeight = document.getElementById(loaderContainer).offsetHeight;
+    var loaderHeight = document.getElementById(loader).offsetHeight;
+
+    document.getElementById(loader).style.top = ((loaderContainerHeight - loaderHeight) / 2) + "px";
+}
 
 
 
@@ -698,21 +715,18 @@ function asyncSeriesTest() {
 
 function myTest() {
 
+    //document.getElementById("fogyasztas-osszesito-panel-loader").style.display = "block"
+    //var asd = document.getElementById("fogyasztas-osszesito-panel-loader").offsetHeight;
+    //var asd1 = document.getElementById("loader-1").offsetHeight;
 
-    Excel.run(function (context) {
-        var sheet = context.workbook.worksheets.getItem("Sheet1");
+    //document.getElementById("loader-1").style.top = ((asd - asd1) / 2) + "px";
 
-        //var formats = [
-        //    ["yyyy/mm/dd h:mm"]
-        //];
 
-        var range = sheet.getRange("A1");
-        range.values = "2019-01-01 8:15:00";
-
-        return context.sync();
-    })
+    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "block");
     
 }
+
+
 
 
 

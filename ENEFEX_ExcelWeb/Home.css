@@ -39,6 +39,8 @@ body {
     width: 208px !important;
     min-height: 50px;
     border: 1px solid #5e5e5e;
+
+    position: relative;
 }
 
 .vegleges-futtato-gomb {
@@ -179,4 +181,70 @@ body {
     border: 1px solid black;
     padding: 3px;
     text-align: center;
+}
+
+.panel-loader {
+    display:none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(120,120,120,0.4);
+}
+
+
+
+.three {
+    width: 23.8%;
+
+    /*padding: 50px 0;*/
+    width:100%;
+    height:100%;
+}
+
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    position: relative;
+    margin: 0 auto;
+}
+
+
+.loader:before, .loader:after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    border: 10px solid white;
+    border-top-color: #669A2F;
+}
+
+.loader:before {
+    z-index: 100;
+    animation: spin 1s infinite;
+}
+
+.loader:after {
+    border: 10px solid #ccc;
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
