@@ -69,11 +69,11 @@
 
                 <!-- Teszt gomb-->
                 <!--<button class="ms-Button ms-Button--primary" id="myTestButton" onclick="myTest();">
-                    <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-                    <span class="ms-Button-label" id="button-text">Test</span>
-                    <span class="ms-Button-description" id="button-desc"></span>
-                </button>
-                <br /><br />-->
+            <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+            <span class="ms-Button-label" id="button-text">Test</span>
+            <span class="ms-Button-description" id="button-desc"></span>
+        </button>
+        <br /><br />-->
             </div>
 
             <!-- Feldolgozott mérések panelt lenyitó gomb -->
@@ -134,7 +134,7 @@
                         <div class="loader" id="heti-jelentes-loader"></div>
                     </div>
                 </div>
-                
+
             </div>
 
             <!-- Villamos adminisztrációs panelt lenyitó gomb -->
@@ -147,7 +147,7 @@
             <div id="villamos_adminisztracio_panel" class="hiddenMenu">
                 <!--<label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('villamosAdminisztracioError');">-->
                 <div class="panel-content">
-                    <br /><br />
+                    
                     <button class="vegleges-futtato-gomb" id="villamosAdminisztracioButton" onclick="villamosAdminisztracioContainer();">Lekérdezés</button>
                     <p class="myErrorMessage" id="villamosAdminisztracioError"></p>
                     <br />
@@ -186,22 +186,50 @@
                 </div>
 
             </div>
-            <br />
+            <!-- Hődj adminisztációs panelt lenyitó gomb -->
+            <div class="button-container" id="hodijAdminisztacioPanelOpen" onclick="changeDivDisplay('hodij_adminisztarcio_panel', 'hodijAdminisztracioDropDownArrowImage', 'hodijAdminisztacioPanelOpen');">
+                <div class="menuOpenImgContainer"><img id="hodijAdminisztracioDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
+                <div class="menuOpenTextContainer">Hődíj adminisztráció</div>
+             </div>
+            <!-- Minta panel -->
+            <div id="hodij_adminisztarcio_panel" class="hiddenMenu">
+                <div class="panel-content">
+                    <button class="vegleges-futtato-gomb" id="hodijAdminisztracioButton" onclick="hodijAdminisztracioContainer();">Lekérdezés</button>
+                    <p class="myErrorMessage" id="hodijAdminisztracioError"></p>
+                    <br />
+                </div>
+                <div class="panel-loader" id="hodij-adminisztracio-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="hodij-adminisztracio-loader"></div>
+                    </div>
+                </div>
+
+            </div>
+        <br />
+
             <!--------------------------LENYÍLÓ PANEL MINTA-------------------------->
             <!-- MINTA panelt lenyitó gomb -->
             <!--<div class="button-container" id="mintaPanelOpen" onclick="changeDivDisplay('minta_panel', 'mintaMenuDropDownArrowImage', 'mintaPanelOpen');">
-                <div class="menuOpenImgContainer"><img id="mintaMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
-                <div class="menuOpenTextContainer">Minta Panel</div>
-            </div>-->
+        <div class="menuOpenImgContainer"><img id="mintaMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
+        <div class="menuOpenTextContainer">Minta Panel</div>
+    </div>-->
             <!-- Minta panel -->
             <!--<div id="minta_panel" class="hiddenMenu">
-                <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
-                <br /><br />
-                <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
-                <p class="myErrorMessage" id="mintaError"></p>
-                <br />
+        <div class="panel-content">
+            <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
+            <br /><br />
+            <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
+            <p class="myErrorMessage" id="mintaError"></p>
+            <br />
+        </div>
+        <div class="panel-loader" id="minta-panel-loader">
+            <div class="three">
+                <div class="loader" id="minta-loader"></div>
             </div>
-            <br />-->
+        </div>
+
+    </div>
+        <br />-->
             <br />
             <!-- Kilépés gomb-->
             <button class="newLogOutButton" id="logoutButton" onclick="onClick_logoutButton();">Kilépés</button>
