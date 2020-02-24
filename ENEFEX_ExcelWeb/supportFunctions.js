@@ -65,27 +65,26 @@ function fillDropDownList() {
             else {
                 if (result) {
                     // Mérő csoport listák feltöltése
-                    var x = document.getElementById("fogyasztas_osszesito_meter_groups");
-                    var y = document.getElementById("feldolgozott_meresek_meter_groups");
-                    var z = document.getElementById("heti_jelentes_meter_groups");
+                    var meterGroupListsArray = [
+                        "fogyasztas_osszesito_meter_groups",
+                        "feldolgozott_meresek_meter_groups",
+                        "heti_jelentes_meter_groups",
+                        "szakreferensi_jelentes_meter_groups"
+                    ]
 
-                    result.forEach(function (element) {
-                        var option = document.createElement("option");
-                        option.text = element.nev;
-                        x.add(option);
-                    });
+                    meterGroupListsArray.forEach(fillMeterGroupLists);
 
-                    result.forEach(function (element) {
-                        var option = document.createElement("option");
-                        option.text = element.nev;
-                        y.add(option);
-                    });
+                    var selectedList;
+                    var actOption
 
-                    result.forEach(function (element) {
-                        var option = document.createElement("option");
-                        option.text = element.nev;
-                        z.add(option);
-                    });
+                    function fillMeterGroupLists(item) {
+                        result.forEach(function (element) {
+                            selectedList = document.getElementById(item);
+                            actOption = document.createElement("option");
+                            actOption.text = element.nev;
+                            selectedList.add(actOption);
+                        });
+                    }
 
                     callback();
                 }

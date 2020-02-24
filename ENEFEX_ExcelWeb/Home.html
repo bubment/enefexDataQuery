@@ -38,7 +38,29 @@
                 A lenyíló menükben lekérheti az összes olyan szükséges havi és éves fogyasztási adatot, amihez önnek jogosultsága van.
                 <!--<br /><br />Az Enefex-adatlekérő® bővítményhez felhasználói segédlet ezen a <a href="support_and_privacy/Documentation.html" target="_blank">linken</a> érhető el.-->
             </p>
+            <!-- Szakreferensi jelentés panelt lenyitó gomb -->
+            <div class="button-container" id="szakreferensiJelentesPanelOpen" onclick="changeDivDisplay('szakreferensi_jelentes_panel', 'szakreferensiJelentesMenuDropDownArrowImage', 'szakreferensiJelentesPanelOpen');">
+                <div class="menuOpenImgContainer"><img id="szakreferensiJelentesMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
+                <div class="menuOpenTextContainer">Szakreferensi jelentés</div>
+            </div>
+            <!-- Szakreferensi jelentés panel -->
+            <div id="szakreferensi_jelentes_panel" class="hiddenMenu">
+                <div class="panel-content">
+                    <label for="onlyYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szakreferensiJelentesYearFilter" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('szakreferensiJelentesError');">
+                    <br /><br />
+                    <label for="szakreferensi_jelentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="szakreferensi_jelentes_meter_groups"></select>
+                    <br /><br />
+                    <button class="vegleges-futtato-gomb" id="szakreferensiJelentesButton" onclick="szakreferensiJelentesContainer();">Lekérdezés</button>
+                    <p class="myErrorMessage" id="szakreferensiJelentesError"></p>
+                    <br />
+                </div>
+                <div class="panel-loader" id="szakreferensi-jelentes-panel-loader">
+                    <div class="three">
+                        <div class="loader" id="szakreferensi-jelentes-loader"></div>
+                    </div>
+                </div>
 
+            </div>
             <!--Fogyasztás összesítő panelt lenyitó gomb-->
             <div class="button-container" id="fogyasztasOsszesitoPanelOpen" onclick="changeDivDisplay('fogyasztas_osszesito', 'menu1DropDownArrowImage', 'fogyasztasOsszesitoPanelOpen');">
                 <div class="menuOpenImgContainer"><img id="menu1DropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
@@ -105,7 +127,7 @@
             <!-- Heti jelentés panelt lenyitó gomb -->
             <div class="button-container" id="hetiJelentesPanelOpen" onclick="changeDivDisplay('hetiJelentes', 'hetiJelentesMenuDropDownArrowImage', 'hetiJelentesPanelOpen');">
                 <div class="menuOpenImgContainer"><img id="hetiJelentesMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
-                <div class="menuOpenTextContainer">Heti Jelentés készítő</div>
+                <div class="menuOpenTextContainer">Heti jelentés készítő</div>
             </div>
 
             <!-- Heti jelentés panel -->
@@ -147,7 +169,7 @@
             <div id="villamos_adminisztracio_panel" class="hiddenMenu">
                 <!--<label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('villamosAdminisztracioError');">-->
                 <div class="panel-content">
-                    
+
                     <button class="vegleges-futtato-gomb" id="villamosAdminisztracioButton" onclick="villamosAdminisztracioContainer();">Lekérdezés</button>
                     <p class="myErrorMessage" id="villamosAdminisztracioError"></p>
                     <br />
@@ -190,8 +212,8 @@
             <div class="button-container" id="hodijAdminisztacioPanelOpen" onclick="changeDivDisplay('hodij_adminisztarcio_panel', 'hodijAdminisztracioDropDownArrowImage', 'hodijAdminisztacioPanelOpen');">
                 <div class="menuOpenImgContainer"><img id="hodijAdminisztracioDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
                 <div class="menuOpenTextContainer">Hődíj adminisztráció</div>
-             </div>
-            <!-- Minta panel -->
+            </div>
+            <!-- Hődj adminisztációs panel -->
             <div id="hodij_adminisztarcio_panel" class="hiddenMenu">
                 <div class="panel-content">
                     <button class="vegleges-futtato-gomb" id="hodijAdminisztracioButton" onclick="hodijAdminisztracioContainer();">Lekérdezés</button>
@@ -205,7 +227,7 @@
                 </div>
 
             </div>
-        <br />
+            <br />
 
             <!--------------------------LENYÍLÓ PANEL MINTA-------------------------->
             <!-- MINTA panelt lenyitó gomb -->

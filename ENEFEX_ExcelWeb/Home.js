@@ -4246,6 +4246,370 @@ function hodijAdminisztracioContainer() {
 
 }
 
+function szakreferensiJelentesContainer() {
+    var errorLabel = document.getElementById('szakreferensiJelentesError');
+    var maxRequestbeginDate = new Date();
+    var currentYear = maxRequestbeginDate.getFullYear();
+
+    // onlyYearFilter helyett más id
+    if (isNaN(document.getElementById('szakreferensiJelentesYearFilter').value) == true) {
+        errorLabel.style.display = 'block';
+        errorLabel.innerHTML = "A megadott év nem megfelelő formátumú. Megfelelő formátum (YYYY)"
+        return;
+    }
+
+    if (document.getElementById('szakreferensiJelentesYearFilter').value > currentYear) {
+        errorLabel.style.display = 'block';
+        errorLabel.innerHTML = "A megadott év a jövőben van."
+        return;
+    }
+
+
+    errorLabel.style.display = "block";
+    errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
+    setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "block");
+
+    // Lekérdezésekhez szükséges URL
+    var host = readCookie("enefexHost");
+    //Ebben a tömbbe fognak kerülni az excelbe feltöltendő adatok
+    var excelDataArray = []
+
+    //var threadLimit;
+
+    //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
+    importantDisableElements = setDisableElement();
+    var newDisableElements = ["szakreferensiJelentesYearFilter", "szakreferensi_jelentes_meter_groups"];
+    var actualDisableElements = newDisableElements.concat(importantDisableElements);
+    changElementsAvailability(actualDisableElements, true);
+
+    // Szükséges változók
+    var meterGroupArrayResult;
+
+
+
+    // Segédfüggvények
+    var meterGroup = function (callback) {
+
+        var getMeterGroupCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+            }
+            else {
+                if (result) {
+                    meterGroupArrayResult = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+                }
+            }
+        }
+
+        params = {};
+
+        params["query"] = "all";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        postAsyncGetData(host + "/ebill/billing/getMeterGroups", params, getMeterGroupCallback);
+
+    }
+
+    // Fő függvények
+    var getFeldolgozottMeresek = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        threadLimit = 10;
+
+        var innerCallbackDone = false;
+        var requestCounter = 0;
+
+        var feldolgozottMeresekDateArray = [];
+
+        var feldolgozottMeresekGetDate = document.getElementById('szakreferensiJelentesYearFilter').value
+        for (var i = 0; i <= 3; i++) {
+            feldolgozottMeresekDateArray.push((feldolgozottMeresekGetDate-i));
+        }
+
+        var meterGroupList = document.getElementById('szakreferensi_jelentes_meter_groups');
+        var meterGroupListSelectedText = meterGroupList.options[meterGroupList.selectedIndex].text;
+        // A szerverlekérdezéshez szükséges 'meter_gruop' paraméter értékét meghatározó változó
+        var meterGroupValue;
+
+        for (var i = 0; i < meterGroupArrayResult.length; i++) {
+            if (meterGroupArrayResult[i].nev == meterGroupListSelectedText) {
+                meterGroupValue = meterGroupArrayResult[i].id;
+                break;
+            }
+        }
+
+        var params = {};
+        params["meter_group"] = meterGroupValue;
+        params["napok_mutatasa"] = "false";
+        params["tankolas_is"] = "1";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+
+
+        var feldolgozottMeresekValues = function (item, innerCallback) {
+
+            var feldolgozottMeresekValuesCallback = function (err, feldolgozottMeresekValuesCallbackResult) {
+
+                var requiredServerDataArray = [
+                    { dataTag: "identifier", columnName: "A", headerText: "Mérő azonosító" },
+                    { dataTag: "name", columnName: "B", headerText: "Megnevezés" },
+                    { dataTag: "ho1", columnName: "C", headerText: item + "-01" },
+                    { dataTag: "ho2", columnName: "D", headerText: item + "-02" },
+                    { dataTag: "ho3", columnName: "E", headerText: item + "-03" },
+                    { dataTag: "ho4", columnName: "F", headerText: item + "-04" },
+                    { dataTag: "ho5", columnName: "G", headerText: item + "-05" },
+                    { dataTag: "ho6", columnName: "H", headerText: item + "-06" },
+                    { dataTag: "ho7", columnName: "I", headerText: item + "-07" },
+                    { dataTag: "ho8", columnName: "J", headerText: item + "-08" },
+                    { dataTag: "ho9", columnName: "K", headerText: item + "-09" },
+                    { dataTag: "ho10", columnName: "L", headerText: item + "-10" },
+                    { dataTag: "ho11", columnName: "M", headerText: item + "-11" },
+                    { dataTag: "ho12", columnName: "N", headerText: item + "-12" },
+                ];
+
+                //Fejlécek betöltése a jsonDataArray-ba
+                jsonDataInnerArray = [];
+                jsonDataArray = [];
+                requiredServerDataArray.forEach(function (element) {
+                    jsonDataInnerArray.push(element.headerText);
+                });
+                jsonDataArray.push(jsonDataInnerArray);
+                jsonDataInnerArray = [];
+
+                if (err) {
+                    errorLabel.innerHTML = err.error.message;
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    //Normálisan legenrálni a JSONArray változókat
+                    dataLength = feldolgozottMeresekValuesCallbackResult.data.length;
+                    dataInnerLength = requiredServerDataArray.length;
+                    if (dataLength > 0) {
+                        for (var i = 0; i < dataLength; i++) {
+                            jsonDataInnerArray = [];
+                            for (var j = 0; j < dataInnerLength; j++) {
+
+                                jsonDataInnerArray.push(feldolgozottMeresekValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+                    }
+
+                    var workSheetPrefixNumber = (feldolgozottMeresekGetDate - item);
+                    excelDataArray.push(
+                        {
+                            "sheetName": "IN_É" + workSheetPrefixNumber,
+                            "data": jsonDataArray,
+                        }
+                    )
+
+                    requestCounter++;
+                    if (requestCounter == feldolgozottMeresekDateArray.length) {
+                        //if (item == katPenzeszkozokArray[katPenzeszkozokArray.length - 1]) {
+                        dataLength = jsonDataArray.length - 1;
+
+                        innerCallback();
+                        innerCallbackDone = true;
+                        callback();
+
+                    }
+                    if (innerCallbackDone == false) {
+                        innerCallback();
+                    }
+
+                }
+            }
+
+            params["datum_meres_kezdete"] = item + "-01";
+            postAsyncGetData(host + "/ebill/summary/getFeldolgozottMeresek", params, feldolgozottMeresekValuesCallback);
+        };
+
+        async.eachLimit(
+            feldolgozottMeresekDateArray,
+            threadLimit,
+            feldolgozottMeresekValues,
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+    }
+    
+    //Függvény ami kezeli az excelt
+    //Munkalapokat hoz létre, munkalapokat tisztít és feétölti a megfelelő munkalapokat adatokkal
+    var workSheetHandler = function (callback_lvl1) {
+
+        var clearableSheet = [];
+        var addableSheet = [];
+
+        var separateWorksheets = function (callback_lvl2) {
+            // Ez a függvény a lekérdezéshez szükséges munkalapokat két külön tömbe teszi.
+            // A clearableSheet tömbbe teszi a már létező munkalapok nevét
+            // Az addableSheet tömbbe teszi a létrehozandó munkalapok nevét
+            Excel.run(function (context) {
+                var worksheets = context.workbook.worksheets;
+                worksheets.load('name');
+                return context.sync()
+                    .then(function () {
+                        var sheetFound;
+                        for (var i = 0; i < excelDataArray.length; i++) {
+                            sheetFound = false;
+                            for (var j = 0; j < worksheets.items.length; j++) {
+                                if (excelDataArray[i].sheetName == worksheets.items[j].name) {
+                                    sheetFound = true;
+                                    clearableSheet.push(worksheets.items[j].name);
+                                    break;
+                                }
+                            }
+                            if (sheetFound) {
+                                continue;
+                            }
+                            else {
+                                addableSheet.push(excelDataArray[i].sheetName);
+                            }
+
+                        }
+                        callback_lvl2();
+                    });
+            })
+
+        }
+
+        var clearSheets = function (callback_lvl2) {
+            // A clearSheets függvény tisztítja meg a megadott munkalapok tartalmát
+            if (clearableSheet) {
+                Excel.run(function (context) {
+                    var sheetsNames = clearableSheet;
+                    var sheets = context.workbook.worksheets;
+                    var sheetsNamesArrayLength = sheetsNames.length;
+                    var sheetName;
+                    var range;
+
+                    for (var i = 0; i < sheetsNamesArrayLength; i++) {
+                        sheetName = sheetsNames[i];
+                        range = sheets.getItem(sheetName).getRange();
+                        range.load("address");
+                        range.clear();
+
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback_lvl2();
+                        });
+                });
+            }
+        }
+
+        var addSheets = function (callback_lvl2) {
+            // Az addSheets függvény adj hozzá a munkafüzethez a szükséges munkalapokat
+            if (addableSheet) {
+                Excel.run(function (context) {
+                    var newSheets = addableSheet;
+                    var sheet = context.workbook.worksheets;
+                    var newSheetsArrayLength = newSheets.length;
+                    var sheetName;
+
+                    for (var i = 0; i < newSheetsArrayLength; i++) {
+                        sheetName = newSheets[i];
+                        newSheet = sheet.add(sheetName);
+                    }
+
+                    return context.sync()
+                        .then(function () {
+                            callback_lvl2();
+                        });
+                });
+            }
+        }
+
+        var loadDataToSheets = function (callback_lvl2) {
+            if (excelDataArray) {
+                Excel.run(function (context) {
+                    var sheet;
+                    var range;
+                    var columnName;
+                    var rowValue;
+
+                    ////Munkalap nevének meghatározása
+                    //sheet = context.workbook.worksheets.getItem("HHHCS szerződések");
+                    ////Adatokkal feltöltendő tartomány meghatározésa
+                    //range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                    ////Adatok feltöltése
+                    //range.values = jsonDataArray;
+                    //range.untrack();
+
+                    for (var i = 0; i < excelDataArray.length; i++) {
+                        sheet = context.workbook.worksheets.getItem(excelDataArray[i].sheetName);
+                        columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
+                        rowValue = excelDataArray[i].data.length;
+
+                        range = sheet.getRange("A1:" + columnName + rowValue);
+                        range.values = excelDataArray[i].data;
+                        range.untrack();
+
+                    }
+
+
+                    return context.sync()
+                        .then(function () {
+                            errorLabel.innerHTML = "";
+                            errorLabel.style.display = "none";
+                            changElementsAvailability(actualDisableElements, false);
+                            setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+                            callback_lvl2();
+                            callback_lvl1();
+                        });
+                });
+            }
+        }
+
+        async.series(
+            [
+                separateWorksheets,
+                clearSheets,
+                addSheets,
+                loadDataToSheets
+            ],
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+    }
+
+    async.series(
+        [
+            meterGroup,
+            getFeldolgozottMeresek,
+            workSheetHandler
+        ],
+        function (err) {
+            console.log('allfinished', err);
+        }
+    )
+}
+
 
 
 
