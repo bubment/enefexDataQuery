@@ -26,7 +26,7 @@
 
 
 </head>
-<body onload="fillDropDownList(); officeOnReady();">
+<body onload="fillDropDownList(); officeOnReady(); fillMenuInputs();">
 
     <div id="content-main">
         <!-- -------------Felső design rész---------- -->
@@ -46,7 +46,7 @@
             <!-- Szakreferensi jelentés panel -->
             <div id="szakreferensi_jelentes_panel" class="hiddenMenu">
                 <div class="panel-content">
-                    <label for="onlyYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szakreferensiJelentesYearFilter" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('szakreferensiJelentesError');">
+                    <label for="onlyYearFilter">Kezdő dátum: </label><input type="number" name="evSzuro" id="szakreferensiJelentesYearFilter" class="ownDatePicker" min="2015" placeholder="YYYY" onfocus="setErrorMessageDefault('szakreferensiJelentesError');">
                     <br /><br />
                     <label for="szakreferensi_jelentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="szakreferensi_jelentes_meter_groups"></select>
                     <br /><br />
@@ -72,10 +72,10 @@
             <div id="fogyasztas_osszesito" class="hiddenMenu">
                 <!--<label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2015-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');" onfocusout="fogyasztasOsszessitoDate();">-->
                 <div class="panel-content">
-                    <label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                    <label for="kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="kezdo_datum" class="ownDatePicker" name="kezdo_datum" placeholder="YYYY-MM-DD" onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
                     <br /><br />
                     <!--<label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2015-02-01 disabled>-->
-                    <label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
+                    <label for="veg_datum">Befejező dátum:</label><br /><input type="text" id="veg_datum" class="ownDatePicker" name="veg_datum" placeholder="YYYY-MM-DD" onfocus="setErrorMessageDefault('fogyasztasOsszesitoError');">
                     <br /><br />
                     <label for="fogyasztas_osszesito_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="fogyasztas_osszesito_meter_groups"></select>
                     <br /><br />
@@ -108,7 +108,7 @@
             <div id="feldolgozott_meresek" class="hiddenMenu">
 
                 <div class="panel-content">
-                    <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="onlyYearFilter" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('feldolgozottMeresekError');">
+                    <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="onlyYearFilter" class="ownDatePicker" min="2015" placeholder="YYYY" onfocus="setErrorMessageDefault('feldolgozottMeresekError');">
                     <br />
                     <br />
                     <label for="feldolgozott_meresek_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="feldolgozott_meresek_meter_groups"></select>
@@ -133,11 +133,11 @@
             <!-- Heti jelentés panel -->
             <div id="hetiJelentes" class="hiddenMenu">
                 <div class="panel-content">
-                    <label for="heti_jelentes_kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="heti_jelentes_kezdo_datum" class="ownDatePicker" name="kezdo_datum" value=2019-01-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
+                    <label for="heti_jelentes_kezdo_datum">Kezdő dátum:</label><br /><input type="text" id="heti_jelentes_kezdo_datum" class="ownDatePicker" name="kezdo_datum" placeholder="YYYY-MM-DD" onfocus="setErrorMessageDefault('hetiJelentesError');">
                     <select id="heti_jelentes_kezdo_ora"></select>
                     <label for="heti_jelentes_kezdo_ora">-tól</label>
                     <br /><br />
-                    <label for="heti_jelentes_veg_datum">Befejező dátum:</label><br /><input type="text" id="heti_jelentes_veg_datum" class="ownDatePicker" name="veg_datum" value=2019-02-01 onfocus="setErrorMessageDefault('hetiJelentesError');">
+                    <label for="heti_jelentes_veg_datum">Befejező dátum:</label><br /><input type="text" id="heti_jelentes_veg_datum" class="ownDatePicker" name="veg_datum" placeholder="YYYY-MM-DD" onfocus="setErrorMessageDefault('hetiJelentesError');">
                     <select id="heti_jelentes_befejezo_ora"></select>
                     <label for="heti_jelentes_befejezo_ora">-ig</label>
                     <br /><br />
@@ -195,7 +195,7 @@
                 <div class="panel-content">
                     <div class="panel-explain-text">Ezen a panelen lekérdezheti az Enefex webes felületén található feldolgozott számlákat a beviteli mezőben megadott tárgyévre és azt azt megelőző évre vonatkozóan.</div>
                     <br />
-                    <label for="szamlaOsszesitoYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szamlaOsszesitoYearFilter" class="ownDatePicker" value="2019" onfocus="setErrorMessageDefault('szamlaOsszesitoError');">
+                    <label for="szamlaOsszesitoYearFilter">Tárgyév: </label><input type="number" name="evSzuro" id="szamlaOsszesitoYearFilter" class="ownDatePicker" placeholder="YYYY" onfocus="setErrorMessageDefault('szamlaOsszesitoError');">
                     <br /><br />
                     <button class="vegleges-futtato-gomb" id="szamlaOsszesitoButton" onclick="szamlaOsszesitoContainer();">Lekérdezés</button>
                     <p class="myErrorMessage" id="szamlaOsszesitoError"></p>
@@ -238,7 +238,7 @@
             <!-- Minta panel -->
             <!--<div id="minta_panel" class="hiddenMenu">
         <div class="panel-content">
-            <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" value="2019" onfocus="setErrorMessageDefault('mintaError');">
+            <label for="onlyYearFilter">Év: </label><input type="number" name="evSzuro" id="mintapanelhezTartozoID" class="ownDatePicker" min="2015" placeholder="YYYY" onfocus="setErrorMessageDefault('mintaError');">
             <br /><br />
             <button class="vegleges-futtato-gomb" id="mintaButton" onclick="mintaRequestContainer();">Lekérdezés</button>
             <p class="myErrorMessage" id="mintaError"></p>
