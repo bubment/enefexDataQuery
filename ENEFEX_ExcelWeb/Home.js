@@ -4251,19 +4251,19 @@ function szakreferensiJelentesContainer() {
     var maxRequestbeginDate = new Date();
     var currentYear = maxRequestbeginDate.getFullYear();
 
-    // onlyYearFilter helyett más id
-    if (isNaN(document.getElementById('szakreferensiJelentesYearFilter').value) == true) {
+    var inputYear = document.getElementById('szakreferensiJelentesYearFilter').value.substring(0, 4);
+
+    if (isNaN(inputYear) == true) {
         errorLabel.style.display = 'block';
         errorLabel.innerHTML = "A megadott év nem megfelelő formátumú. Megfelelő formátum (YYYY)"
         return;
     }
 
-    if (document.getElementById('szakreferensiJelentesYearFilter').value > currentYear) {
+    if (inputYear > currentYear) {
         errorLabel.style.display = 'block';
         errorLabel.innerHTML = "A megadott év a jövőben van."
         return;
     }
-
 
     errorLabel.style.display = "block";
     errorLabel.innerHTML = '<span class="green-text">Szerverlekérdezés folymatban...</span>';
@@ -4283,7 +4283,27 @@ function szakreferensiJelentesContainer() {
     changElementsAvailability(actualDisableElements, true);
 
     // Szükséges változók
+    // EBBŐL MI KELL ELEJE ???????
+
+    var dateFrom = document.getElementById('heti_jelentes_kezdo_datum').value;
+    var dateTo = document.getElementById('heti_jelentes_veg_datum').value;
+
+    var savedOptionsList = document.getElementById('heti_jelentes_mentett_bealitasok');
+    var savedOptionsListSelectedText;
+    try {
+        savedOptionsListSelectedText = savedOptionsList.options[savedOptionsList.selectedIndex].text;
+    } catch (e) {
+        savedOptionsListSelectedText = ""
+    }
+
+    var meterGroupList = document.getElementById('heti_jelentes_meter_groups');
+    var meterGroupListSelectedText = meterGroupList.options[meterGroupList.selectedIndex].text;
+
+    // EBBŐL MI KELL VÉGE???????
     var meterGroupArrayResult;
+    var savedOptionsArray;
+    var testArray;
+    var meterTreeArray;
 
 
 
@@ -4320,6 +4340,108 @@ function szakreferensiJelentesContainer() {
 
     }
 
+    var getSavedGraphs = function (callback) {
+        var savedGraphsCallBack = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+            }
+            else {
+                if (result) {
+                    savedOptionsArray = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+                }
+            }
+        }
+
+        var params = {};
+        params["is_public"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+        postAsyncGetData(host + "/mdgraph/draw/getSavedGraphs", params, savedGraphsCallBack);
+
+    }
+
+    var getMeterTree = function (callback) {
+
+        var metreGroupCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+            }
+            else {
+                if (result) {
+                    meterTreeArray = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+                }
+            }
+        }
+
+        var params = {};
+
+        params["node"] = "";
+        params["page"] = "";
+
+        postAsyncGetData(host + "/mdgraph/draw/getMeterTree", params, metreGroupCallback);
+
+    }
+
+    var getMytest = function (callback) {
+        var savedGraphsCallBack = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
+            }
+            else {
+                if (result) {
+                    testArray = result;
+                    callback();
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
+                    changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
+                }
+            }
+        }
+
+        var params = {};
+        params["identifier_export"] = "true";
+        params["datetime_from"] = "2020-02-01;00:00";
+        params["datetime_to"] = "2020-03-01;00:00";
+        params["meter_list"] = "149,150,151,152";
+        params["baseline_list"] = "";
+        params["type_list"] = "1,1,1,1";
+        params["serie_type"] = "11";
+        params["resolution"] = "0";
+        params["type"] = "1";
+        params["sendTo"] = "";
+        params["checker"] = "0";
+        params["extraInfo"] = "1";
+        params["fake"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "9999999";
+
+        postAsyncGetData(host + "/mdgraph/draw/getGraphSeries", params, savedGraphsCallBack);
+
+    }
+
     // Fő függvények
     var getFeldolgozottMeresek = function (callback) {
         //Az excelbe bemásolandó range sorainak számát meghatározó változó
@@ -4339,7 +4461,7 @@ function szakreferensiJelentesContainer() {
 
         var feldolgozottMeresekDateArray = [];
 
-        var feldolgozottMeresekGetDate = document.getElementById('szakreferensiJelentesYearFilter').value
+        var feldolgozottMeresekGetDate = parseInt(document.getElementById('szakreferensiJelentesYearFilter').value.substring(0, 4));
         for (var i = 0; i <= 3; i++) {
             feldolgozottMeresekDateArray.push((feldolgozottMeresekGetDate-i));
         }
@@ -4454,6 +4576,191 @@ function szakreferensiJelentesContainer() {
             }
         );
 
+    }
+
+    var getMentettBeallitasokGrafikonAdatok = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        var mentettBeallitasokGrafikonAdatokCallback = function (err, result) {
+            if (err) {
+                errorLabel.innerHTML = err.error.message;
+                changElementsAvailability(actualDisableElements, false);
+                setPanelLoader("szakreferensi-jelentes-panel-loader", "szakreferensi-jelentes-loader", "none");
+            }
+            else {
+                if (result) {
+                    var extraInfoObj = result.extraInfo;
+                    var extraInfoKeysArray = [];
+                    for (var k in extraInfoObj) extraInfoKeysArray.push(k.replace("value", ""));
+
+                    dataLength = Object.keys(meterTreeArray.data).length;
+                    var headerArray = [];
+
+                    extraInfoKeysArray.forEach(function (element) {
+
+                        for (var i = 0; i < dataLength; i++) {
+                            var dataSecondLevelLength = Object.keys(meterTreeArray.data[i].data).length
+                            for (var j = 0; j < dataSecondLevelLength; j++) {
+                                if (meterTreeArray.data[i].data[j].meter_id == element) {
+
+                                    var elementHeaderCompatibleString = "value" + element;
+                                    headerArray.push({ extraInfoKey: elementHeaderCompatibleString, extraInfoText: meterTreeArray.data[i].data[j].text });
+                                    i = dataLength;
+                                    break;
+                                }
+                            }
+                        }
+                    });
+
+                    var requiredServerDataArray = [{ dataTag: "tstamp", columnName: "A", headerText: "Dátum" }];
+
+                    var tmp = 1;
+                    headerArray.forEach(function (element) {
+                        requiredServerDataArray.push({ dataTag: element.extraInfoKey, columnName: excelColumNames[tmp], headerText: element.extraInfoText });
+                        tmp++;
+                    });
+
+                    jsonDataArray = [];
+                    jsonDataInnerArray = [];
+
+                    //Fejlécek betöltése a jsonDataArray-ba
+                    requiredServerDataArray.forEach(function (element) {
+                        jsonDataInnerArray.push(element.headerText);
+                    });
+                    jsonDataArray.push(jsonDataInnerArray);
+                    jsonDataInnerArray = [];
+
+                    dataLength = Object.keys(result.data).length;
+                    dataInnerLength = requiredServerDataArray.length;
+
+                    // Adattábla betöltése a jsonDataArray-ba
+                    var correctDateWithFormat;
+                    for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
+                        jsonDataInnerArray = [];
+                        for (var i = 0; i < dataInnerLength; i++) {
+                            if (requiredServerDataArray[i].dataTag == "tstamp") {
+                                var d = new Date(result.data[tmpRow][requiredServerDataArray[i].dataTag]);
+
+                                correctDateWithFormat = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : " " + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString()) + ":00";
+
+                                jsonDataInnerArray.push(correctDateWithFormat);
+                            }
+                            else {
+                                jsonDataInnerArray.push(result.data[tmpRow][requiredServerDataArray[i].dataTag]);
+                            }
+                        }
+                        jsonDataArray.push(jsonDataInnerArray);
+                    }
+
+                    //asd = jsonDataArray[1][0];
+                    //console.log(asd);
+                    //console.log(typeof asd);
+                    //asd = 2;
+
+
+                    // ---------------------EXCEL RÉSZ ELEJE --------------------
+
+                    Excel.run(function (context) {
+
+                        var sheet = context.workbook.worksheets.getItem("IN_FG");
+
+                        var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
+
+                        //Excel feltöltése adatokkal
+                        var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
+                        range.values = jsonDataArray;
+                        range.untrack();
+
+                        // Csak a return után lesznek láthatóak az adatok az excelben
+                        boldRange.format.font.bold = true;
+                        return context.sync();
+                    })
+
+                    // ---------------------EXCEL RÉSZ VÉGE --------------------
+
+                    //Caolan async miatt
+                    callback();
+
+                }
+                else {
+                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás";
+                    changElementsAvailability(actualDisableElements, false);
+                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
+                }
+            }
+        }
+
+        //A datetime_from változó lesz a getGraphSeries lekérdezés datetime_from paramétere
+        var datetime_from = dateFrom + ";" + dateFromHourSelectedText;
+
+        //A datetime_to változó lesz a getGraphSeries lekérdezés datetime_to paramétere
+        var datetime_to = dateTo + ";" + dateToHourSelectedText;
+
+        for (var i = 0; i < savedOptionsArray.length; i++) {
+            if (savedOptionsArray[i].name == savedOptionsListSelectedText) {
+                var savedOptionsMeters = savedOptionsArray[i].meters;
+                //A savedOptionsType változó lesz a getGraphSeries lekérdezés type paramétere
+                var savedOptionsType = savedOptionsArray[i].type;
+                //A savedOptionsResolution változó lesz a getGraphSeries lekérdezés resolution paramétere
+                var savedOptionsResolution = savedOptionsArray[i].resolution;
+                break;
+            }
+        }
+
+        //A savedOptionsMeters változó lesz a getGraphSeries lekérdezés meter_list paramétere
+        savedOptionsMeters = savedOptionsMeters.replace(/m/g, "");
+
+        var savedOptionsMetersArray = new Array();
+        savedOptionsMetersArray = savedOptionsMeters.split(",");
+
+        dataLength = Object.keys(meterTreeArray.data).length
+
+        var type_list_string = "";
+
+        savedOptionsMetersArray.forEach(function (element) {
+
+            for (var i = 0; i < dataLength; i++) {
+                var dataSecondLevelLength = Object.keys(meterTreeArray.data[i].data).length
+                for (var j = 0; j < dataSecondLevelLength; j++) {
+                    if (meterTreeArray.data[i].data[j].meter_id == element) {
+
+                        type_list_string = type_list_string.concat(meterTreeArray.data[i].data[j].data_type_id, ",");
+                        i = dataLength;
+                        break;
+                    }
+                }
+            }
+        });
+        //A type_list_string változó lesz getGraphSeries lekérdezés type_list paramétere
+        type_list_string = type_list_string.slice(0, -1);
+
+        var params = {};
+
+        params["datetime_from"] = datetime_from;
+        params["datetime_to"] = datetime_to;
+        params["meter_list"] = savedOptionsMeters;
+        params["baseline_list"] = "";
+        params["type_list"] = type_list_string;
+        params["serie_type"] = "11";
+        params["resolution"] = savedOptionsResolution;
+        params["type"] = savedOptionsType;
+        params["sendTo"] = "";
+        params["checker"] = "0";
+        params["extraInfo"] = "1";
+        params["fake"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "9999999";
+
+        postAsyncGetData(host + "/mdgraph/draw/getGraphSeries", params, mentettBeallitasokGrafikonAdatokCallback);
     }
     
     //Függvény ami kezeli az excelt
@@ -4600,7 +4907,10 @@ function szakreferensiJelentesContainer() {
 
     async.series(
         [
+            //getMytest,
             meterGroup,
+            getSavedGraphs,
+            getMeterTree,
             getFeldolgozottMeresek,
             workSheetHandler
         ],
