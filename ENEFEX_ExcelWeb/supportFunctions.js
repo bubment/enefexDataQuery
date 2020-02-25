@@ -182,6 +182,46 @@ function fillDropDownList() {
     });
 }
 
+//A függvény, ami feltölti a szükséges inputokat (Évek, hónapok, stb.) a megfelelő értékekkel
+function fillMenuInputs() {
+    var actualDate = new Date();
+    var currentYear = actualDate.getFullYear();
+    var currentMonth = (actualDate.getMonth() + 1);
+    var pastMonth = actualDate.getMonth();
+    var currentDay = actualDate.getDate();
+
+    if (pastMonth.toString().length == 1) {
+        pastMonth = "0" + pastMonth;
+    }
+
+    if (currentMonth.toString().length == 1) {
+        currentMonth = "0" + currentMonth;
+    }
+    
+    if (currentDay.toString().length == 1) {
+        currentDay = "0" + currentDay;
+    }
+
+    var dateType1 = currentYear;
+    var dateType2 = currentYear + "-" + pastMonth + "-01"
+    var dateType3 = currentYear + "-" + currentMonth + "-01"
+    var dateType4 = currentYear + "-" + pastMonth
+
+    if (pastMonth == "00") {
+        dateType2 = (currentYear - 1) + "-12-01";
+        dateType4 = (currentYear - 1) + "-12";
+    }
+
+
+    document.getElementById("szakreferensiJelentesYearFilter").value = dateType1;
+    document.getElementById("kezdo_datum").value = dateType2;
+    document.getElementById("veg_datum").value = dateType3;
+    document.getElementById("onlyYearFilter").value = dateType1;
+    document.getElementById("heti_jelentes_kezdo_datum").value = dateType2;
+    document.getElementById("heti_jelentes_veg_datum").value = dateType3;
+    document.getElementById("szamlaOsszesitoYearFilter").value = dateType1;
+}
+
 //Ez a függvény teszteli, hogy a formokban megaott dátumok megdfelelő formátumban lettek-e megadva.
 function dateRegExTest(beginDateId, endDateId, errorLabelId) {
 
