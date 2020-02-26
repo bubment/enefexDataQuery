@@ -4251,17 +4251,26 @@ function szakreferensiJelentesContainer() {
     var maxRequestbeginDate = new Date();
     var currentYear = maxRequestbeginDate.getFullYear();
 
+    var inputFullContent = document.getElementById('szakreferensiJelentesYearFilter').value;
     var inputYear = document.getElementById('szakreferensiJelentesYearFilter').value.substring(0, 4);
 
+    // Input megfelelőségi és Regex teszetek
     if (isNaN(inputYear) == true) {
         errorLabel.style.display = 'block';
-        errorLabel.innerHTML = "A megadott év nem megfelelő formátumú. Megfelelő formátum (YYYY)"
+        errorLabel.innerHTML = "A megadott év nem megfelelő."
         return;
     }
 
     if (inputYear > currentYear) {
         errorLabel.style.display = 'block';
         errorLabel.innerHTML = "A megadott év a jövőben van."
+        return;
+    }
+
+    if (/([12]\d{3}-(0[1-9]|1[0-2]))/
+        .test(inputFullContent) == false) {
+        errorLabel.style.display = 'block';
+        errorLabel.innerHTML = "A tárgy időszak dátum nem megfelelő formátumú. Helyes formátum (YYYY-MM)"
         return;
     }
 
