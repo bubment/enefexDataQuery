@@ -4267,7 +4267,7 @@ function szakreferensiJelentesContainer() {
         return;
     }
 
-    if (/([12]\d{3}-(0[1-9]|1[0-2]))/
+    if (/^([12]\d{3}-(0[1-9]|1[0-2]))$/
         .test(inputFullContent) == false) {
         errorLabel.style.display = 'block';
         errorLabel.innerHTML = "A tárgy időszak dátum nem megfelelő formátumú. Helyes formátum (YYYY-MM)"
