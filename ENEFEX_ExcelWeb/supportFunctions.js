@@ -213,7 +213,7 @@ function fillMenuInputs() {
     }
 
 
-    document.getElementById("szakreferensiJelentesYearFilter").value = dateType1;
+    document.getElementById("szakreferensiJelentesYearFilter").value = dateType4;
     document.getElementById("kezdo_datum").value = dateType2;
     document.getElementById("veg_datum").value = dateType3;
     document.getElementById("onlyYearFilter").value = dateType1;
