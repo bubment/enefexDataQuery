@@ -1411,17 +1411,6 @@ function hetiJelentesKeszitoContainer() {
     }
 
     async.series(
-        //[
-        //    // Adatokat tartalmazó JSON lekérdezések paramétereit meghatározó függvények
-        //    meterGroup,
-        //    getMeterTree,
-        //    getSavedGraphs,
-        //    workSheetHandler,
-        //    getHetiAlapvonalSzamertekek,
-        //    getMentettBeallitasokGrafikonAdatok,
-        //    //Mindenképp a getHetiFogyasztasOsszesito legyen az utolsó async lekérdezés
-        //    getHetiFogyasztasOsszesito
-        //],
         asyncSeriesFunctionsArray,
         function (err) {
             console.log('allfinished', err);
@@ -4287,17 +4276,12 @@ function szakreferensiJelentesContainer() {
 
     //Menü elérhetetlenné tétele a lekérdezés alatt, hogy a felhasználó ne tudja elcseszni
     importantDisableElements = setDisableElement();
-    var newDisableElements = ["szakreferensiJelentesYearFilter", "szakreferensi_jelentes_meter_groups"];
+    var newDisableElements = ["szakreferensiJelentesYearFilter", "szakreferensi_jelentes_meter_groups", "szakreferensi_jelentes_mentett_bealitasok"];
     var actualDisableElements = newDisableElements.concat(importantDisableElements);
     changElementsAvailability(actualDisableElements, true);
 
     // Szükséges változók
-    // EBBŐL MI KELL ELEJE ???????
-
-    var dateFrom = document.getElementById('heti_jelentes_kezdo_datum').value;
-    var dateTo = document.getElementById('heti_jelentes_veg_datum').value;
-
-    var savedOptionsList = document.getElementById('heti_jelentes_mentett_bealitasok');
+    var savedOptionsList = document.getElementById('szakreferensi_jelentes_mentett_bealitasok');
     var savedOptionsListSelectedText;
     try {
         savedOptionsListSelectedText = savedOptionsList.options[savedOptionsList.selectedIndex].text;
@@ -4305,16 +4289,9 @@ function szakreferensiJelentesContainer() {
         savedOptionsListSelectedText = ""
     }
 
-    var meterGroupList = document.getElementById('heti_jelentes_meter_groups');
-    var meterGroupListSelectedText = meterGroupList.options[meterGroupList.selectedIndex].text;
-
-    // EBBŐL MI KELL VÉGE???????
     var meterGroupArrayResult;
     var savedOptionsArray;
-    var testArray;
     var meterTreeArray;
-
-
 
     // Segédfüggvények
     var meterGroup = function (callback) {
@@ -4406,48 +4383,6 @@ function szakreferensiJelentesContainer() {
         params["page"] = "";
 
         postAsyncGetData(host + "/mdgraph/draw/getMeterTree", params, metreGroupCallback);
-
-    }
-
-    var getMytest = function (callback) {
-        var savedGraphsCallBack = function (err, result) {
-            if (err) {
-                errorLabel.innerHTML = err.error.message;
-                changElementsAvailability(actualDisableElements, false);
-                setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
-            }
-            else {
-                if (result) {
-                    testArray = result;
-                    callback();
-                }
-                else {
-                    errorLabel.innerHTML = "A szerverről lekért JSON Object üres vagy hibás"
-                    changElementsAvailability(actualDisableElements, false);
-                    setPanelLoader("heti-jelentes-panel-loader", "heti-jelentes-loader", "none");
-                }
-            }
-        }
-
-        var params = {};
-        params["identifier_export"] = "true";
-        params["datetime_from"] = "2020-02-01;00:00";
-        params["datetime_to"] = "2020-03-01;00:00";
-        params["meter_list"] = "149,150,151,152";
-        params["baseline_list"] = "";
-        params["type_list"] = "1,1,1,1";
-        params["serie_type"] = "11";
-        params["resolution"] = "0";
-        params["type"] = "1";
-        params["sendTo"] = "";
-        params["checker"] = "0";
-        params["extraInfo"] = "1";
-        params["fake"] = "0";
-        params["page"] = "1";
-        params["start"] = "0";
-        params["limit"] = "9999999";
-
-        postAsyncGetData(host + "/mdgraph/draw/getGraphSeries", params, savedGraphsCallBack);
 
     }
 
@@ -4621,7 +4556,7 @@ function szakreferensiJelentesContainer() {
                                 if (meterTreeArray.data[i].data[j].meter_id == element) {
 
                                     var elementHeaderCompatibleString = "value" + element;
-                                    headerArray.push({ extraInfoKey: elementHeaderCompatibleString, extraInfoText: meterTreeArray.data[i].data[j].text });
+                                    headerArray.push({ extraInfoKey: elementHeaderCompatibleString, extraInfoText: meterTreeArray.data[i].data[j].identifier });
                                     i = dataLength;
                                     break;
                                 }
@@ -4652,6 +4587,7 @@ function szakreferensiJelentesContainer() {
 
                     // Adattábla betöltése a jsonDataArray-ba
                     var correctDateWithFormat;
+                    var isHour = false;
                     for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
                         jsonDataInnerArray = [];
                         for (var i = 0; i < dataInnerLength; i++) {
@@ -4660,41 +4596,37 @@ function szakreferensiJelentesContainer() {
 
                                 correctDateWithFormat = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : " " + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString()) + ":00";
 
+                                goddamn = (correctDateWithFormat.substring(correctDateWithFormat.length - 5, correctDateWithFormat.length - 3));
+                                if ((correctDateWithFormat.substring(correctDateWithFormat.length - 5,correctDateWithFormat.length - 3)) != "00") {
+                                    break;
+                                    isHour = false;
+                                }
+                                else {
+                                    isHour = true;
+                                }
                                 jsonDataInnerArray.push(correctDateWithFormat);
+
                             }
                             else {
                                 jsonDataInnerArray.push(result.data[tmpRow][requiredServerDataArray[i].dataTag]);
                             }
                         }
-                        jsonDataArray.push(jsonDataInnerArray);
+
+                        if (isHour) {
+                            jsonDataArray.push(jsonDataInnerArray);
+                            isHour = false;
+                        } else {
+                            continue;
+                        }
+                        
                     }
 
-                    //asd = jsonDataArray[1][0];
-                    //console.log(asd);
-                    //console.log(typeof asd);
-                    //asd = 2;
-
-
-                    // ---------------------EXCEL RÉSZ ELEJE --------------------
-
-                    Excel.run(function (context) {
-
-                        var sheet = context.workbook.worksheets.getItem("IN_FG");
-
-                        var boldRange = sheet.getRange("1:1").load("values, rowCount, columnCount");
-
-                        //Excel feltöltése adatokkal
-                        var range = sheet.getRange("A1:" + excelColumNames[dataInnerLength - 1] + (dataLength + 1));
-                        range.values = jsonDataArray;
-                        range.untrack();
-
-                        // Csak a return után lesznek láthatóak az adatok az excelben
-                        boldRange.format.font.bold = true;
-                        return context.sync();
-                    })
-
-                    // ---------------------EXCEL RÉSZ VÉGE --------------------
-
+                    excelDataArray.push(
+                        {
+                            "sheetName": "IN_D0",
+                            "data": jsonDataArray,
+                        }
+                    )
                     //Caolan async miatt
                     callback();
 
@@ -4708,10 +4640,22 @@ function szakreferensiJelentesContainer() {
         }
 
         //A datetime_from változó lesz a getGraphSeries lekérdezés datetime_from paramétere
-        var datetime_from = dateFrom + ";" + dateFromHourSelectedText;
+        var datetime_from = inputFullContent + "-01;00:00";
 
         //A datetime_to változó lesz a getGraphSeries lekérdezés datetime_to paramétere
-        var datetime_to = dateTo + ";" + dateToHourSelectedText;
+        let monthCheck = parseInt(inputFullContent.substring(5, 7));
+        if (monthCheck == 12) {
+            datetime_to = (parseInt(inputFullContent.substring(0, 4)) + 1) + "-01-01;06:00"
+        }
+        else {
+            if (monthCheck < 9) {
+                datetime_to = inputFullContent.substring(0, 4) + "-0" + (monthCheck + 1) + "-01;06:00"
+            } else {
+                datetime_to = inputFullContent.substring(0, 4) + "-" + (monthCheck + 1) + "-01;06:00"
+            }
+        }
+
+
 
         for (var i = 0; i < savedOptionsArray.length; i++) {
             if (savedOptionsArray[i].name == savedOptionsListSelectedText) {
@@ -4914,15 +4858,34 @@ function szakreferensiJelentesContainer() {
         );
     }
 
+    var asyncSeriesFunctionsArray = [meterGroup,
+        getSavedGraphs,
+        getMeterTree,
+        getFeldolgozottMeresek,
+        getMentettBeallitasokGrafikonAdatok,
+        workSheetHandler
+    ];
+
+    if (document.getElementById('szakreferensi_jelentes_meter_groups').options.length == 0) {
+        for (var i = 0; i < asyncSeriesFunctionsArray.length; i++) {
+            if (asyncSeriesFunctionsArray[i] == getFeldolgozottMeresek) {
+                asyncSeriesFunctionsArray.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    if (document.getElementById('szakreferensi_jelentes_mentett_bealitasok').options.length == 0) {
+        for (var i = 0; i < asyncSeriesFunctionsArray.length; i++) {
+            if (asyncSeriesFunctionsArray[i] == getMentettBeallitasokGrafikonAdatok) {
+                asyncSeriesFunctionsArray.splice(i, 1);
+                break;
+            }
+        }
+    }
+
     async.series(
-        [
-            //getMytest,
-            meterGroup,
-            getSavedGraphs,
-            getMeterTree,
-            getFeldolgozottMeresek,
-            workSheetHandler
-        ],
+        asyncSeriesFunctionsArray,
         function (err) {
             console.log('allfinished', err);
         }

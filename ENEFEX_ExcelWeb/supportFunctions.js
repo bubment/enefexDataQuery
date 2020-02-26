@@ -69,7 +69,7 @@ function fillDropDownList() {
                         "fogyasztas_osszesito_meter_groups",
                         "feldolgozott_meresek_meter_groups",
                         "heti_jelentes_meter_groups",
-                        "szakreferensi_jelentes_meter_groups"
+                        "szakreferensi_jelentes_meter_groups",
                     ]
 
                     meterGroupListsArray.forEach(fillMeterGroupLists);
@@ -114,16 +114,33 @@ function fillDropDownList() {
             else {
                 if (result) {
 
+                    var savedGraphsArray = [
+                        "szakreferensi_jelentes_mentett_bealitasok",
+                        "heti_jelentes_mentett_bealitasok"
+                    ]
 
+                    savedGraphsArray.forEach(fillMeterGroupLists);
+
+                    var selectedList;
+                    var actOption
+
+                    function fillMeterGroupLists(item) {
+                        result.forEach(function (element) {
+                            selectedList = document.getElementById(item);
+                            actOption = document.createElement("option");
+                            actOption.text = element.name;
+                            selectedList.add(actOption);
+                        });
+                    }
                     // Mentett beállítások listák feltöltse
 
-                    x = document.getElementById("heti_jelentes_mentett_bealitasok");
+                    //x = document.getElementById("heti_jelentes_mentett_bealitasok");
 
-                    result.forEach(function (element) {
-                        var option = document.createElement("option");
-                        option.text = element.name;
-                        x.add(option);
-                    });
+                    //result.forEach(function (element) {
+                    //    var option = document.createElement("option");
+                    //    option.text = element.name;
+                    //    x.add(option);
+                    //});
 
                     callback();
                 }
