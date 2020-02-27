@@ -4715,6 +4715,182 @@ function szakreferensiJelentesContainer() {
 
         postAsyncGetData(host + "/mdgraph/draw/getGraphSeries", params, mentettBeallitasokGrafikonAdatokCallback);
     }
+
+    var getFogyasztasOsszesito = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        threadLimit = 10;
+
+        var innerCallbackDone = false;
+        var requestCounter = 0;
+
+        var fogyasztasOsszesitoDateArray = [];
+
+        if (document.getElementById("szakreferensi_jelentes_eves_lekerdezes_checkbox").checked == false) {
+            fogyasztasOsszesitoDateArray.push(inputFullContent);
+        }
+        else {
+            for (var i = 1; i <= 12; i++) {
+                if (i.toString().length == 1) {
+                    monthValue = "0" + i;
+                } else {
+                    monthValue = i;
+                }
+                fogyasztasOsszesitoDateArray.push(inputYear + "-" + monthValue);
+            }
+        }
+
+        var meterGroupList = document.getElementById('szakreferensi_jelentes_meter_groups');
+        var meterGroupListSelectedText = meterGroupList.options[meterGroupList.selectedIndex].text;
+        // A szerverlekérdezéshez szükséges 'meter_gruop' paraméter értékét meghatározó változó
+        var meterGroupValue;
+
+        for (var i = 0; i < meterGroupArrayResult.length; i++) {
+            if (meterGroupArrayResult[i].nev == meterGroupListSelectedText) {
+                meterGroupValue = meterGroupArrayResult[i].id;
+                break;
+            }
+        }
+
+        var params = {};
+        params["meter_group"] = meterGroupValue;
+        params["sendTo"] = "screen";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+
+
+        var fogyasztasOsszesitoValues = function (item, innerCallback) {
+            var workSheetPrefixNumber = parseInt(item.substring(item.length - 2, item.length));
+
+            var fogyasztasOsszesitoValuesCallback = function (err, fogyasztasOsszesitoValuesCallbackResult) {
+
+                var requiredServerDataArray = [
+                    { dataTag: "meter_name", columnName: "A", headerText: "Mérés neve" },
+                    { dataTag: "meter_identifier", columnName: "B", headerText: "Mérő azonosító" },
+                    { dataTag: "pod_azonosito", columnName: "C", headerText: "POD" },
+                    { dataTag: "idoszak_kezdete", columnName: "D", headerText: "Időszak kezdete" },
+                    { dataTag: "idoszak_vege", columnName: "E", headerText: "Időszak vége" },
+                    { dataTag: "tarifa_hosszu_nev", columnName: "F", headerText: "Tarifa" },
+                    { dataTag: "lekotott_teljesitmeny", columnName: "G", headerText: "Lekötött telj." },
+                    { dataTag: "lekotott_teljesitmeny_mertekegyseg", columnName: "H", headerText: "[]" },
+                    { dataTag: "operativ_teljesitmeny", columnName: "I", headerText: "Operatív teljesítmény" },
+                    { dataTag: "operativ_teljesitmeny_mertekegyseg", columnName: "J", headerText: "[]" },
+                    { dataTag: "max_teljesitmeny", columnName: "K", headerText: "Max. telj." },
+                    { dataTag: "max_teljesitmeny_mertekegyseg", columnName: "L", headerText: "[]" },
+                    { dataTag: "fogyasztas", columnName: "M", headerText: "Fogyasztás" },
+                    { dataTag: "fogyasztas_mertekegyseg", columnName: "N", headerText: "[]" },
+                    { dataTag: "fogyasztas_elozo_ev", columnName: "O", headerText: "Előző évi fogyasztás" },
+                    { dataTag: "fogyasztas_elozo_ev_mertekegyseg", columnName: "P", headerText: "[]" },
+                    { dataTag: "induktiv_tulfogyasztas", columnName: "Q", headerText: "Induktív túl fogy." },
+                    { dataTag: "induktiv_tulfogyasztas_mertekegyseg", columnName: "R", headerText: "[]" },
+                    { dataTag: "kapacitiv_fogyasztas", columnName: "S", headerText: "Kapacitív fogy." },
+                    { dataTag: "kapacitiv_fogyasztas_mertekegyseg", columnName: "T", headerText: "[]" },
+
+
+ 
+                ];
+
+                //Fejlécek betöltése a jsonDataArray-ba
+                jsonDataInnerArray = [];
+                jsonDataArray = [];
+                requiredServerDataArray.forEach(function (element) {
+                    jsonDataInnerArray.push(element.headerText);
+                });
+                jsonDataArray.push(jsonDataInnerArray);
+                jsonDataInnerArray = [];
+
+                if (err) {
+                    errorLabel.innerHTML = err.error.message;
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    //Normálisan legenrálni a JSONArray változókat
+                    dataLength = fogyasztasOsszesitoValuesCallbackResult.data.length;
+                    dataInnerLength = requiredServerDataArray.length;
+                    if (dataLength > 0) {
+                        for (var i = 0; i < dataLength; i++) {
+                            jsonDataInnerArray = [];
+                            for (var j = 0; j < dataInnerLength; j++) {
+
+                                jsonDataInnerArray.push(fogyasztasOsszesitoValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+                    }
+
+                    //var workSheetPrefixNumber = parseInt(item.substring(item.length - 2, item.length));
+
+
+
+                    excelDataArray.push(
+                        {
+                            "sheetName": "IN_F" + workSheetPrefixNumber,
+                            "data": jsonDataArray,
+                        }
+                    )
+
+                    requestCounter++;
+                    if (requestCounter == fogyasztasOsszesitoDateArray.length) {
+                        //if (item == katPenzeszkozokArray[katPenzeszkozokArray.length - 1]) {
+                        dataLength = jsonDataArray.length - 1;
+
+                        innerCallback();
+                        innerCallbackDone = true;
+                        callback();
+
+                    }
+                    if (innerCallbackDone == false) {
+                        innerCallback();
+                    }
+
+                }
+            }
+        // EZT MEGCSINÁLNI RENDESEN
+            // params["date_to"] megcsinálása úgy hogy params["date_from"] + 1 hónap legyen
+            if (workSheetPrefixNumber.toString().length == 1 && workSheetPrefixNumber != 9) {
+                params["date_to"] = item.substring(0, 4) + "0" + (workSheetPrefixNumber + 1) + "-01"; //T00:00:00
+            } else {
+                params["date_to"] = item.substring(0, 4) + (workSheetPrefixNumber + 1) + "-01"; //T00:00:00
+            }
+
+            switch (true) {
+                case (workSheetPrefixNumber == 12):
+                    params["date_to"] = "" + (parseInt(item.substring(0, 4)) + 1) + "-01-01";//T00:00:00
+                    break;
+                case (workSheetPrefixNumber >= 9):
+                    params["date_to"] = "" + item.substring(0, 4) + "-" + (workSheetPrefixNumber + 1) + "-01"//T00:00:00
+                    break;
+                case (workSheetPrefixNumber > 0 || workSheetPrefixNumber < 9):
+                    params["date_to"] = "" + item.substring(0, 4) + "-0" + (workSheetPrefixNumber + 1) + "-01"; //T00:00:00
+                    break;
+                default: console.log("There are problems with workSheetPrefixNumber in fogyasztasOsszesitoValues function");
+            }
+        // EZT MEGCSINÁLNI RENDESEN
+            params["date_from"] = item + "-01";//T00:00:00
+            postAsyncGetData(host + "/ebill/billing/getFogyasztasOsszesito2", params, fogyasztasOsszesitoValuesCallback);
+        };
+
+        async.eachLimit(
+            fogyasztasOsszesitoDateArray,
+            threadLimit,
+            fogyasztasOsszesitoValues,
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+    }
     
     //Függvény ami kezeli az excelt
     //Munkalapokat hoz létre, munkalapokat tisztít és feétölti a megfelelő munkalapokat adatokkal
@@ -4861,8 +5037,9 @@ function szakreferensiJelentesContainer() {
     var asyncSeriesFunctionsArray = [meterGroup,
         getSavedGraphs,
         getMeterTree,
-        getFeldolgozottMeresek,
-        getMentettBeallitasokGrafikonAdatok,
+        //getFeldolgozottMeresek,
+        //getMentettBeallitasokGrafikonAdatok,
+        getFogyasztasOsszesito,
         workSheetHandler
     ];
 
