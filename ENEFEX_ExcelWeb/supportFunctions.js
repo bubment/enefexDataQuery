@@ -68,7 +68,7 @@ function fillDropDownList() {
                     var meterGroupListsArray = [
                         "fogyasztas_osszesito_meter_groups",
                         "feldolgozott_meresek_meter_groups",
-                        "heti_jelentes_meter_groups",
+                        //"heti_jelentes_meter_groups",
                         "szakreferensi_jelentes_meter_groups",
                     ]
 
@@ -116,7 +116,7 @@ function fillDropDownList() {
 
                     var savedGraphsArray = [
                         "szakreferensi_jelentes_mentett_bealitasok",
-                        "heti_jelentes_mentett_bealitasok"
+                        //"heti_jelentes_mentett_bealitasok"
                     ]
 
                     savedGraphsArray.forEach(fillMeterGroupLists);
@@ -132,15 +132,6 @@ function fillDropDownList() {
                             selectedList.add(actOption);
                         });
                     }
-                    // Mentett beállítások listák feltöltse
-
-                    //x = document.getElementById("heti_jelentes_mentett_bealitasok");
-
-                    //result.forEach(function (element) {
-                    //    var option = document.createElement("option");
-                    //    option.text = element.name;
-                    //    x.add(option);
-                    //});
 
                     callback();
                 }
@@ -175,28 +166,28 @@ function fillDropDownList() {
 
     // Heti jelentésnél az órák feltöltése
 
-    x = document.getElementById("heti_jelentes_kezdo_ora");
-    y = document.getElementById("heti_jelentes_befejezo_ora");
+    //x = document.getElementById("heti_jelentes_kezdo_ora");
+    //y = document.getElementById("heti_jelentes_befejezo_ora");
 
-    hours.forEach(function (element) {
-        var option = document.createElement("option");
+    //hours.forEach(function (element) {
+    //    var option = document.createElement("option");
 
-        if (element == "06:00") {
-            option.selected = "selected"
-        }
-        option.text = element
-        x.add(option);
-    });
+    //    if (element == "06:00") {
+    //        option.selected = "selected"
+    //    }
+    //    option.text = element
+    //    x.add(option);
+    //});
 
-    hours.forEach(function (element) {
-        var option = document.createElement("option");
+    //hours.forEach(function (element) {
+    //    var option = document.createElement("option");
 
-        if (element == "06:00") {
-            option.selected = "selected"
-        }
-        option.text = element
-        y.add(option);
-    });
+    //    if (element == "06:00") {
+    //        option.selected = "selected"
+    //    }
+    //    option.text = element
+    //    y.add(option);
+    //});
 }
 
 //A függvény, ami feltölti a szükséges inputokat (Évek, hónapok, stb.) a megfelelő értékekkel
@@ -234,9 +225,9 @@ function fillMenuInputs() {
     document.getElementById("kezdo_datum").value = dateType2;
     document.getElementById("veg_datum").value = dateType3;
     document.getElementById("onlyYearFilter").value = dateType1;
-    document.getElementById("heti_jelentes_kezdo_datum").value = dateType2;
-    document.getElementById("heti_jelentes_veg_datum").value = dateType3;
-    document.getElementById("szamlaOsszesitoYearFilter").value = dateType1;
+    //document.getElementById("heti_jelentes_kezdo_datum").value = dateType2;
+    //document.getElementById("heti_jelentes_veg_datum").value = dateType3;
+    //document.getElementById("szamlaOsszesitoYearFilter").value = dateType1;
 }
 
 //Ez a függvény teszteli, hogy a formokban megaott dátumok megdfelelő formátumban lettek-e megadva.
