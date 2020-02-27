@@ -5036,8 +5036,8 @@ function szakreferensiJelentesContainer() {
     var asyncSeriesFunctionsArray = [meterGroup,
         getSavedGraphs,
         getMeterTree,
-        //getFeldolgozottMeresek,
-        //getMentettBeallitasokGrafikonAdatok,
+        getFeldolgozottMeresek,
+        getMentettBeallitasokGrafikonAdatok,
         getFogyasztasOsszesito,
         workSheetHandler
     ];
