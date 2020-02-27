@@ -4727,7 +4727,7 @@ function szakreferensiJelentesContainer() {
         // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
         var jsonDataInnerArray = [];
 
-        threadLimit = 10;
+        var threadLimit = 2;
 
         var innerCallbackDone = false;
         var requestCounter = 0;
@@ -4795,9 +4795,6 @@ function szakreferensiJelentesContainer() {
                     { dataTag: "induktiv_tulfogyasztas_mertekegyseg", columnName: "R", headerText: "[]" },
                     { dataTag: "kapacitiv_fogyasztas", columnName: "S", headerText: "Kapacitív fogy." },
                     { dataTag: "kapacitiv_fogyasztas_mertekegyseg", columnName: "T", headerText: "[]" },
-
-
- 
                 ];
 
                 //Fejlécek betöltése a jsonDataArray-ba
@@ -4821,9 +4818,11 @@ function szakreferensiJelentesContainer() {
                         for (var i = 0; i < dataLength; i++) {
                             jsonDataInnerArray = [];
                             for (var j = 0; j < dataInnerLength; j++) {
-
-                                jsonDataInnerArray.push(fogyasztasOsszesitoValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
-
+                                if (requiredServerDataArray[j].dataTag == "idoszak_kezdete" || requiredServerDataArray[j].dataTag == "idoszak_vege") {
+                                    jsonDataInnerArray.push("'" + ((fogyasztasOsszesitoValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]).replace(/\./g, "-")));
+                                } else {
+                                    jsonDataInnerArray.push(fogyasztasOsszesitoValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+                                }
                             }
                             jsonDataArray.push(jsonDataInnerArray);
                         }
