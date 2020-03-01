@@ -20,8 +20,8 @@
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
     <script src="Common.js" type="text/javascript"></script>
     <script src="Request.js" type="text/javascript"></script>
-    <script src="Home.js" type="text/javascript"></script>
-    <script src="supportFunctions.js" type="text/javascript"></script>
+    <script src="Home.js?v=1" type="text/javascript"></script>
+    <script src="supportFunctions.js?v=1" type="text/javascript"></script>
 
 
 
@@ -46,7 +46,7 @@
             <!-- Szakreferensi jelentés panel -->
             <div id="szakreferensi_jelentes_panel" class="hiddenMenu">
                 <div class="panel-content">
-                    <label for="onlyYearFilter">Tárgy időszak: </label><input type="number" name="evSzuro" id="szakreferensiJelentesYearFilter" class="ownDatePicker" min="2015" placeholder="YYYY-MM" onfocus="setErrorMessageDefault('szakreferensiJelentesError');">
+                    <label for="onlyYearFilter">Tárgy időszak: </label><input type="text" name="evSzuro" id="szakreferensiJelentesYearFilter" class="ownDatePicker" min="2015" placeholder="YYYY-MM" onfocus="setErrorMessageDefault('szakreferensiJelentesError');">
                     <br /><br />
                     <label for="szakreferensi_jelentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="szakreferensi_jelentes_meter_groups"></select>
                     <br /><br />
