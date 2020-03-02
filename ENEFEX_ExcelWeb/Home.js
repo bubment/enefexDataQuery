@@ -4597,9 +4597,10 @@ function szakreferensiJelentesContainer() {
                                 correctDateWithFormat = d.getFullYear().toString() + "-" + ((d.getMonth() + 1).toString().length == 2 ? (d.getMonth() + 1).toString() : "0" + (d.getMonth() + 1).toString()) + "-" + (d.getDate().toString().length == 2 ? d.getDate().toString() : "0" + d.getDate().toString()) + " " + (d.getHours().toString().length == 2 ? d.getHours().toString() : " " + d.getHours().toString()) + ":" + ((parseInt(d.getMinutes() / 5) * 5).toString().length == 2 ? (parseInt(d.getMinutes() / 5) * 5).toString() : "0" + (parseInt(d.getMinutes() / 5) * 5).toString()) + ":00";
 
                                 goddamn = (correctDateWithFormat.substring(correctDateWithFormat.length - 5, correctDateWithFormat.length - 3));
-                                if ((correctDateWithFormat.substring(correctDateWithFormat.length - 5,correctDateWithFormat.length - 3)) != "00") {
-                                    break;
+                                if ((correctDateWithFormat.substring(correctDateWithFormat.length - 5, correctDateWithFormat.length - 3)) != "00") {
                                     isHour = false;
+                                    break;
+                                    
                                 }
                                 else {
                                     isHour = true;
@@ -4639,21 +4640,30 @@ function szakreferensiJelentesContainer() {
             }
         }
 
-        //A datetime_from változó lesz a getGraphSeries lekérdezés datetime_from paramétere
-        var datetime_from = inputFullContent + "-01;00:00";
+        var datetime_from;
+        var datetime_to;
+        if (document.getElementById("szakreferensi_jelentes_eves_lekerdezes_checkbox").checked == false) {
+            //A datetime_from változó lesz a getGraphSeries lekérdezés datetime_from paramétere
+            datetime_from = inputFullContent + "-01;00:00";
 
-        //A datetime_to változó lesz a getGraphSeries lekérdezés datetime_to paramétere
-        let monthCheck = parseInt(inputFullContent.substring(5, 7));
-        if (monthCheck == 12) {
-            datetime_to = (parseInt(inputFullContent.substring(0, 4)) + 1) + "-01-01;06:00"
-        }
-        else {
-            if (monthCheck < 9) {
-                datetime_to = inputFullContent.substring(0, 4) + "-0" + (monthCheck + 1) + "-01;06:00"
-            } else {
-                datetime_to = inputFullContent.substring(0, 4) + "-" + (monthCheck + 1) + "-01;06:00"
+            //A datetime_to változó lesz a getGraphSeries lekérdezés datetime_to paramétere
+            let monthCheck = parseInt(inputFullContent.substring(5, 7));
+            if (monthCheck == 12) {
+                datetime_to = (parseInt(inputFullContent.substring(0, 4)) + 1) + "-01-01;06:00"
+            }
+            else {
+                if (monthCheck < 9) {
+                    datetime_to = inputFullContent.substring(0, 4) + "-0" + (monthCheck + 1) + "-01;06:00"
+                } else {
+                    datetime_to = inputFullContent.substring(0, 4) + "-" + (monthCheck + 1) + "-01;06:00"
+                }
             }
         }
+        else {
+            datetime_from = inputYear + "-01-01;00:00";
+            datetime_to = inputYear + "-12-01;06:00";
+        }
+
 
 
 
@@ -4855,8 +4865,7 @@ function szakreferensiJelentesContainer() {
 
                 }
             }
-        // EZT MEGCSINÁLNI RENDESEN
-            // params["date_to"] megcsinálása úgy hogy params["date_from"] + 1 hónap legyen
+
             if (workSheetPrefixNumber.toString().length == 1 && workSheetPrefixNumber != 9) {
                 params["date_to"] = item.substring(0, 4) + "0" + (workSheetPrefixNumber + 1) + "-01"; //T00:00:00
             } else {
@@ -4875,7 +4884,7 @@ function szakreferensiJelentesContainer() {
                     break;
                 default: console.log("There are problems with workSheetPrefixNumber in fogyasztasOsszesitoValues function");
             }
-        // EZT MEGCSINÁLNI RENDESEN
+
             params["date_from"] = item + "-01";//T00:00:00
             postAsyncGetData(host + "/ebill/billing/getFogyasztasOsszesito2", params, fogyasztasOsszesitoValuesCallback);
         };
