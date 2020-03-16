@@ -4425,6 +4425,7 @@ function szakreferensiJelentesContainer() {
         var params = {};
         params["meter_group"] = meterGroupValue;
         params["napok_mutatasa"] = "false";
+        params["calculated_natural_gas"] = "0";
         params["tankolas_is"] = "1";
         params["page"] = "1";
         params["start"] = "0";
