@@ -3528,6 +3528,7 @@ function szamlaOsszesitoContainer() {
                         { dataTag: "netto_osszeg_mertekegyseg", columnName: "R", headerText: "[]" },
                         { dataTag: "szamla_brutto_osszeg", columnName: "S", headerText: "Bruttó számla" },
                         { dataTag: "netto_osszeg_mertekegyseg", columnName: "T", headerText: "[]" },
+                        { dataTag: "elhatarolas_brutto_osszeg", columnName: "U", headerText: "Elhatárolás" }
                     ];
 
                     //Fejlécek betöltése a jsonDataArray-ba
@@ -3549,7 +3550,7 @@ function szamlaOsszesitoContainer() {
                     for (var tmpRow = 0; tmpRow < dataLength; tmpRow++) {
                         actDateStr = SzamlaOsszesitoCallbackResult.data[tmpRow].idoszak_kezdete;
                         actYearInt = parseInt(actDateStr.substring(0, 4));
-                        //2018 és 2019 az aktuális panelról jöjjön
+                        //(t-1) és (t) az aktuális panelról jöjjön
                         if (actYearInt == filterYear || actYearInt == (filterYear-1)) {
                             jsonDataInnerArray = [];
                             for (var i = 0; i < dataInnerLength; i++) {
@@ -3607,6 +3608,7 @@ function szamlaOsszesitoContainer() {
         //params["date_from"] = "2018-01-01";
         params["page"] = "1";
         params["start"] = "0";
+        params["elhatarolas"] = "1";
         params["limit"] = "99999";
         //filter: [{ "property": "idoszak_kezdete", "value": "2018-01-01" }]
         //params["filter"] = [{ "property": "idoszak_kezdete", "value": "2018-01-01" }];

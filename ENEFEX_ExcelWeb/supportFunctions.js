@@ -224,7 +224,9 @@ function fillMenuInputs() {
     document.getElementById("szakreferensiJelentesYearFilter").value = dateType4;
     document.getElementById("kezdo_datum").value = dateType2;
     document.getElementById("veg_datum").value = dateType3;
+    document.getElementById("szamlaOsszesitoYearFilter").value = dateType1;
     document.getElementById("onlyYearFilter").value = dateType1;
+
     //document.getElementById("heti_jelentes_kezdo_datum").value = dateType2;
     //document.getElementById("heti_jelentes_veg_datum").value = dateType3;
     //document.getElementById("szamlaOsszesitoYearFilter").value = dateType1;
