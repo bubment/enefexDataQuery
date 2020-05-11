@@ -5491,7 +5491,7 @@ function rezsiCsokkentesContainer() {
                 tmpCounter--;
         }
 
-        var meterGroupList = document.getElementById('szakreferensi_jelentes_meter_groups');
+        var meterGroupList = document.getElementById('rezsi_csokkentes_meter_groups');
         var meterGroupListSelectedText = meterGroupList.options[meterGroupList.selectedIndex].text;
         // A szerverlekérdezéshez szükséges 'meter_gruop' paraméter értékét meghatározó változó
         var meterGroupValue;
