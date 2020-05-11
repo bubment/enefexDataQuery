@@ -70,6 +70,7 @@ function fillDropDownList() {
                         "feldolgozott_meresek_meter_groups",
                         //"heti_jelentes_meter_groups",
                         "szakreferensi_jelentes_meter_groups",
+                        "rezsi_csokkentes_meter_groups"
                     ]
 
                     meterGroupListsArray.forEach(fillMeterGroupLists);
@@ -220,7 +221,7 @@ function fillMenuInputs() {
         dateType4 = (currentYear - 1) + "-12";
     }
 
-
+    document.getElementById("rezsiCsokkentesYearFilter").value = dateType4;
     document.getElementById("szakreferensiJelentesYearFilter").value = dateType4;
     document.getElementById("kezdo_datum").value = dateType2;
     document.getElementById("veg_datum").value = dateType3;
@@ -770,8 +771,31 @@ function myTest() {
 
     //document.getElementById("loader-1").style.top = ((asd - asd1) / 2) + "px";
 
+    var inputFullContent = document.getElementById('rezsiCsokkentesYearFilter').value;
+    var inputYear = document.getElementById('rezsiCsokkentesYearFilter').value.substring(0, 4);
+    var inputMonth = parseInt(inputFullContent.substring(inputFullContent.length - 2, inputFullContent.length));
 
-    setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "block");
+    var fogyasztasOsszesitoDateArray = [];
+    console.log("inputMonth: " + inputMonth)
+
+    for (var i = (inputMonth - 2); i <= inputMonth; i++) {
+        switch (true) {
+            case (i < 1):
+                fogyasztasOsszesitoDateArray.push((parseInt(inputYear) - 1) + "-" + (12 + i));
+                break;
+            default:
+                if (i.toString().length == 1) {
+                    fogyasztasOsszesitoDateArray.push(inputYear + "-0" + i)
+                } else {
+                    fogyasztasOsszesitoDateArray.push(inputYear + "-" + i)
+                }
+
+        }
+    }
+
+    console.log(fogyasztasOsszesitoDateArray)
+    return;
+    //setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "block");
     
 }
 
