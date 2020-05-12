@@ -5633,6 +5633,144 @@ function rezsiCsokkentesContainer() {
 
     }
 
+    var getFeldolgozottMeresek = function (callback) {
+        //Az excelbe bemásolandó range sorainak számát meghatározó változó
+        var dataLength;
+        //Az excelbe bemásolandó range oszlopainak számát meghatározó változó
+        var dataInnerLength;
+        // Az excelbe való adatbevitelkor ha rangebe akarjuk megadni a beírandó adatokat akkor azt egy több dimenziójú tömb változóba tehetjük
+        // A jsonDataArray tömb az amit az excelnek megadunk mint beírandó tömb
+        var jsonDataArray = [];
+        // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
+        var jsonDataInnerArray = [];
+
+        threadLimit = 10;
+
+        var innerCallbackDone = false;
+        var requestCounter = 0;
+
+        var feldolgozottMeresekDateArray = [];
+
+        var feldolgozottMeresekGetDate = parseInt(document.getElementById('rezsiCsokkentesYearFilter').value.substring(0, 4));
+        //for (var i = 0; i <= 3; i++) {
+        //    feldolgozottMeresekDateArray.push((feldolgozottMeresekGetDate - i));
+        //}
+
+        feldolgozottMeresekDateArray.push(feldolgozottMeresekGetDate);
+
+        var meterGroupList = document.getElementById('rezsi_csokkentes_meter_groups');
+        var meterGroupListSelectedText = meterGroupList.options[meterGroupList.selectedIndex].text;
+        // A szerverlekérdezéshez szükséges 'meter_gruop' paraméter értékét meghatározó változó
+        var meterGroupValue;
+
+        for (var i = 0; i < meterGroupArrayResult.length; i++) {
+            if (meterGroupArrayResult[i].nev == meterGroupListSelectedText) {
+                meterGroupValue = meterGroupArrayResult[i].id;
+                break;
+            }
+        }
+
+        var params = {};
+        params["meter_group"] = meterGroupValue;
+        params["napok_mutatasa"] = "true";
+        params["calculated_natural_gas"] = "0";
+        params["tankolas_is"] = "0";
+        params["page"] = "1";
+        params["start"] = "0";
+        params["limit"] = "99999";
+
+
+
+        var feldolgozottMeresekValues = function (item, innerCallback) {
+
+            var feldolgozottMeresekValuesCallback = function (err, feldolgozottMeresekValuesCallbackResult) {
+
+                var requiredServerDataArray = [
+                    { dataTag: "identifier", columnName: "A", headerText: "Mérő azonosító" },
+                    { dataTag: "name", columnName: "B", headerText: "Megnevezés" },
+                    { dataTag: "ho1", columnName: "C", headerText: item + "-01" },
+                    { dataTag: "ho2", columnName: "D", headerText: item + "-02" },
+                    { dataTag: "ho3", columnName: "E", headerText: item + "-03" },
+                    { dataTag: "ho4", columnName: "F", headerText: item + "-04" },
+                    { dataTag: "ho5", columnName: "G", headerText: item + "-05" },
+                    { dataTag: "ho6", columnName: "H", headerText: item + "-06" },
+                    { dataTag: "ho7", columnName: "I", headerText: item + "-07" },
+                    { dataTag: "ho8", columnName: "J", headerText: item + "-08" },
+                    { dataTag: "ho9", columnName: "K", headerText: item + "-09" },
+                    { dataTag: "ho10", columnName: "L", headerText: item + "-10" },
+                    { dataTag: "ho11", columnName: "M", headerText: item + "-11" },
+                    { dataTag: "ho12", columnName: "N", headerText: item + "-12" },
+                ];
+
+                //Fejlécek betöltése a jsonDataArray-ba
+                jsonDataInnerArray = [];
+                jsonDataArray = [];
+                requiredServerDataArray.forEach(function (element) {
+                    jsonDataInnerArray.push(element.headerText);
+                });
+                jsonDataArray.push(jsonDataInnerArray);
+                jsonDataInnerArray = [];
+
+                if (err) {
+                    errorLabel.innerHTML = err.error.message;
+                    changElementsAvailability(actualDisableElements, false);
+                }
+                else {
+                    //Normálisan legenrálni a JSONArray változókat
+                    dataLength = feldolgozottMeresekValuesCallbackResult.data.length;
+                    dataInnerLength = requiredServerDataArray.length;
+                    if (dataLength > 0) {
+                        for (var i = 0; i < dataLength; i++) {
+                            jsonDataInnerArray = [];
+                            for (var j = 0; j < dataInnerLength; j++) {
+
+                                jsonDataInnerArray.push(feldolgozottMeresekValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+
+                            }
+                            jsonDataArray.push(jsonDataInnerArray);
+                        }
+                    }
+
+                    var workSheetPrefixNumber = (feldolgozottMeresekGetDate - item);
+                    excelDataArray.push(
+                        {
+                            "sheetName": "IN_É" + workSheetPrefixNumber,
+                            "data": jsonDataArray,
+                        }
+                    )
+
+                    requestCounter++;
+                    if (requestCounter == feldolgozottMeresekDateArray.length) {
+                        //if (item == katPenzeszkozokArray[katPenzeszkozokArray.length - 1]) {
+                        dataLength = jsonDataArray.length - 1;
+
+                        innerCallback();
+                        innerCallbackDone = true;
+                        callback();
+
+                    }
+                    if (innerCallbackDone == false) {
+                        innerCallback();
+                    }
+
+                }
+            }
+
+            params["datum_meres_kezdete"] = item + "-01";
+            postAsyncGetData(host + "/ebill/summary/getFeldolgozottMeresek", params, feldolgozottMeresekValuesCallback);
+        };
+
+        async.eachLimit(
+            feldolgozottMeresekDateArray,
+            threadLimit,
+            feldolgozottMeresekValues,
+            function (err) {
+                console.log('all finished', err);
+            }
+        );
+
+    }
+
     var getHHSzerzodes = function (callback) {
         //Az excelbe bemásolandó range sorainak számát meghatározó változó
         var dataLength;
@@ -6446,6 +6584,7 @@ function rezsiCsokkentesContainer() {
         getRHDValidFrom,
         getAllandoRendszerhasznalatiDijak,
         getFogyasztasOsszesito,
+        getFeldolgozottMeresek,
         getHHSzerzodes,
         getOperativTeljesitmeny,
         getRendszerhasznalatiDijak,
