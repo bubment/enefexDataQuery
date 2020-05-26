@@ -5728,7 +5728,6 @@ function rezsiCsokkentesContainer() {
                             for (var j = 0; j < dataInnerLength; j++) {
                                 if (requiredServerDataArray[j].dataTag.includes("_day_count")) {
                                     repairString = feldolgozottMeresekValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]
-                                    //ITT KELL KIJAVITANI A REPAIRSTRINGET
                                     pos1 = repairString.indexOf(">") + 1;
                                     pos2 = repairString.indexOf("<", 2);
                                     repairString = repairString.substring(pos1, pos2);
