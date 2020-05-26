@@ -5687,20 +5687,23 @@ function rezsiCsokkentesContainer() {
 
                 var requiredServerDataArray = [
                     { dataTag: "identifier", columnName: "A", headerText: "Mérő azonosító" },
-                    { dataTag: "name", columnName: "B", headerText: "Megnevezés" },
-                    { dataTag: "ho1", columnName: "C", headerText: item + "-01" },
-                    { dataTag: "ho2", columnName: "D", headerText: item + "-02" },
-                    { dataTag: "ho3", columnName: "E", headerText: item + "-03" },
-                    { dataTag: "ho4", columnName: "F", headerText: item + "-04" },
-                    { dataTag: "ho5", columnName: "G", headerText: item + "-05" },
-                    { dataTag: "ho6", columnName: "H", headerText: item + "-06" },
-                    { dataTag: "ho7", columnName: "I", headerText: item + "-07" },
-                    { dataTag: "ho8", columnName: "J", headerText: item + "-08" },
-                    { dataTag: "ho9", columnName: "K", headerText: item + "-09" },
-                    { dataTag: "ho10", columnName: "L", headerText: item + "-10" },
-                    { dataTag: "ho11", columnName: "M", headerText: item + "-11" },
-                    { dataTag: "ho12", columnName: "N", headerText: item + "-12" },
+                    { dataTag: "name", columnName: "B", headerText: "Megnevezése" },
+                    { dataTag: "type_name", columnName: "C", headerText: "Típus megnevezése" },
                 ];
+
+                let actMonthText;
+                let tmpExcelColumn = 3
+                for (var i = 1; i <= 12; i++) {
+                    if (i.toString().length == 1) {
+                        actMonthText = '0' + i;
+                    } else {
+                        actMonthText = i;
+                    }
+                    requiredServerDataArray.push({ dataTag: "ho" + i, columnName: excelColumNames[tmpExcelColumn], headerText: item + "-" + actMonthText })
+                    tmpExcelColumn++;
+                    requiredServerDataArray.push({ dataTag: "ho" + i + "_day_count", columnName: excelColumNames[tmpExcelColumn], headerText: i + " Hónap : adatok" })
+                    tmpExcelColumn++;
+                }
 
                 //Fejlécek betöltése a jsonDataArray-ba
                 jsonDataInnerArray = [];
@@ -5723,8 +5726,17 @@ function rezsiCsokkentesContainer() {
                         for (var i = 0; i < dataLength; i++) {
                             jsonDataInnerArray = [];
                             for (var j = 0; j < dataInnerLength; j++) {
-
-                                jsonDataInnerArray.push(feldolgozottMeresekValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+                                if (requiredServerDataArray[j].dataTag.includes("_day_count")) {
+                                    repairString = feldolgozottMeresekValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]
+                                    //ITT KELL KIJAVITANI A REPAIRSTRINGET
+                                    pos1 = repairString.indexOf(">") + 1;
+                                    pos2 = repairString.indexOf("<", 2);
+                                    repairString = repairString.substring(pos1, pos2);
+                                    jsonDataInnerArray.push(repairString);
+                                } else {
+                                    jsonDataInnerArray.push(feldolgozottMeresekValuesCallbackResult.data[i][requiredServerDataArray[j].dataTag]);
+                                }
+                                
 
                             }
                             jsonDataArray.push(jsonDataInnerArray);
