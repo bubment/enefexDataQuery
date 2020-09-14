@@ -4780,6 +4780,9 @@ function szakreferensiJelentesContainer() {
         params["page"] = "1";
         params["start"] = "0";
         params["limit"] = "99999";
+        params["calculated_natural_gas"] = "1"
+        params["calculate_prev_year"] = "0"
+        params["expense_calculation"] = "1"
 
 
 
@@ -4787,29 +4790,58 @@ function szakreferensiJelentesContainer() {
             var workSheetPrefixNumber = parseInt(item.substring(item.length - 2, item.length));
 
             var fogyasztasOsszesitoValuesCallback = function (err, fogyasztasOsszesitoValuesCallbackResult) {
-
-                var requiredServerDataArray = [
-                    { dataTag: "meter_name", columnName: "A", headerText: "Mérés neve" },
-                    { dataTag: "meter_identifier", columnName: "B", headerText: "Mérő azonosító" },
-                    { dataTag: "pod_azonosito", columnName: "C", headerText: "POD" },
-                    { dataTag: "idoszak_kezdete", columnName: "D", headerText: "Időszak kezdete" },
-                    { dataTag: "idoszak_vege", columnName: "E", headerText: "Időszak vége" },
-                    { dataTag: "tarifa_hosszu_nev", columnName: "F", headerText: "Tarifa" },
-                    { dataTag: "lekotott_teljesitmeny", columnName: "G", headerText: "Lekötött telj." },
-                    { dataTag: "lekotott_teljesitmeny_mertekegyseg", columnName: "H", headerText: "[]" },
-                    { dataTag: "operativ_teljesitmeny", columnName: "I", headerText: "Operatív teljesítmény" },
-                    { dataTag: "operativ_teljesitmeny_mertekegyseg", columnName: "J", headerText: "[]" },
-                    { dataTag: "max_teljesitmeny", columnName: "K", headerText: "Max. telj." },
-                    { dataTag: "max_teljesitmeny_mertekegyseg", columnName: "L", headerText: "[]" },
-                    { dataTag: "fogyasztas", columnName: "M", headerText: "Fogyasztás" },
-                    { dataTag: "fogyasztas_mertekegyseg", columnName: "N", headerText: "[]" },
-                    { dataTag: "fogyasztas_elozo_ev", columnName: "O", headerText: "Előző évi fogyasztás" },
-                    { dataTag: "fogyasztas_elozo_ev_mertekegyseg", columnName: "P", headerText: "[]" },
-                    { dataTag: "induktiv_tulfogyasztas", columnName: "Q", headerText: "Induktív túl fogy." },
-                    { dataTag: "induktiv_tulfogyasztas_mertekegyseg", columnName: "R", headerText: "[]" },
-                    { dataTag: "kapacitiv_fogyasztas", columnName: "S", headerText: "Kapacitív fogy." },
-                    { dataTag: "kapacitiv_fogyasztas_mertekegyseg", columnName: "T", headerText: "[]" },
-                ];
+                var requiredServerDataArray
+                if (document.getElementById("szakreferensi_jelentes_new_type_checkbox").checked == true) {
+                    requiredServerDataArray = [
+                        { dataTag: "meter_name", columnName: "A", headerText: "Mérés megnevezés" },
+                        { dataTag: "meter_identifier", columnName: "B", headerText: "Mérés azonosító" },
+                        { dataTag: "pod_azonosito", columnName: "C", headerText: "Mérési pont azonosító (POD)" },
+                        { dataTag: "idoszak_kezdete", columnName: "D", headerText: "Időszak kezdete" },
+                        { dataTag: "idoszak_vege", columnName: "E", headerText: "Időszak vége" },
+                        { dataTag: "lekotott_teljesitmeny", columnName: "F", headerText: "Lekötött telj." },
+                        { dataTag: "lekotott_teljesitmeny_mertekegyseg", columnName: "G", headerText: "[]" },
+                        { dataTag: "operativ_teljesitmeny", columnName: "H", headerText: "Operatív telj." },
+                        { dataTag: "operativ_teljesitmeny_mertekegyseg", columnName: "I", headerText: "[]" },
+                        { dataTag: "max_teljesitmeny", columnName: "J", headerText: "Max. telj." },
+                        { dataTag: "max_teljesitmeny_mertekegyseg", columnName: "K", headerText: "[]" },
+                        { dataTag: "lekotes_tullepes", columnName: "L", headerText: "Lekötés túllépés" },
+                        { dataTag: "lekotes_tullepes_mertekegyseg", columnName: "M", headerText: "[]" },
+                        { dataTag: "kalkulalt_fogyasztas", columnName: "N", headerText: "Számított fogy." },
+                        { dataTag: "fogyasztas_nelkul", columnName: "O", headerText: "Adat hiány/többlet" },
+                        { dataTag: "egysegar_hiany", columnName: "P", headerText: "Egységár hiány" },
+                        { dataTag: "becsult_egysegar", columnName: "Q", headerText: "Becsült költség" },
+                        { dataTag: "induktiv_tulfogyasztas", columnName: "R", headerText: "Induktív túl fogy." },
+                        { dataTag: "induktiv_tulfogyasztas_mertekegyseg", columnName: "S", headerText: "[]" },
+                        { dataTag: "kapacitiv_fogyasztas", columnName: "T", headerText: "Kapacitív fogy." },
+                        { dataTag: "kapacitiv_fogyasztas_mertekegyseg", columnName: "U", headerText: "[]" },
+                        { dataTag: "havi_dij", columnName: "V", headerText: "Nettó költség" },
+                        { dataTag: "havi_dij_mertekegyseg", columnName: "W", headerText: "[]" },
+                    ];
+                } else {
+                    requiredServerDataArray = [
+                        { dataTag: "meter_name", columnName: "A", headerText: "Mérés neve" },
+                        { dataTag: "meter_identifier", columnName: "B", headerText: "Mérő azonosító" },
+                        { dataTag: "pod_azonosito", columnName: "C", headerText: "POD" },
+                        { dataTag: "idoszak_kezdete", columnName: "D", headerText: "Időszak kezdete" },
+                        { dataTag: "idoszak_vege", columnName: "E", headerText: "Időszak vége" },
+                        { dataTag: "tarifa_hosszu_nev", columnName: "F", headerText: "Tarifa" },
+                        { dataTag: "lekotott_teljesitmeny", columnName: "G", headerText: "Lekötött telj." },
+                        { dataTag: "lekotott_teljesitmeny_mertekegyseg", columnName: "H", headerText: "[]" },
+                        { dataTag: "operativ_teljesitmeny", columnName: "I", headerText: "Operatív teljesítmény" },
+                        { dataTag: "operativ_teljesitmeny_mertekegyseg", columnName: "J", headerText: "[]" },
+                        { dataTag: "max_teljesitmeny", columnName: "K", headerText: "Max. telj." },
+                        { dataTag: "max_teljesitmeny_mertekegyseg", columnName: "L", headerText: "[]" },
+                        { dataTag: "fogyasztas", columnName: "M", headerText: "Fogyasztás" },
+                        { dataTag: "fogyasztas_mertekegyseg", columnName: "N", headerText: "[]" },
+                        { dataTag: "fogyasztas_elozo_ev", columnName: "O", headerText: "Előző évi fogyasztás" },
+                        { dataTag: "fogyasztas_elozo_ev_mertekegyseg", columnName: "P", headerText: "[]" },
+                        { dataTag: "induktiv_tulfogyasztas", columnName: "Q", headerText: "Induktív túl fogy." },
+                        { dataTag: "induktiv_tulfogyasztas_mertekegyseg", columnName: "R", headerText: "[]" },
+                        { dataTag: "kapacitiv_fogyasztas", columnName: "S", headerText: "Kapacitív fogy." },
+                        { dataTag: "kapacitiv_fogyasztas_mertekegyseg", columnName: "T", headerText: "[]" },
+                    ];
+                }
+                
 
                 //Fejlécek betöltése a jsonDataArray-ba
                 jsonDataInnerArray = [];
@@ -4908,6 +4940,7 @@ function szakreferensiJelentesContainer() {
     //Munkalapokat hoz létre, munkalapokat tisztít és feétölti a megfelelő munkalapokat adatokkal
     var workSheetHandler = function (callback_lvl1) {
 
+        let asyncArray;
         var clearableSheet = [];
         var addableSheet = [];
 
@@ -4992,6 +5025,33 @@ function szakreferensiJelentesContainer() {
             }
         }
 
+        var getSheetLastRows = function (callback_lvl2) {
+
+            var lastRowFinder = function (item, callback_lvl3) {
+                Excel.run(function (context) {
+                    var ws = context.workbook.worksheets.getItem(item.sheetName);
+                    //var uRowsIndex = ws.getCell(0, 0).getEntireColumn().getUsedRange().getLastCell().load(['rowIndex']);
+                    //var uRowsIndex = ws.getCell(0, 0).getEntireColumn().getUsedRange().load(['rowCount']);
+                    var uIndex = ws.getUsedRange(true).getLastCell().load(['rowIndex', 'columnIndex']);
+
+                    context.sync()
+                        .then(function () {
+                            item.lastRowIndex = uIndex.rowIndex
+                            callback_lvl3();
+                        })
+                });
+            }
+
+            async.eachSeries(
+                excelDataArray,
+                lastRowFinder,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            )
+        }
+
         var loadDataToSheets = function (callback_lvl2) {
             if (excelDataArray) {
                 Excel.run(function (context) {
@@ -5008,15 +5068,33 @@ function szakreferensiJelentesContainer() {
                     //range.values = jsonDataArray;
                     //range.untrack();
 
+                    
                     for (var i = 0; i < excelDataArray.length; i++) {
+
                         sheet = context.workbook.worksheets.getItem(excelDataArray[i].sheetName);
-                        columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
-                        rowValue = excelDataArray[i].data.length;
 
-                        range = sheet.getRange("A1:" + columnName + rowValue);
-                        range.values = excelDataArray[i].data;
-                        range.untrack();
+                        if (document.getElementById("szakreferensi_jelentes_keep_data_checkbox").checked == true && excelDataArray[i].lastRowIndex != 0) {
+                            console.log("im in")
+                            //1. Tötlni az excelDataArray[i].data[0] elemét (Ami a fejléceket tartalmazza
+                            excelDataArray[i].data.splice(0, 1);
+                            //2. töltse fel az utolsó sortól számítva az új adatokkal a munkalapot
+                            columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
+                            rowValue = excelDataArray[i].data.length;
+                            startRow = excelDataArray[i].lastRowIndex + 2
+                            lastRow = rowValue + excelDataArray[i].lastRowIndex + 1
+                            range = range = sheet.getRange("A" + startRow + ":" + columnName + lastRow);
+                            range.values = excelDataArray[i].data;
+                            range.untrack();
 
+                        } else {
+                            
+                            columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
+                            rowValue = excelDataArray[i].data.length;
+
+                            range = sheet.getRange("A1:" + columnName + rowValue);
+                            range.values = excelDataArray[i].data;
+                            range.untrack();
+                        }
                     }
 
 
@@ -5033,13 +5111,25 @@ function szakreferensiJelentesContainer() {
             }
         }
 
+        asyncArray = [
+            separateWorksheets,
+            clearSheets,
+            addSheets,
+            getSheetLastRows,
+            loadDataToSheets
+        ]
+
+        if (document.getElementById("szakreferensi_jelentes_keep_data_checkbox").checked == true) {
+            for (var i = 0; i < asyncArray.length; i++) {
+                if (asyncArray[i] == clearSheets) {
+                    asyncArray.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
         async.series(
-            [
-                separateWorksheets,
-                clearSheets,
-                addSheets,
-                loadDataToSheets
-            ],
+            asyncArray,
             function (err) {
                 console.log('all finished', err);
             }
