@@ -5074,7 +5074,6 @@ function szakreferensiJelentesContainer() {
                         sheet = context.workbook.worksheets.getItem(excelDataArray[i].sheetName);
 
                         if (document.getElementById("szakreferensi_jelentes_keep_data_checkbox").checked == true && excelDataArray[i].lastRowIndex != 0) {
-                            console.log("im in")
                             //1. Tötlni az excelDataArray[i].data[0] elemét (Ami a fejléceket tartalmazza
                             excelDataArray[i].data.splice(0, 1);
                             //2. töltse fel az utolsó sortól számítva az új adatokkal a munkalapot
@@ -6542,6 +6541,7 @@ function rezsiCsokkentesContainer() {
 
         var clearableSheet = [];
         var addableSheet = [];
+        var exceptionSheets = ["IN_F0", "IN_F1", "IN_F2", "IN_É0"]
 
         var separateWorksheets = function (callback_lvl2) {
             // Ez a függvény a lekérdezéshez szükséges munkalapokat két külön tömbe teszi.
@@ -6579,7 +6579,20 @@ function rezsiCsokkentesContainer() {
         var clearSheets = function (callback_lvl2) {
             // A clearSheets függvény tisztítja meg a megadott munkalapok tartalmát
             if (clearableSheet) {
+
+                if (document.getElementById("adatgyujto_tablazat_keep_data_checkbox").checked == true) {
+                    for (var i = 0; i < exceptionSheets.length; i++) {
+                        for (var j = 0; j < clearableSheet.length; j++) {
+                            if (clearableSheet[j] == exceptionSheets[i]) {
+                                clearableSheet.splice(j, 1);
+                                j--;
+                            }
+                        }
+                    }
+                }
+
                 Excel.run(function (context) {
+
                     var sheetsNames = clearableSheet;
                     var sheets = context.workbook.worksheets;
                     var sheetsNamesArrayLength = sheetsNames.length;
@@ -6624,6 +6637,33 @@ function rezsiCsokkentesContainer() {
             }
         }
 
+        var getSheetLastRows = function (callback_lvl2) {
+
+            var lastRowFinder = function (item, callback_lvl3) {
+                Excel.run(function (context) {
+                    var ws = context.workbook.worksheets.getItem(item.sheetName);
+                    //var uRowsIndex = ws.getCell(0, 0).getEntireColumn().getUsedRange().getLastCell().load(['rowIndex']);
+                    //var uRowsIndex = ws.getCell(0, 0).getEntireColumn().getUsedRange().load(['rowCount']);
+                    var uIndex = ws.getUsedRange(true).getLastCell().load(['rowIndex', 'columnIndex']);
+
+                    context.sync()
+                        .then(function () {
+                            item.lastRowIndex = uIndex.rowIndex
+                            callback_lvl3();
+                        })
+                });
+            }
+
+            async.eachSeries(
+                excelDataArray,
+                lastRowFinder,
+                function (err) {
+                    console.log('all finished', err);
+                    callback_lvl2();
+                }
+            )
+        }
+
         var loadDataToSheets = function (callback_lvl2) {
             if (excelDataArray) {
                 Excel.run(function (context) {
@@ -6641,14 +6681,41 @@ function rezsiCsokkentesContainer() {
                     //range.untrack();
 
                     for (var i = 0; i < excelDataArray.length; i++) {
+
                         sheet = context.workbook.worksheets.getItem(excelDataArray[i].sheetName);
-                        columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
-                        rowValue = excelDataArray[i].data.length;
 
-                        range = sheet.getRange("A1:" + columnName + rowValue);
-                        range.values = excelDataArray[i].data;
-                        range.untrack();
+                        var isKeepDataSheet;
 
+                        isKeepDataSheet = false;
+                        for (var j = 0; j < exceptionSheets.length; j++) {
+                            if (exceptionSheets[j] == excelDataArray[i].sheetName) {
+                                isKeepDataSheet = true;
+                                break;
+                            }
+                        }
+
+                        if (document.getElementById("adatgyujto_tablazat_keep_data_checkbox").checked == true && excelDataArray[i].lastRowIndex != 0 && isKeepDataSheet == true) {
+
+                            //1. Tötlni az excelDataArray[i].data[0] elemét (Ami a fejléceket tartalmazza
+                            excelDataArray[i].data.splice(0, 1);
+                            //2. töltse fel az utolsó sortól számítva az új adatokkal a munkalapot
+                            columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
+                            rowValue = excelDataArray[i].data.length;
+                            startRow = excelDataArray[i].lastRowIndex + 2
+                            lastRow = rowValue + excelDataArray[i].lastRowIndex + 1
+                            range = range = sheet.getRange("A" + startRow + ":" + columnName + lastRow);
+                            range.values = excelDataArray[i].data;
+                            range.untrack();
+
+                        } else {
+
+                            columnName = excelColumNames[excelDataArray[i].data[0].length - 1];
+                            rowValue = excelDataArray[i].data.length;
+
+                            range = sheet.getRange("A1:" + columnName + rowValue);
+                            range.values = excelDataArray[i].data;
+                            range.untrack();
+                        }
                     }
 
 
@@ -6670,6 +6737,7 @@ function rezsiCsokkentesContainer() {
                 separateWorksheets,
                 clearSheets,
                 addSheets,
+                getSheetLastRows,
                 loadDataToSheets
             ],
             function (err) {
