@@ -764,41 +764,28 @@ function asyncSeriesTest() {
 }
 
 function myTest() {
+    var myLittleVal;
+        
+    Excel.run(function (context) {
 
-    //document.getElementById("fogyasztas-osszesito-panel-loader").style.display = "block"
-    //var asd = document.getElementById("fogyasztas-osszesito-panel-loader").offsetHeight;
-    //var asd1 = document.getElementById("loader-1").offsetHeight;
+        var myLittleVal;
+        var ws = context.workbook.worksheets.getItem("Sheet1");
+        //var uRowsIndex = ws.getCell(0, 0).getEntireColumn().getUsedRange().getLastCell().load(['rowIndex']);
+        //var uRowsIndex = ws.getCell(0, 0).getEntireColumn().getUsedRange().load(['rowCount']);
+        var uIndex = ws.getUsedRange(true).getLastCell().load(['rowIndex', 'columnIndex']);
 
-    //document.getElementById("loader-1").style.top = ((asd - asd1) / 2) + "px";
+        context.sync()
+            .then(function () {
+                
+                myLittleVal = uIndex.rowIndex
+                console.log(myLittleVal)
+        })
 
-    var inputFullContent = document.getElementById('rezsiCsokkentesYearFilter').value;
-    var inputYear = document.getElementById('rezsiCsokkentesYearFilter').value.substring(0, 4);
-    var inputMonth = parseInt(inputFullContent.substring(inputFullContent.length - 2, inputFullContent.length));
+    });
 
-    var fogyasztasOsszesitoDateArray = [];
-    console.log("inputMonth: " + inputMonth)
 
-    for (var i = (inputMonth - 2); i <= inputMonth; i++) {
-        switch (true) {
-            case (i < 1):
-                fogyasztasOsszesitoDateArray.push((parseInt(inputYear) - 1) + "-" + (12 + i));
-                break;
-            default:
-                if (i.toString().length == 1) {
-                    fogyasztasOsszesitoDateArray.push(inputYear + "-0" + i)
-                } else {
-                    fogyasztasOsszesitoDateArray.push(inputYear + "-" + i)
-                }
-
-        }
-    }
-
-    console.log(fogyasztasOsszesitoDateArray)
-    return;
-    //setPanelLoader("villamos-adminisztracio-panel-loader", "villamos-adminisztracio-loader", "block");
     
 }
-
 
 
 

@@ -53,6 +53,10 @@
                     <br /><br />
                     <label for="szakreferensi_jelentes_meter_groups">Mentett beállítások:</label><br /><select class="meter_group_list" id="szakreferensi_jelentes_mentett_bealitasok"></select>
                     <br /><br />
+                    <label for="keepData">Korábbi adatok megtartása: </label><input type="checkbox" id="szakreferensi_jelentes_keep_data_checkbox">
+                    <br />
+                    <label for="newTypeSzakreferens">Új tipusú szakreferens: </label><input type="checkbox" id="szakreferensi_jelentes_new_type_checkbox">
+                    <br />
                     <label for="evesLekerdezes">Éves lekérdezés: </label><input type="checkbox" id="szakreferensi_jelentes_eves_lekerdezes_checkbox">
                     <br /><br />
                     <button class="vegleges-futtato-gomb" id="szakreferensiJelentesButton" onclick="szakreferensiJelentesContainer();">Lekérdezés</button>
@@ -66,17 +70,19 @@
                 </div>
 
             </div>
-            <!-- Rezsicsökkentés panelt lenyitó gomb -->
+            <!-- Adadtgyűjtő táblázat panelt lenyitó gomb -->
             <div class="button-container" id="rezsiCsokkentesPanelOpen" onclick="changeDivDisplay('rezsi_csokkentes_panel', 'rezsiCsokkentesMenuDropDownArrowImage', 'rezsiCsokkentesPanelOpen');">
                 <div class="menuOpenImgContainer"><img id="rezsiCsokkentesMenuDropDownArrowImage" src="Images/arrow-left.png" class="menuOpenImg"></div>
-                <div class="menuOpenTextContainer">Rezsicsökkentés</div>
+                <div class="menuOpenTextContainer">Adadtgyűjtő táblázat</div>
             </div>
-            <!-- Rezsicsökkentés panel -->
+            <!-- Adadtgyűjtő táblázat panel -->
             <div id="rezsi_csokkentes_panel" class="hiddenMenu">
                 <div class="panel-content">
                     <label for="onlyYearFilter">Tárgy időszak: </label><input type="text" name="evSzuro" id="rezsiCsokkentesYearFilter" class="ownDatePicker" placeholder="YYYY-MM" onfocus="setErrorMessageDefault('rezsicsokkentesError');">
                     <br /><br />
                     <label for="rezsi_csokkentes_meter_groups">Mérő csoport:</label><br /><select class="meter_group_list" id="rezsi_csokkentes_meter_groups"></select>
+                    <br /><br />
+                    <label>Korábbi adatok megtartása: </label><input type="checkbox" id="adatgyujto_tablazat_keep_data_checkbox">
                     <br /><br />
                     <button class="vegleges-futtato-gomb" id="rezsiCsokkentesButton" onclick="rezsiCsokkentesContainer();">Lekérdezés</button>
                     <p class="myErrorMessage" id="rezsicsokkentesError"></p>
