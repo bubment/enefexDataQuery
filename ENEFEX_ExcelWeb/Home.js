@@ -5882,7 +5882,6 @@ function rezsiCsokkentesContainer() {
         // A  jsonDataInnerArray tömb az amivel ciklusonként feltöltjük a jsonDataArray változót
         var jsonDataInnerArray = [];
         // Ebben az értékben tároljuk a mértékegységet tartalmazó oszlopok értékeit
-        var unitColumnValue;
 
         var HHSzerzodesCallback = function (err, HHSzerzodesCallbackResult) {
             if (err) {
@@ -5938,28 +5937,6 @@ function rezsiCsokkentesContainer() {
                                     }
                                     break;
 
-                                case "lekotott_teljesitmeny":
-                                    lekotottTeljesitmeny = HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
-                                    if (lekotottTeljesitmeny == null) {
-                                        indexOfSpace = -1;
-                                    }
-                                    else {
-                                        indexOfSpace = lekotottTeljesitmeny.indexOf(" ");
-                                    }
-                                    if (indexOfSpace != -1) {
-                                        jsonDataInnerArray.push(lekotottTeljesitmeny.substr(0, indexOfSpace))
-                                        unitColumnValue = lekotottTeljesitmeny.substr(indexOfSpace + 1, lekotottTeljesitmeny.length)
-                                    }
-                                    else {
-                                        jsonDataInnerArray.push("undefined");
-                                        unitColumnValue = "undefined";
-                                    }
-                                    break;
-
-                                case "lekotott_teljesitmeny_mertekegyseg":
-                                    jsonDataInnerArray.push(unitColumnValue)
-                                    unitColumnValue = "";
-                                    break;
 
                                 default:
                                     jsonDataInnerArray.push(HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
