@@ -1779,28 +1779,28 @@ function villamosAdminisztracioContainer() {
                                     }
                                     break;
 
-                                case "lekotott_teljesitmeny":
-                                    lekotottTeljesitmeny = HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
-                                    if (lekotottTeljesitmeny == null) {
-                                        indexOfSpace = -1;
-                                    }
-                                    else {
-                                        indexOfSpace = lekotottTeljesitmeny.indexOf(" ");
-                                    }
-                                    if (indexOfSpace != -1) {
-                                        jsonDataInnerArray.push(lekotottTeljesitmeny.substr(0, indexOfSpace))
-                                        unitColumnValue = lekotottTeljesitmeny.substr(indexOfSpace + 1, lekotottTeljesitmeny.length)
-                                    }
-                                    else {
-                                        jsonDataInnerArray.push("undefined");
-                                        unitColumnValue = "undefined";
-                                    }
-                                    break;
+                                //case "lekotott_teljesitmeny":
+                                //    lekotottTeljesitmeny = HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag];
+                                //    if (lekotottTeljesitmeny == null) {
+                                //        indexOfSpace = -1;
+                                //    }
+                                //    else {
+                                //        indexOfSpace = lekotottTeljesitmeny.indexOf(" ");
+                                //    }
+                                //    if (indexOfSpace != -1) {
+                                //        jsonDataInnerArray.push(lekotottTeljesitmeny.substr(0, indexOfSpace))
+                                //        unitColumnValue = lekotottTeljesitmeny.substr(indexOfSpace + 1, lekotottTeljesitmeny.length)
+                                //    }
+                                //    else {
+                                //        jsonDataInnerArray.push("undefined");
+                                //        unitColumnValue = "undefined";
+                                //    }
+                                //    break;
 
-                                case "lekotott_teljesitmeny_mertekegyseg":
-                                    jsonDataInnerArray.push(unitColumnValue)
-                                    unitColumnValue = "";
-                                    break;
+                                //case "lekotott_teljesitmeny_mertekegyseg":
+                                //    jsonDataInnerArray.push(unitColumnValue)
+                                //    unitColumnValue = "";
+                                //    break;
 
                                 default:
                                     jsonDataInnerArray.push(HHSzerzodesCallbackResult.data[tmpRow][requiredServerDataArray[i].dataTag]);
@@ -1812,7 +1812,7 @@ function villamosAdminisztracioContainer() {
 
                     excelDataArray.push(
                             {
-                                "sheetName": "HHHCS szerződések",
+                            "sheetName": "IM_HHHCS",
                                 "data": jsonDataArray,
                             }
                         )
@@ -1955,7 +1955,7 @@ function villamosAdminisztracioContainer() {
 
                         excelDataArray.push(
                             {
-                                "sheetName": "Operatív teljesítmény",
+                                "sheetName": "IM_OpTelj",
                                 "data": jsonDataArray,
                             }
                         )
@@ -2231,7 +2231,7 @@ function villamosAdminisztracioContainer() {
 
                         excelDataArray.push(
                             {
-                                "sheetName": "KÁT pénzeszköz",
+                                "sheetName": "IM_KÁT",
                                 "data": jsonDataArray,
                             }
                         )
@@ -2414,7 +2414,7 @@ function villamosAdminisztracioContainer() {
 
                         excelDataArray.push(
                             {
-                                "sheetName": "RHD azonos",
+                                "sheetName": "IM_RHD2",
                                 "data": jsonDataArray,
                             }
                         )
@@ -2660,7 +2660,7 @@ function villamosAdminisztracioContainer() {
 
                         excelDataArray.push(
                             {
-                                "sheetName": "RHD tarifafüggő",
+                                "sheetName": "IM_RHD1",
                                 "data": jsonDataArray,
                             }
                         )
@@ -2783,7 +2783,7 @@ function villamosAdminisztracioContainer() {
 
                         excelDataArray.push(
                             {
-                                "sheetName": "Meddő-Wattos arány",
+                                "sheetName": "IM_Meddő",
                                 "data": jsonDataArray,
                             }
                         )
@@ -3429,15 +3429,15 @@ function villamosAdminisztracioContainer() {
             getOriginalMeters,
             getHHSzerzodes,
             getOperativTeljesitmeny,
-            getVillanyCsoportosDij,
+            //getVillanyCsoportosDij,
             getKatPenzeszkozValues,
             getAllandoRendszerhasznalatiDijak,
             getRendszerhasznalatiDijak,
             getMeddoWattosValues,
-            getVET147Values,
-            getVillanySzerzodesVet147,
+            //getVET147Values,
+            //getVillanySzerzodesVet147,
             //Az utolso maradjon utolso
-            getKereskedelmiSzerzodes,
+            //getKereskedelmiSzerzodes,
             workSheetHandler,
         ],
         function (err) {
